@@ -77,6 +77,7 @@ class Farmer:
             if key.char.lower() == 'p':
                 # Toggle pause between True or False
                 self.pause = not self.pause
+                print("Pause:{pause}".format(pause=self.pause))
 
         except AttributeError:
             print('special key {0} pressed'.format(
