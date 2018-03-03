@@ -1,18 +1,12 @@
-import time
-import win32com.client as comclt
+from farmer.fishing_rod_farmer import FishingRodFarmer
 
 
-def press_1():
-    while True:
-        # Init
-        wsh = comclt.Dispatch("WScript.Shell")
-        # Choose the application
-        wsh.AppActivate("Pokemon Revolution")
-        # send the keys you want
-        wsh.SendKeys("1")
+def main():
+    # Create the fishing rod farmer
+    fr = FishingRodFarmer()
+    # Farm
+    fr.start_farming()
 
-        time.sleep(1)
 
-press_1()
-
-# 111
+# Start the main function
+main()
