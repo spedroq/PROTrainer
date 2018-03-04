@@ -34,7 +34,6 @@ class Farmer:
         #   Create Radon for managing screenshots / OCR
         self.radon = Radon(pt)
 
-
     """ Farm """
 
     def start_farming(self) -> None:
