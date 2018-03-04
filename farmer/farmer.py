@@ -1,6 +1,8 @@
 from abc import abstractmethod
 from pynput import keyboard
 import win32com.client as com_client
+from ocr.Radon import Radon
+from ocr import pytesseract as pt
 
 
 class Farmer:
@@ -28,6 +30,10 @@ class Farmer:
         self.pause = False
         # Init the flag to quit the farming
         self.quit = False
+        #
+        #   Create Radon for managing screenshots / OCR
+        self.radon = Radon(pt)
+
 
     """ Farm """
 
