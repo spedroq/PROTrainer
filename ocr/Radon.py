@@ -56,7 +56,7 @@ class Radon:
         output_filepath = self.dir_screenshots + output_filename + self.screenshot_file_extension
         #
         #    Take a screenshot using Pillow
-        img = ImageGrab.grab()
+        img = ImageGrab.grab().convert('L')
         #
         #    Is there enough space to save?
         self.screenshot_cache_handler()
