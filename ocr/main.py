@@ -67,6 +67,7 @@ class Radon:
 		self.screenshot_cache_handler()
 
 		img.save(output_filepath)
+		return output_filepath
 
 	#
 	#	A function to ensure we don't save too many files
