@@ -17,7 +17,7 @@ class Farmer:
         :method: farm: Abstract method to farm. Implemented by each
          implementation.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Method to init the Farmer class.
         """
@@ -31,7 +31,7 @@ class Farmer:
 
     """ Farm """
 
-    def start_farming(self):
+    def start_farming(self) -> None:
         # Run with keyboard listeners for pausing the farming
         with keyboard.Listener(
                 on_press=self.on_press,
@@ -49,7 +49,7 @@ class Farmer:
             listener.exit()
 
     @abstractmethod
-    def farm(self):
+    def farm(self) -> None:
         """
         Abstract method that implements farming. To be implemented by classes
         derived from Farmer.
@@ -58,7 +58,7 @@ class Farmer:
 
     """ Pause """
 
-    def on_press(self, key):
+    def on_press(self, key) -> None:
         try:
             pass
         except AttributeError:
@@ -67,7 +67,7 @@ class Farmer:
                                                          q=self.quit,
                                                          p=self.pause))
 
-    def on_release(self, key):
+    def on_release(self, key) -> None:
         try:
             if key.char.lower() == 'q':
                 # Set quit to True to stop the farming
@@ -84,92 +84,69 @@ class Farmer:
 
     """ Key Presses """
 
-    def press_1(self):
+    def press_key(self, key: str) -> None:
+        """
+        Helper method to press a key.
+        :param key: Key to be pressed.
+        """
+        self.press_key(key)
+
+    def press_1(self) -> None:
         """
         Method to press key 1.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("1")
+        self.press_key("1")
 
-    def press_2(self):
+    def press_2(self) -> None:
         """
         Method to press key 2.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("2")
+        self.press_key("2")
 
-    def press_3(self):
+    def press_3(self) -> None:
         """
         Method to press key 3.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("3")
+        self.press_key("3")
 
-    def press_4(self):
+    def press_4(self) -> None:
         """
         Method to press key 4.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("4")
+        self.press_key("4")
 
-    def press_5(self):
+    def press_5(self) -> None:
         """
         Method to press key 5.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("5")
+        self.press_key("5")
 
-    def press_6(self):
+    def press_6(self) -> None:
         """
         Method to press key 6.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("6")
+        self.press_key("6")
 
-    def press_w(self):
+    def press_w(self) -> None:
         """
         Method to press key w.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("w")
+        self.press_key("w")
 
-    def press_s(self):
+    def press_s(self) -> None:
         """
         Method to press key s.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("s")
+        self.press_key("s")
 
-    def press_d(self):
+    def press_d(self) -> None:
         """
         Method to press key d.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("d")
+        self.press_key("d")
 
-    def press_a(self):
+    def press_a(self) -> None:
         """
         Method to press key a.
         """
-        # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
-        # Send the keys press
-        self.wsh.SendKeys("a")
+        self.press_key("a")
