@@ -14,5 +14,7 @@ class FishingRodFarmer(Farmer):
         to farm with a fishing rod in the water.
         """
         self.press_1()
-        print(self.radon.save_screenshot())
+        screenshot_filepath = self.radon.save_screenshot()
+        screenshot_text = self.radon.read_text_from_image(screenshot_filepath)
+        print("- = - = - = - =\n\n{}\n\n- = - = - = - =".format(screenshot_text))
         time.sleep(1)

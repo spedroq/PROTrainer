@@ -34,10 +34,10 @@ class Radon:
     #
     #    A function to read the text from an image and return it as a string
     def read_text_from_image(self, filename):
-        try:
+      
             #
             #    Read the image using Pillow, converts into bytes I think
-            input_image = Image.open(filename).convert("L")
+            input_image = Image.open(filename)
             #
             #    Read the words from this image using Google's Tesseract through a python
             #    library passed to us at runtime
@@ -45,11 +45,7 @@ class Radon:
             #
             #    Return the words, pretty sure it's a UTF-8 string
             return words
-        except IOError:
-            #
-            #    Read error thrown, file was not found probably
-            #    Could also be a tesseract error, needs to be looked at
-            sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
+        
     #
     #    A function to save a screenshot
     def save_screenshot(self):
