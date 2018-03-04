@@ -2,7 +2,6 @@ import time
 from farmer.farmer import Farmer
 
 
-
 class FishingRodFarmer(Farmer):
     """
     Class that defines WaterFarmer derived from Farmer.
