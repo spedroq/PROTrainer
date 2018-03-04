@@ -89,7 +89,10 @@ class Farmer:
         Helper method to press a key.
         :param key: Key to be pressed.
         """
-        self.press_key(key)
+        # Set output to Pokemon Revolution Online
+        self.wsh.AppActivate("Pokemon Revolution")
+        # Send the keys press
+        self.wsh.SendKeys(key)
 
     def press_1(self) -> None:
         """
