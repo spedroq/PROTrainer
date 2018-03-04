@@ -32,7 +32,6 @@ class Farmer:
     """ Farm """
 
     def start_farming(self):
-        listener = None
         # Run with keyboard listeners for pausing the farming
         with keyboard.Listener(
                 on_press=self.on_press,
@@ -82,10 +81,6 @@ class Farmer:
         except AttributeError:
             print('special key {0} pressed'.format(
                 key))
-
-        if key == keyboard.Key.esc:
-            # Stop listener
-            return False
 
     """ Key Presses """
 
