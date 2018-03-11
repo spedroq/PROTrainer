@@ -28,7 +28,7 @@ class Farmer(threading.Thread):
     quit = False
     # Init the Simulated Keyboard
     keyboard = SimulatedKeyboard()
-    #
+    # Init farm move sequence
     farm_move_sequence = PROTrainerMoveSequence()
     # Create Radon for managing screenshots / OCR
     # radon = Radon(pt)
