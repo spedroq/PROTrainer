@@ -21,7 +21,7 @@ class Farmer(threading.Thread):
          implementation.
     """
     # Init timeout and count for healing
-    TIMEOUT = 600
+    TIMEOUT = 1800
     COUNT = 1
     # Init Windows Shell with WScript Shell
     wsh = com_client.Dispatch("WScript.Shell")
