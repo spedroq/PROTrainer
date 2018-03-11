@@ -1,6 +1,5 @@
-import time
 from farmer.farmer import Farmer
-from moveset.moveset import PROTrainerMoveSequence
+from move_set.move_set import PROTrainerMoveSequence
 
 
 class FishingRodFarmer(Farmer):

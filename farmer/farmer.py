@@ -3,7 +3,7 @@ from abc import abstractmethod
 import time
 import win32com.client as com_client
 
-from moveset.moveset import SimulatedKeyboard, PROTrainerMoveSequence
+from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence
 
 
 class Farmer(threading.Thread):
@@ -20,6 +20,9 @@ class Farmer(threading.Thread):
         :method: farm: Abstract method to farm. Implemented by each
          implementation.
     """
+    # Init timeout and count for healing
+    TIMEOUT = 600
+    COUNT = 1
     # Init Windows Shell with WScript Shell
     wsh = com_client.Dispatch("WScript.Shell")
     # Init the flag to pause the farming
@@ -45,13 +48,13 @@ class Farmer(threading.Thread):
 
         # Keep farming while quit is False
         while not self.quit:
-            time.sleep(1)
+            time.sleep(0.1)
 
             # Farm if pause is False
             if not self.pause:
                 # Farm away
                 self.farm()
-                self.keyboard.use_move_sequence(self.farm_move_sequence)
+                self.COUNT = self.COUNT + self.keyboard.use_move_sequence(self.farm_move_sequence)
                 # self.handle_radon_results(self.radon.read_text_from_screenshot_taken_right_row())
 
     @abstractmethod
