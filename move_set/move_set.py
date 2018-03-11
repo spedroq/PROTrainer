@@ -26,7 +26,8 @@ class SimulatedKeyboard:
         """
         Method to run through a move sequence.
         Ex.:
-            [ "w,s, |15", "w|15", "s|15"] -> [ "w", "s", " "] x 15, ["w"] x 15, ["s"] x 15
+            - ["w,s, |15", "w|15", "s|15"] -> ["w", "s", " "] x 15, ["w"] x 15, ["s"] x 15
+            - ["mouse_left%500%300|15"] -> ["mouse_left"] x 15 clicks at position [500, 300]
         :param protms: PRO Trainer Move Sequence object to execute.
         :return: the number of moves performed.
         """
@@ -60,3 +61,6 @@ class SimulatedKeyboard:
         self.wsh.AppActivate("Pokemon Revolution")
         # Send the keys press
         self.wsh.SendKeys(key)
+
+    # TODO: Add mouse support
+    # TODO: https://stackoverflow.com/questions/2702617/generating-mouse-keyboard-combination-events-in-python
