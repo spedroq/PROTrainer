@@ -26,7 +26,7 @@ class Farmer(threading.Thread):
     # Init Windows Shell with WScript Shell
     wsh = com_client.Dispatch("WScript.Shell")
     # Init the flag to pause the farming
-    pause = False
+    pause = True
     # Init the flag to quit the farming
     quit = False
     # Init the Simulated Keyboard

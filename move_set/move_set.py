@@ -1,5 +1,8 @@
 import time
+
+import win32api
 import win32com.client as com_client
+import win32con
 
 
 class PROTrainerMoveSequence:
@@ -43,12 +46,25 @@ class SimulatedKeyboard:
             for i in range(0, loop_count):
                 # Iterate through number of keys
                 for key in keys:
-                    # Sleep
-                    time.sleep(self.timeout)
-                    # Press key
-                    self.press_key(key)
-                    # Add count
-                    count += 1
+                    if "mouse" in key:
+                        # Split the coordinates and mouse click
+                        mouse_config = key.split("%")
+                        key = mouse_config[0]
+                        x_coordinate = mouse_config[1]
+                        y_coordinate = mouse_config[2]
+                        # Sleep
+                        time.sleep(self.timeout)
+                        # Press key
+                        self.press_mouse(key, int(x_coordinate), int(y_coordinate))
+                        # Add count
+                        count += 1
+                    else:
+                        # Sleep
+                        time.sleep(self.timeout)
+                        # Press key
+                        self.press_key(key)
+                        # Add count
+                        count += 1
 
         return count
 
@@ -62,5 +78,21 @@ class SimulatedKeyboard:
         # Send the keys press
         self.wsh.SendKeys(key)
 
-    # TODO: Add mouse support
-    # TODO: https://stackoverflow.com/questions/2702617/generating-mouse-keyboard-combination-events-in-python
+    def press_mouse(self, key: str, x: int, y: int) -> None:
+        """
+        Helper method to press a mouse key.
+        :param key: Key to be pressed.
+        """
+        if key == 'mouse_left':
+            self.press_mouse_left(x, y)
+
+    @staticmethod
+    def press_mouse_left(x: int, y: int) -> None:
+        """
+        Static method to click mouse at position x, y.
+        :param x: x coordinate.
+        :param y: y coordinate.
+        """
+        win32api.SetCursorPos((x, y))
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)

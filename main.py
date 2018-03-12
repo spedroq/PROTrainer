@@ -1,11 +1,13 @@
+from farmer.cave_famer import CaveFarmer
 from farmer.fishing_rod_farmer import FishingRodFarmer
-from farmer.ghost_farming import GhostTowerFarmer
+from farmer.ghost_farmer import GhostTowerFarmer
+from farmer.surf_famer import SurfFarmer
 from input_listener.input_listener import InputListener
 
 
 def main():
     # Create the fishing rod farmer
-    farmer_thread = GhostTowerFarmer(name="FarmerThread")
+    farmer_thread = FishingRodFarmer(name="FarmerThread")
     # Farm
     farmer_thread.start()
 
