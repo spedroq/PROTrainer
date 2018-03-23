@@ -2,7 +2,7 @@ import threading
 from abc import abstractmethod
 import time
 import win32com.client as com_client
-
+from radon.Radon import *
 from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence
 
 
@@ -34,7 +34,10 @@ class Farmer(threading.Thread):
     # Init farm move sequence
     farm_move_sequence = PROTrainerMoveSequence()
     # Create Radon for managing screenshots / OCR
-    # radon = Radon(pt)
+    RADON = Radon()
+    #
+    #   A counter for the number of iterations through the main thread
+    ITERATIONS = 0
 
     def run(self) -> None:
         """
@@ -45,10 +48,17 @@ class Farmer(threading.Thread):
     """ Farm """
 
     def start_farming(self) -> None:
+        
+        
 
         # Keep farming while quit is False
         while not self.quit:
-            time.sleep(0.1)
+            self.ITERATIONS += 1
+            print(str(self.ITERATIONS))
+            time.sleep(0.25)
+            #
+            #   Radon needs to be threaded
+            #self.RADON.test()
 
             # Farm if pause is False
             if not self.pause:

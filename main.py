@@ -3,7 +3,7 @@ from farmer.fishing_rod_farmer import FishingRodFarmer
 from farmer.ghost_farmer import GhostTowerFarmer
 from farmer.surf_famer import SurfFarmer
 from input_listener.input_listener import InputListener
-
+from radon import *
 
 def main():
     # Create the fishing rod farmer
