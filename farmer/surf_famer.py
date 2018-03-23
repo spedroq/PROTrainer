@@ -21,15 +21,11 @@ class SurfFarmer(Farmer):
         Implement the abstract function farm() with the specific implementation
         to farm surfing in the water.
         """
-
-        if self.COUNT > self.TIMEOUT:
-            # Speak to Nurse Joy
-            print(self.poke_center_move_set)
+        if 'no PP' in self.radon_text:
+            # Speak to Nurse Joy Sequence
             self.farm_move_sequence = self.poke_center_move_set
-            self.COUNT = 0
-            print(self.default_move_set)
         else:
-            # Press 1 forever
+            # Farm Sequence
             self.farm_move_sequence = self.default_move_set
 
 

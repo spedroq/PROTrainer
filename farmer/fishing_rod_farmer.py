@@ -23,14 +23,13 @@ class FishingRodFarmer(Farmer):
         Implement the abstract function farm() with the specific implementation
         to farm with a fishing rod in the water.
         """
-        # Press 1 forever
-        self.farm_move_sequence = self.default_move_set
-
-    """
-    def handle_radon_results(self, radon_results: str):
-        self.farm_move_sequence = self.default_move_set
-        if "no PP left" in radon_results:
+        if 'no PP' in self.radon_text:
+            # Speak to Nurse Joy Sequence
             self.farm_move_sequence = self.poke_center_move_set
-    """
+        else:
+            # Farm Sequence
+            self.farm_move_sequence = self.default_move_set
+
+
 
 

@@ -3,11 +3,11 @@ from farmer.fishing_rod_farmer import FishingRodFarmer
 from farmer.ghost_farmer import GhostTowerFarmer
 from farmer.surf_famer import SurfFarmer
 from input_listener.input_listener import InputListener
-from radon import *
+from radon.Radon import *
 
 def main():
     # Create the fishing rod farmer
-    farmer_thread = FishingRodFarmer(name="FarmerThread")
+    farmer_thread = GhostTowerFarmer(name="FarmerThread")
     # Farm
     farmer_thread.start()
 
@@ -16,6 +16,11 @@ def main():
                                     args=(farmer_thread,))
     # Listen for input
     listener_thread.start()
+
+    # Create Radon thread for managing screenshots / OCR
+    radon_thread = Radon(name="TesseractInteractionThread",
+                         args=(farmer_thread,))
+    radon_thread.run()
 
 
 # Start the main function

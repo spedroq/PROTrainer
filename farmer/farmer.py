@@ -2,7 +2,6 @@ import threading
 from abc import abstractmethod
 import time
 import win32com.client as com_client
-from radon.Radon import *
 from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence
 
 
@@ -20,24 +19,18 @@ class Farmer(threading.Thread):
         :method: farm: Abstract method to farm. Implemented by each
          implementation.
     """
-    # Init timeout and count for healing
-    TIMEOUT = 1800
-    COUNT = 1
     # Init Windows Shell with WScript Shell
     wsh = com_client.Dispatch("WScript.Shell")
     # Init the flag to pause the farming
     pause = True
     # Init the flag to quit the farming
     quit = False
+    # Init the radon text to blank
+    radon_text = ''
     # Init the Simulated Keyboard
     keyboard = SimulatedKeyboard()
     # Init farm move sequence
     farm_move_sequence = PROTrainerMoveSequence()
-    # Create Radon for managing screenshots / OCR
-    RADON = Radon()
-    #
-    #   A counter for the number of iterations through the main thread
-    ITERATIONS = 0
 
     def run(self) -> None:
         """
@@ -48,23 +41,16 @@ class Farmer(threading.Thread):
     """ Farm """
 
     def start_farming(self) -> None:
-        
-        
 
         # Keep farming while quit is False
         while not self.quit:
-            self.ITERATIONS += 1
-            print(str(self.ITERATIONS))
             time.sleep(0.25)
-            #
-            #   Radon needs to be threaded
-            #self.RADON.test()
 
             # Farm if pause is False
             if not self.pause:
                 # Farm away
                 self.farm()
-                self.COUNT = self.COUNT + self.keyboard.use_move_sequence(self.farm_move_sequence)
+                self.keyboard.use_move_sequence(self.farm_move_sequence)
                 # self.handle_radon_results(self.radon.read_text_from_screenshot_taken_right_row())
 
     @abstractmethod
@@ -86,3 +72,10 @@ class Farmer(threading.Thread):
     def set_quit(self) -> None:
         # Set quit to True to stop the farming
         self.quit = True
+
+    """ Radon Interaction """
+
+    def deliver_radon_text(self, text: str):
+        self.radon_text = text
+
+
