@@ -49,13 +49,13 @@ class VictoryRoadFarmer(Farmer):
                 # Get the mid points of these tiles and then click there
                 # Add this click to the current move sequence at the center of
                 # the tile
-                mouse_click_sequences.append("mouse_left%{}%{}|1".format(
-                    tile["info"]["x"], tile["info"]["y"]
-                ))
-                click_on_tiles_move_sequence = PROTrainerMoveSequence(
-                    mouse_click_sequences)
-                # Change the current move sequece to this one
-                self.farm_move_sequence = click_on_tiles_move_sequence
+                if len(mouse_click_sequences) < 9:
+                    mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                        tile["info"]["x_center"], tile["info"]["y_center"]
+                    ))
+                    click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+                    # Change the current move sequece to this one
+                    self.farm_move_sequence = click_on_tiles_move_sequence
         else:
             # Farm Sequence
             self.farm_move_sequence = self.default_move_set
