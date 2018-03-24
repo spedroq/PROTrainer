@@ -5,3 +5,6 @@ screenshots/
 *.pyc
 */*.pyc
 farmer/___pycahce___/*
+temp.bmp
+temp.txt
+tesseract.log
