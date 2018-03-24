@@ -4,3 +4,4 @@ ocr/screenshots/
 screenshots/
 *.pyc
 */*.pyc
+farmer/___pycahce___/*
