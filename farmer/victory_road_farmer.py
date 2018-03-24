@@ -50,7 +50,7 @@ class VictoryRoadFarmer(Farmer):
                 # Add this click to the current move sequence at the center of
                 # the tile
                 mouse_click_sequences.append("mouse_left%{}%{}|1".format(
-                    tile["info"]["x_center"], tile["info"]["y_center"]
+                    tile["info"]["x"], tile["info"]["y"]
                 ))
                 click_on_tiles_move_sequence = PROTrainerMoveSequence(
                     mouse_click_sequences)
