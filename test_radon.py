@@ -15,7 +15,9 @@ def test(r, test_name, screenshot_path, expected_error_code):
 	#
 	#	Test for no pp
 	screenshot = Image.open(screenshot_path)
+	#screenshot.show()
 	text = r.read_text_from_pil_image(screenshot)
+	print(text)
 	# Ok, cool we have the text, let's check for colours
 	radon_status = r.get_radon_status_from_text(text)
 	print("\n")
@@ -34,7 +36,7 @@ def test(r, test_name, screenshot_path, expected_error_code):
 	#   This pokemon needs to evolve
 	elif radon_status.get("code") == 21:
 		matching_tiles = r.get_tiles_matching_colour_from_pil_image_within_tolerance(
-			screenshot, r.colours["button_accept_red"], 0.33
+			screenshot, r.colours["button_accept_red"], 0.5
 		)
 		shuffle(matching_tiles)
 		radon_status["tiles"] = matching_tiles
@@ -63,6 +65,8 @@ def test(r, test_name, screenshot_path, expected_error_code):
 	if radon_status.get("code") != expected_error_code:
 		fails += 1
 		print("\t{} TEST | FAILED".format(test_name))
+		with open("radon/tests/{}.txt".format(test_name), "w") as fi:
+			fi.write(text)
 	else:
 		passes += 1
 		print("\t{} TEST | PASSED".format(test_name))
@@ -83,7 +87,7 @@ def test(r, test_name, screenshot_path, expected_error_code):
 passes = 0
 fails = 0
 
-evolve_test = test(r, "EVOLVE", "radon/screenshots/evolve.png", 21)
+evolve_test = test(r, "EVOLVE", "radon/screenshots/evolving.png", 21)
 if evolve_test:
 	passes += 1
 else:
