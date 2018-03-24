@@ -1,0 +1,4 @@
+Tesseract Open Source OCR Engine
+IMAGE::read_header:Error:Can't open file:temp.bmp
+Tessedit:Error:Read of file failed:temp.bmp
+Signal_exit 31 ABORT. LocCode: 3  AbortCode: 3
