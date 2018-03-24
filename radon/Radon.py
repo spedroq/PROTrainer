@@ -21,7 +21,7 @@ current_key = "1"
 #
 # Input is a screenshot taken from the OS.
 #
-class Radon(threading.Thread):
+class Radon:
     radon_timer_a = None
     radon_timer_b = None
     colours = {
@@ -57,7 +57,8 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_login_yellow"], 0.25
                 )
-                radon_status["tiles"] = shuffle(matching_tiles)
+                shuffle(matching_tiles)
+                radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -67,7 +68,8 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_accept_red"], 0.33
                 )
-                radon_status["tiles"] = shuffle(matching_tiles)
+                shuffle(matching_tiles)
+                radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -75,9 +77,10 @@ class Radon(threading.Thread):
             elif radon_status.get("code") == 22:
                 matching_tiles = []
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_learn_move_red"], 0.33
+                    screenshot, self.colours["button_learn_move_red"], 0.15
                 )
-                radon_status["tiles"] = shuffle(matching_tiles)
+                shuffle(matching_tiles)
+                radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -88,7 +91,8 @@ class Radon(threading.Thread):
                     screenshot, self.colours["button_learn_move_confirm_green"], 0.33
                 )
                 #print(matching_tiles)
-                radon_status["tiles"] = shuffle(matching_tiles)
+                shuffle(matching_tiles)
+                radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -166,35 +170,35 @@ class Radon(threading.Thread):
         #
         #   Exact matches only
         check_text = text.lower()
-        if "left!!" in check_text or "has no" in check_text:
-            # PASS
-            radon_status = {
-               "code": 20,
-               "status": "20: this pokemon has run out of pp for this move"
-            }
         if "login red" in check_text or "login blue" in check_text or "login yellow" in check_text:
             # PASS
             radon_status = {
                "code": 10,
                "status": "10: warning, we are not logged in"
             }
-        if "evolving" in check_text or "no yes" in check_text or "no ves" in check_text:
+        if "left!!" in check_text or "has no" in check_text:
+            # PASS
+            radon_status = {
+               "code": 20,
+               "status": "20: this pokemon has run out of pp for this move"
+            }
+        if "evolving" in check_text or "no yes" in check_text or "no ves" in check_text or "evolv" in check_text:
             # PASS
             radon_status = {
                "code": 21,
                "status": "21: this pokemon needs to evolve"
-            }
-        if "this move" in check_text:
-            # PASS
-            radon_status = {
-               "code": 22,
-               "status": "22: this pokemon is trying to learn a move"
             }
         if "learn move" in check_text or "cancel ok" in check_text or "cancel" in check_text:
             # PASS
             radon_status = {
                "code": 11,
                "status": "11: we need to confirm our selection"
+            }
+        if "this move" in check_text:
+            # PASS
+            radon_status = {
+               "code": 22,
+               "status": "22: this pokemon is trying to learn a move"
             }
         #print(radon_status)
         return radon_status
