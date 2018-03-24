@@ -9,8 +9,9 @@ class PROTrainerMoveSequence:
     """
     Class PROTrainerMoveSequence defines data structure for a sequence of moves.
     """
-    def __init__(self, move_sequence: list=list()):
+    def __init__(self, move_sequence: list=list(), timeout: int=0.25):
         self.move_sequence = move_sequence
+        self.timeout = timeout
 
     def __repr__(self):
         return "PROTrainerMoveSequence: {}".format(self.move_sequence)
@@ -23,7 +24,6 @@ class SimulatedKeyboard:
     def __init__(self):
         # Init Windows Shell with WScript Shell
         self.wsh = com_client.Dispatch("WScript.Shell")
-        self.timeout = 0.25
 
     def use_move_sequence(self, protms) -> int:
         """
@@ -41,30 +41,32 @@ class SimulatedKeyboard:
             # [ "w,s, |15"] -> ["w", "s", " "]
             keys = move.split("|")[0].split(",")
             # [ "w,s, |15"] -> 15
-            loop_count = int(move.split("|")[1])
-            # Iterate through number of repetitions
-            for i in range(0, loop_count):
-                # Iterate through number of keys
-                for key in keys:
-                    if "mouse" in key:
-                        # Split the coordinates and mouse click
-                        mouse_config = key.split("%")
-                        key = mouse_config[0]
-                        x_coordinate = mouse_config[1]
-                        y_coordinate = mouse_config[2]
-                        # Sleep
-                        time.sleep(self.timeout)
-                        # Press key
-                        self.press_mouse(key, int(x_coordinate), int(y_coordinate))
-                        # Add count
-                        count += 1
-                    else:
-                        # Sleep
-                        time.sleep(self.timeout)
-                        # Press key
-                        self.press_key(key)
-                        # Add count
-                        count += 1
+            try:
+                loop_count = int(move.split("|")[1])
+
+                # Iterate through number of repetitions
+                for i in range(0, loop_count):
+                    # Iterate through number of keys
+                    for key in keys:
+                        if "mouse" in key:
+                            # Split the coordinates and mouse click
+                            mouse_config = key.split("%")
+                            key = mouse_config[0]
+                            x_coordinate = mouse_config[1]
+                            y_coordinate = mouse_config[2]
+                            # Sleep
+                            time.sleep(protms.timeout)
+                            # Press key
+                            self.press_mouse(key, int(x_coordinate), int(y_coordinate))
+                            # Add count
+                            count += 1
+                        else:
+                            # Sleep
+                            time.sleep(protms.timeout)
+                            # Press key
+                            self.press_key(key)
+            except Exception:
+                print(move)
 
         return count
 
