@@ -87,7 +87,7 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_learn_move_confirm_green"], 0.33
                 )
-                #print(matching_tiles)
+                print(matching_tiles)
                 radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
