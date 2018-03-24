@@ -31,19 +31,31 @@ class VictoryRoadFarmer(Farmer):
         Implement the abstract function farm() with the specific implementation
         to farm in the victory road.
         """
+        #
+        # Check what codes that Radon passed, if it's a high-priority code
+        # check it first, then look to see if we need to change our moveset
+        # to click on the screen
         if self.radon_status.get("code") == 20:
             # Speak to Nurse Joy Sequence as no PP
             self.farm_move_sequence = self.poke_center_move_set
-        elif self.radon_status.get("code") == 10:
-            # Login to the game, read all the tiles and click there
+        # If Radon passed this tile element in the dictionary, we need to click
+        # on the tiles it passed us
+        elif self.radon_status.get("tiles"):
+            # Map these tiles onto a move sequence
             mouse_click_sequences = []
+            print("\tclicking on {} tiles".format(
+                len(self.radon_status.get("tiles"))))
             for tile in self.radon_status.get("tiles"):
+                # Get the mid points of these tiles and then click there
+                # Add this click to the current move sequence at the center of
+                # the tile
                 mouse_click_sequences.append("mouse_left%{}%{}|1".format(
                     tile["info"]["x"], tile["info"]["y"]
                 ))
-                click_on_login_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
-                self.farm_move_sequence = click_on_login_move_sequence
+                click_on_tiles_move_sequence = PROTrainerMoveSequence(
+                    mouse_click_sequences)
+                # Change the current move sequece to this one
+                self.farm_move_sequence = click_on_tiles_move_sequence
         else:
             # Farm Sequence
             self.farm_move_sequence = self.default_move_set
-        #print(self.farm_move_sequence)
