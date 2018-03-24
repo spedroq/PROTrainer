@@ -6,8 +6,8 @@ V 0.0.1, 3/10/07"""
 from PIL import Image
 import subprocess
 
-import radon.pytesseract.util as util
-import radon.pytesseract.errors as errors
+import pytesseract.util as util
+import pytesseract.errors as errors
 
 tesseract_exe_name = 'tesseract' # Name of executable to be called at command line
 scratch_image_name = "temp.bmp" # This file must be .bmp or other Tesseract-compatible format
