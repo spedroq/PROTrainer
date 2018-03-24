@@ -8,7 +8,7 @@ from radon.Radon import *
 
 def main():
     # Create the fishing rod farmer
-    farmer_thread = VictoryRoadFarmer(name="FarmerThread")
+    farmer_thread = FishingRodFarmer(name="FarmerThread")
     # Farm
     farmer_thread.start()
 

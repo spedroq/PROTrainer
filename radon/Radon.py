@@ -31,6 +31,8 @@ class Radon(threading.Thread):
         "button_login_blue": (15,119,167,), # PASS
         "button_learn_move_red": (158,48,54,), # PASS
         "button_learn_move_blue": (42,117,196,), # PASS
+        "button_learn_move_confirm_green": (24,200,1,),
+        "button_learn_move_confirm_red": (200,1,1,),
         "button_accept_green": (33,165,17,), # ~
         "button_accept_red": (202,4,4,), # PASS
     }
@@ -41,20 +43,58 @@ class Radon(threading.Thread):
     def run(self):
         while True:
             self.farmer = self._args[0]
-            text = self.read_text_from_pil_image(self.get_screenshot_pil_image())
+            # Read the text from an screenshot taken right now
+            screenshot = self.get_screenshot_pil_image()
+            text = self.read_text_from_pil_image(screenshot)
             # Ok, cool we have the text, let's check for colours
-
             radon_status = self.get_radon_status_from_text(text)
+            # Is it a tile delivery?
+            is_tile_delivery = False
+
+            #   We need to login            
             if radon_status.get("code") == 10:
-                #
-                #   We need to login
                 matching_tiles = []
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    self.get_screenshot_pil_image(), self.colours["button_login_yellow"], 0.25
+                    screenshot, self.colours["button_login_yellow"], 0.25
                 )
                 radon_status["tiles"] = matching_tiles
+                is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
-            else:
+
+            #   This pokemon needs to evolve
+            elif radon_status.get("code") == 21:
+                matching_tiles = []
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    screenshot, self.colours["button_accept_red"], 0.33
+                )
+                radon_status["tiles"] = matching_tiles
+                is_tile_delivery = True
+                self.farmer.deliver_radon_status(radon_status)
+
+            #   This pokemon needs to learn a move
+            elif radon_status.get("code") == 22:
+                matching_tiles = []
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    screenshot, self.colours["button_learn_move_red"], 0.33
+                )
+                radon_status["tiles"] = matching_tiles
+                is_tile_delivery = True
+                self.farmer.deliver_radon_status(radon_status)
+
+            # We need to confirm this selection
+            elif radon_status.get("code") == 11:
+                matching_tiles = []
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    screenshot, self.colours["button_learn_move_confirm_green"], 0.25
+                )
+                #print(matching_tiles)
+                radon_status["tiles"] = matching_tiles
+                is_tile_delivery = True
+                self.farmer.deliver_radon_status(radon_status)
+
+
+            # It's just a normal delivery, no tiles to click on 
+            if not is_tile_delivery:
                 self.farmer.deliver_radon_status(radon_status)
                 
 
@@ -138,7 +178,7 @@ class Radon(threading.Thread):
                "code": 10,
                "status": "10: warning, we are not logged in"
             }
-        if "evolving" in check_text:
+        if "evolving" in check_text or "no yes" in check_text or "no ves" in check_text:
             # PASS
             radon_status = {
                "code": 21,
@@ -149,6 +189,12 @@ class Radon(threading.Thread):
             radon_status = {
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
+            }
+        if "learn move" in check_text:
+            # PASS
+            radon_status = {
+               "code": 11,
+               "status": "11: we need to confirm our selection"
             }
         #print(radon_status)
         return radon_status
@@ -236,6 +282,14 @@ class Radon(threading.Thread):
                 "info": tile_data,
                 "image": tile_image_rgb
             }
+            #   tile = {
+            #       "info": {
+            #           "x":0,
+            #           "y":0,
+            #           "coordinates": (0,0), (1,1)          
+            #       },
+            #       "image": pil_image
+            #   } 
             #
             #    Save to our output array
             tiles.append(tile)
@@ -336,5 +390,5 @@ def main():
 #main()
 
 
-print("RADON: Exiting Main Thread")
+print("\tradon started analysing the screen")
 
