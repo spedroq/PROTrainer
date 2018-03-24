@@ -28,7 +28,7 @@ class GhostTowerFarmer(Farmer):
             mouse_click_sequences = []
             for tile in self.radon_status.get("tiles"):
                 mouse_click_sequences.append("mouse_left%{}%{}|1".format(
-                    tile["info"]["x"], tile["info"]["y"]
+                    tile["info"]["x_center"], tile["info"]["y_center"]
                 ))
                 click_on_login_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
                 self.farm_move_sequence = click_on_login_move_sequence

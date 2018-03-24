@@ -85,7 +85,7 @@ class Radon(threading.Thread):
             elif radon_status.get("code") == 11:
                 matching_tiles = []
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_learn_move_confirm_green"], 0.25
+                    screenshot, self.colours["button_learn_move_confirm_green"], 0.33
                 )
                 #print(matching_tiles)
                 radon_status["tiles"] = matching_tiles
@@ -190,7 +190,7 @@ class Radon(threading.Thread):
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
             }
-        if "learn move" in check_text:
+        if "learn move" in check_text or "cancel ok" in check_text or "cancel" in check_text:
             # PASS
             radon_status = {
                "code": 11,
@@ -267,6 +267,8 @@ class Radon(threading.Thread):
             tile_data = {
                 "x": x,
                 "y": y,
+                "x_center": int(x + (grid_width / 2)),
+                "y_center": int(y + (grid_height / 2)),
                 "coordinates": (x,y,x+grid_width,y+grid_height,)
             }
             #
