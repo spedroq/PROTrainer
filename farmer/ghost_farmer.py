@@ -36,7 +36,4 @@ class GhostTowerFarmer(Farmer):
             # Farm Sequence
             self.farm_move_sequence = self.default_move_set
         #print(self.farm_move_sequence)
-
-
-
-
+        
