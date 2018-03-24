@@ -8,6 +8,7 @@ r = Radon()
 
 
 def test(r, test_name, screenshot_path, expected_error_code):
+	r.start_timer()
 	passes = 0
 	fails = 0
 	with open("temp.txt", "w") as f:
@@ -78,6 +79,8 @@ def test(r, test_name, screenshot_path, expected_error_code):
 	
 	
 	#time.sleep(1)
+	r.end_timer()
+	print("Radon completed in [{}s]".format(r.get_processing_time_in_seconds()))
 
 	if fails == 1:
 		return False

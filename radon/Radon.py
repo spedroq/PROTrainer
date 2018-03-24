@@ -42,6 +42,7 @@ class Radon(threading.Thread):
     # Initialise
     def run(self):
         while True:
+            self.start_timer()
             self.farmer = self._args[0]
             # Read the text from an screenshot taken right now
             screenshot = self.get_screenshot_pil_image()
@@ -100,6 +101,11 @@ class Radon(threading.Thread):
             # It's just a normal delivery, no tiles to click on 
             if not is_tile_delivery:
                 self.farmer.deliver_radon_status(radon_status)
+
+            # Metrics
+            self.end_timer()
+            print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
+
                 
 
     #
@@ -117,7 +123,7 @@ class Radon(threading.Thread):
         a = self.radon_timer_a
         b = self.radon_timer_b
         time_difference = b - a
-        return time_difference
+        return round(time_difference, 1)
         #round(time_difference, 3)
     #
     #
@@ -208,8 +214,6 @@ class Radon(threading.Thread):
     #    A function to count the number of tiles that match in colour
     def get_tiles_matching_colour_from_pil_image_within_tolerance(self, pil_image, colour_to_find, tolerance):
         pil_tiles = self.get_radon_image_objects_from_pil_image(pil_image)
-        #self.end_timer()
-        #print("CREATE PIL TILES FROM SOURCE IMAGE : {}".format(self.get_processing_time_in_seconds()))
         #
         #    Colour analysis
         #self.start_timer()
