@@ -2,7 +2,7 @@ import threading
 from abc import abstractmethod
 import time
 import win32com.client as com_client
-from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence
+from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence, PROTrainerMove
 
 
 class Farmer(threading.Thread):
@@ -112,18 +112,20 @@ class Farmer(threading.Thread):
         # on the tiles it passed us
         elif self.radon_status.get("tiles"):
             # Map these tiles onto a move sequence
-            mouse_click_sequences = []
+            mouse_click_sequence = PROTrainerMoveSequence()
             for tile in self.radon_status.get("tiles"):
                 # Get the mid points of these tiles and then click there
                 # Add this click to the current move sequence at the center of
                 # the tile
-                if len(mouse_click_sequences) < 9:
-                    mouse_click_sequences.append("mouse_left%{}%{}|1".format(
-                        tile["info"]["x_center"], tile["info"]["y_center"]
-                    ))
-                    click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
-                    # Perform a move sequence
-                    self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+                if len(mouse_click_sequence.move_sequence) < 9:
+                    mouse_click_sequence.move_sequence.append(
+                        PROTrainerMove(
+                            ["mouse_left%{}%{}".format(tile["info"]["x_center"], tile["info"]["y_center"])],
+                            1)
+
+                    )
+            # Perform a move sequence
+            self.keyboard.use_move_sequence(mouse_click_sequence, validate=False)
 
         # Return the current pause status
         return self.pause

@@ -12,19 +12,20 @@ class PROTrainerMove:
     def __init__(self, input_characters: list=list(), iterations: int=1, timeout: float=0.25):
         self.input_characters = input_characters
         self.iterations = iterations
-        self.timeout
+        self.timeout = timeout
+
     def __repr__(self):
         return "PROTrainerMove: {}|{}|{}".format(
             self.input_characters, self.iterations, self.timeout
         )
 
+
 class PROTrainerMoveSequence:
     """
     Class PROTrainerMoveSequence defines data structure for a sequence of moves.
     """
-    def __init__(self, move_sequence: list=list(), timeout: int=0.25):
+    def __init__(self, move_sequence: list=list()):
         self.move_sequence = move_sequence
-        self.timeout = timeout
 
     def __repr__(self):
         return "PROTrainerMoveSequence: {}".format(self.move_sequence)
@@ -44,16 +45,16 @@ class SimulatedKeyboard:
         """
         Method to run through a move sequence.
         Ex.:
-            - ["w,s, |15", "w|15", "s|15"] -> ["w", "s", " "] x 15, ["w"] x 15, ["s"] x 15
-            - ["mouse_left%500%300|15"] -> ["mouse_left"] x 15 clicks at position [500, 300]
+            - ["mouse_left%500%300"] -> ["mouse_left"] x 15 clicks at position [500, 300]
         :param protms: PRO Trainer Move Sequence object to execute.
         """
         # Iterate through moves in the move sequence
         for move in protms.move_sequence:
-            # [ "w,s, |15"] -> ["w", "s", " "]
-            keys = move.split("|")[0].split(",")
-            # [ "w,s, |15"] -> 15
-            loop_count = int(move.split("|")[1])
+            # Get the input characters of the move
+            # ["w", "s", " "]
+            keys = move.input_characters
+            # Get the number of iterations of move repetition
+            loop_count = move.iterations
 
             # Iterate through number of repetitions
             for i in range(0, loop_count):
@@ -67,11 +68,11 @@ class SimulatedKeyboard:
                         # Check if we should press a key by validating the farmer
                         # This also listens for radon output
                         if not self.farmer.validate():
-                            self.perform_move(key, protms)
+                            self.perform_move(key, move)
                     else:
-                        self.perform_move(key, protms)
+                        self.perform_move(key, move)
 
-    def perform_move(self, key: str, protms: PROTrainerMoveSequence):
+    def perform_move(self, key: str, move: PROTrainerMove):
         if "mouse" in key:
             # Split the coordinates and mouse click
             mouse_config = key.split("%")
@@ -79,12 +80,12 @@ class SimulatedKeyboard:
             x_coordinate = mouse_config[1]
             y_coordinate = mouse_config[2]
             # Sleep
-            time.sleep(protms.timeout)
+            time.sleep(move.timeout)
             # Press key
             self.press_mouse(key, int(x_coordinate), int(y_coordinate))
         else:
             # Sleep
-            time.sleep(protms.timeout)
+            time.sleep(move.timeout)
             # Press key
             self.press_key(key)
 
