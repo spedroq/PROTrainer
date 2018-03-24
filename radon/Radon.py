@@ -21,7 +21,7 @@ current_key = "1"
 #
 # Input is a screenshot taken from the OS.
 #
-class Radon:
+class Radon(threading.Thread):
     radon_timer_a = None
     radon_timer_b = None
     colours = {
@@ -162,7 +162,7 @@ class Radon:
     #
     #   A function to return a Radon Status
     def get_radon_status_from_text(self, text):
-        #print("\n\n{}\n\n".format(text))
+        print("\n\n{}\n\n".format(text))
         radon_status = {
            "code": 0,
            "status": "0: radon could not gather any useful information during this analysis of text"
