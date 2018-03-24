@@ -19,10 +19,3 @@ class FishingRodFarmer(Farmer):
     # Init farm move sequence
     farm_move_sequence = default_move_set
 
-    def farm(self):
-        """
-        Implement the abstract function farm() with the specific implementation
-        to farm with a fishing rod in the water.
-        """
-        # Farm Sequence
-        self.farm_move_sequence = self.default_move_set

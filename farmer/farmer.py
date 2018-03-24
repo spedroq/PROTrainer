@@ -63,9 +63,13 @@ class Farmer(threading.Thread):
                 self.keyboard.use_move_sequence(self.farm_move_sequence)
                 # self.handle_radon_results(self.radon.read_text_from_screenshot_taken_right_row())
 
-    @abstractmethod
     def farm(self):
-        pass
+        """
+        Implement the abstract function farm() with the specific implementation
+        to farm with a fishing rod in the water.
+        """
+        # Farm Sequence
+        self.farm_move_sequence = self.default_move_set
 
     """
     @abstractmethod
