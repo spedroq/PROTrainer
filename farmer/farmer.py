@@ -26,7 +26,10 @@ class Farmer(threading.Thread):
     # Init the flag to quit the farming
     quit = False
     # Init the radon text to blank
-    radon_text = ''
+    radon_status = {
+        "code": -1,
+        "status": "-1: initalising..."
+    }
     # Init the Simulated Keyboard
     keyboard = SimulatedKeyboard()
     # Init farm move sequence
@@ -75,7 +78,8 @@ class Farmer(threading.Thread):
 
     """ Radon Interaction """
 
-    def deliver_radon_text(self, text: str):
-        self.radon_text = text
+    def deliver_radon_status(self, status: dict):
+        self.radon_status = status
+        print(self.radon_status["status"])
 
 

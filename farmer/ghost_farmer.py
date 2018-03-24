@@ -20,12 +20,23 @@ class GhostTowerFarmer(Farmer):
         Implement the abstract function farm() with the specific implementation
         to farm in the ghost tower.
         """
-        if 'no PP' in self.radon_text:
-            # Speak to Nurse Joy Sequence
+        if self.radon_status.get("code") == 20:
+            # Speak to Nurse Joy Sequence as no PP
             self.farm_move_sequence = self.poke_center_move_set
+        elif self.radon_status.get("code") == 10:
+            # Login to the game, read all the tiles and click there
+            mouse_click_sequences = []
+            for tile in self.radon_status.get("tiles"):
+                mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                    tile["info"]["x"], tile["info"]["y"]
+                ))
+                click_on_login_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+                self.farm_move_sequence = click_on_login_move_sequence
         else:
             # Farm Sequence
             self.farm_move_sequence = self.default_move_set
+        #print(self.farm_move_sequence)
+
 
 
 

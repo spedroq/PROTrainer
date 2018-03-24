@@ -22,9 +22,9 @@ current_key = "1"
 # Input is a screenshot taken from the OS.
 #
 class Radon(threading.Thread):
-    self.radon_timer_a = None
-    self.radon_timer_b = None
-    self.colours = {
+    radon_timer_a = None
+    radon_timer_b = None
+    colours = {
         #"button_green": (),
         "button_login_yellow": (159,160,33,), # PASS
         "button_login_red": (152,29,42,), # PASS
@@ -34,12 +34,29 @@ class Radon(threading.Thread):
         "button_accept_green": (33,165,17,), # ~
         "button_accept_red": (202,4,4,), # PASS
     }
+    grid_width = 8
+    grid_height = 8
 
     # Initialise
     def run(self):
         while True:
             self.farmer = self._args[0]
-            self.farmer.deliver_radon_text(self.read_text_from_pil_image(self.get_screenshot_pil_image()))
+            text = self.read_text_from_pil_image(self.get_screenshot_pil_image())
+            # Ok, cool we have the text, let's check for colours
+
+            radon_status = self.get_radon_status_from_text(text)
+            if radon_status.get("code") == 10:
+                #
+                #   We need to login
+                matching_tiles = []
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    self.get_screenshot_pil_image(), self.colours["button_login_yellow"], 0.25
+                )
+                radon_status["tiles"] = matching_tiles
+                self.farmer.deliver_radon_status(radon_status)
+            else:
+                self.farmer.deliver_radon_status(radon_status)
+                
 
     #
     #    M E T R I C S
@@ -101,7 +118,7 @@ class Radon(threading.Thread):
     #
     #   A function to return a Radon Status
     def get_radon_status_from_text(self, text):
-        print("\n\n{}\n\n".format(text))
+        #print("\n\n{}\n\n".format(text))
         radon_status = {
            "code": 0,
            "status": "0: radon could not gather any useful information during this analysis of text"
@@ -133,7 +150,7 @@ class Radon(threading.Thread):
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
             }
-        print(radon_status)
+        #print(radon_status)
         return radon_status
 
 

@@ -20,16 +20,9 @@ class CaveFarmer(Farmer):
         Implement the abstract function farm() with the specific implementation
         to farm in the cave.
         """
-
-        if self.COUNT > self.TIMEOUT:
-            # Speak to Nurse Joy
-            print(self.poke_center_move_set)
+        if self.radon_status.get("code") == 20:
+            # Speak to Nurse Joy Sequence as no PP
             self.farm_move_sequence = self.poke_center_move_set
-            self.COUNT = 0
-            print(self.default_move_set)
         else:
-            # Press 1 forever
+            # Farm Sequence
             self.farm_move_sequence = self.default_move_set
-
-
-
