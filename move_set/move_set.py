@@ -5,6 +5,18 @@ import win32com.client as com_client
 import win32con
 
 
+class PROTrainerMove:
+    """
+    Class PROTrainer Move defines the data for a single move.
+    """
+    def __init__(self, input_characters: list=list(), iterations: int, timeout: float=0.25):
+        self.input_characters = input_characters
+        self.iterations = iterations
+        self.timeout
+    def __repr__(self):
+        return "PROTrainerMove: {}|{}|{}".format(
+            self.input_characters, self.iterations, self.timeout
+        )
 class PROTrainerMoveSequence:
     """
     Class PROTrainerMoveSequence defines data structure for a sequence of moves.

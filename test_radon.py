@@ -17,11 +17,11 @@ def test(r, test_name, screenshot_path, expected_error_code):
 	screenshot = Image.open(screenshot_path)
 	#screenshot.show()
 	text = r.read_text_from_pil_image(screenshot)
-	print(text)
+	#print(text)
 	# Ok, cool we have the text, let's check for colours
 	radon_status = r.get_radon_status_from_text(text)
 	print("\n")
-	print(test_name + " TEST - - - - - ")
+	print(test_name + " TEST  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -")
 	print("\t" + str(radon_status))
 	matching_tiles = []
 	#   We need to login			
@@ -77,7 +77,7 @@ def test(r, test_name, screenshot_path, expected_error_code):
 
 	
 	
-	time.sleep(1)
+	#time.sleep(1)
 
 	if fails == 1:
 		return False
@@ -87,7 +87,7 @@ def test(r, test_name, screenshot_path, expected_error_code):
 passes = 0
 fails = 0
 
-evolve_test = test(r, "EVOLVE", "radon/screenshots/evolving.png", 21)
+evolve_test = test(r, "EVOLVE", "radon/screenshots/evolve.png", 21)
 if evolve_test:
 	passes += 1
 else:
@@ -120,7 +120,11 @@ else:
 
 
 
-
-print("\nPASSES: {}\nFAILS: {}\nOVERALL: {}%".format(
-	passes, fails, round(passes / (passes + fails) * 100, 1)
+print("\n\nRESULTS  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -")
+print("\n\tPASSES: {}/{}\n\tFAILS: {}/{}\n\tOVERALL: {}%".format(
+	passes,(passes + fails), fails,(passes + fails), round(passes / (passes + fails) * 100, 1)
 ))
+print("\nTESTING COMPLETE  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -")
+
+print("\nPress any key to exit")
+input()
