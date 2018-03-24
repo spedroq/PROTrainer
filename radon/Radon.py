@@ -4,7 +4,7 @@ from PIL import ImageGrab, Image
 import sys
 import threading
 import time
-
+from random import shuffle
 
 exitFlag = 0
 current_key = "1"
@@ -57,7 +57,7 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_login_yellow"], 0.25
                 )
-                radon_status["tiles"] = matching_tiles
+                radon_status["tiles"] = shuffle(matching_tiles)
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -67,7 +67,7 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_accept_red"], 0.33
                 )
-                radon_status["tiles"] = matching_tiles
+                radon_status["tiles"] = shuffle(matching_tiles)
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -77,7 +77,7 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_learn_move_red"], 0.33
                 )
-                radon_status["tiles"] = matching_tiles
+                radon_status["tiles"] = shuffle(matching_tiles)
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -87,8 +87,8 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_learn_move_confirm_green"], 0.33
                 )
-                print(matching_tiles)
-                radon_status["tiles"] = matching_tiles
+                #print(matching_tiles)
+                radon_status["tiles"] = shuffle(matching_tiles)
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
