@@ -31,14 +31,21 @@ class Farmer(threading.Thread):
         "status": "-1: initalising..."
     }
     # Init the Simulated Keyboard
-    keyboard = SimulatedKeyboard()
+    keyboard = None
     # Init farm move sequence
     farm_move_sequence = PROTrainerMoveSequence()
+
+    # Attributes need to be set by classes derived by Farmer
+    poke_center_move_set = None
+    default_move_set = None
 
     def run(self) -> None:
         """
         Method to init the Farmer class.
         """
+        # Init keyboard
+        self.keyboard = SimulatedKeyboard(farmer=self)
+        # Start Farming
         self.start_farming()
 
     """ Farm """
@@ -82,4 +89,37 @@ class Farmer(threading.Thread):
         self.radon_status = status
         print(self.radon_status["status"])
 
+    """ Validate Move Status """
 
+    def validate(self) -> bool:
+        """
+        Validate if there is any radon output and if the farming is paused.
+        :return: bool value of weather the move should be played or not.
+        """
+        #
+        # Check what codes that Radon passed, if it's a high-priority code
+        # check it first, then look to see if we need to change our moveset
+        # to click on the screen
+        if self.radon_status.get("code") == 20:
+            # Speak to Nurse Joy Sequence, there is no PP
+            # Perform a move sequence
+            self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
+        # If Radon passed this tile element in the dictionary, we need to click
+        # on the tiles it passed us
+        elif self.radon_status.get("tiles"):
+            # Map these tiles onto a move sequence
+            mouse_click_sequences = []
+            for tile in self.radon_status.get("tiles"):
+                # Get the mid points of these tiles and then click there
+                # Add this click to the current move sequence at the center of
+                # the tile
+                if len(mouse_click_sequences) < 9:
+                    mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                        tile["info"]["x_center"], tile["info"]["y_center"]
+                    ))
+                    click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+                    # Perform a move sequence
+                    self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+
+        # Return the current pause status
+        return self.pause
