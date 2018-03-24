@@ -3,3 +3,4 @@ venv/
 ocr/screenshots/
 screenshots/
 *.pyc
+*/*.pyc

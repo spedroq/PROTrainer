@@ -13,7 +13,7 @@ class FishingRodFarmer(Farmer):
 
     # Define moves
     #default_move_set = PROTrainerMoveSequence(["1|1"])
-    default_move_set = PROTrainerMoveSequence(["a,1|8", "d,1|8"])
+    default_move_set = PROTrainerMoveSequence(["a,1|6", "d,1|6"])
     poke_center_move_set = PROTrainerMoveSequence(["4|25", "w|25", "1, ,s|25", "s|25"])
 
     # Init farm move sequence
