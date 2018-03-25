@@ -91,7 +91,7 @@ class Farmer(threading.Thread):
 
     def deliver_radon_status(self, status: dict):
         self.radon_status = status
-        print(self.radon_status["status"])
+        #print(self.radon_status["status"])
 
     """ Validate Move Status """
 

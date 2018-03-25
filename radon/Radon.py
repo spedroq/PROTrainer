@@ -44,6 +44,7 @@ class Radon(threading.Thread):
         while True:
             self.start_timer()
             self.farmer = self._args[0]
+            self.cli = self._args[1]
             # Read the text from an screenshot taken right now
             screenshot = self.get_screenshot_pil_image()
             text = self.read_text_from_pil_image(screenshot)
@@ -104,7 +105,10 @@ class Radon(threading.Thread):
 
             # Metrics
             self.end_timer()
-            print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
+            self.cli.input_string_last_radon_time = str(self.get_processing_time_in_seconds())
+            self.cli.input_string_last_radon_status = str(radon_status["code"])
+            self.cli.input_string_last_radon_info = radon_status["status"]
+            #print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
 
                 
 
