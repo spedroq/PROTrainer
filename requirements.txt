@@ -4,5 +4,3 @@ win32compat==221.26
 win32core==221.28
 Pillow==5.0.0
 click==6.7
-pyyaml==3.12
-toposort==1.5
