@@ -107,6 +107,7 @@ class Farmer(threading.Thread):
         if self.radon_status.get("code") == 20:
             # Speak to Nurse Joy Sequence, there is no PP
             # Perform a move sequence
+            # TODO: This makes it so that P and Q do not activate until the end of the move sequence
             self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
         # If Radon passed this tile element in the dictionary, we need to click
         # on the tiles it passed us
