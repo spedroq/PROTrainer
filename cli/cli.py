@@ -42,7 +42,9 @@ class PROTrainerCLI(threading.Thread):
 	def run(self):
 		#self.show_loading_screen()
 		while True:
-			self.render_screen_to_console(self.fps)
+			#
+			pass
+			#self.render_screen_to_console(self.fps)
 
 	#
 	#	A function to return the string of the correct template

@@ -5,6 +5,7 @@ import sys
 import threading
 import time
 from random import shuffle
+import datetime
 
 exitFlag = 0
 current_key = "1"
@@ -35,9 +36,15 @@ class Radon(threading.Thread):
         "button_learn_move_confirm_red": (200,1,1,),
         "button_accept_green": (33,165,17,), # ~
         "button_accept_red": (202,4,4,), # PASS
+        "button_close_private_message": (186,186,186,), # 
+        #"button_close_private_message": (71,71,71,), # 
+        #"button_close_private_message": (71,71,71,), # 
+        #"button_close_private_message": (17,17,17,), # 
     }
     grid_width = 8
     grid_height = 8
+    debug_is_printing_text = False
+    last_poke_save_time = time.time()
 
     # Initialise
     def run(self):
@@ -85,6 +92,27 @@ class Radon(threading.Thread):
                 radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
+
+            #   We need to close this private message
+            elif radon_status.get("code") == 12:
+                matching_tiles = []
+                self.grid_width = 6
+                self.grid_height = 6
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    screenshot, self.colours["button_close_private_message"], 0.00
+                )
+                #print(matching_tiles)
+                #shuffle(matching_tiles)
+                #matching_tiles.reverse()
+                #
+                #   Fix the x co-ord by 26px
+                for tile in matching_tiles:
+                    tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
+                radon_status["tiles"] = matching_tiles
+                is_tile_delivery = True
+                self.farmer.deliver_radon_status(radon_status)
+                self.grid_width = 8
+                self.grid_height = 8
 
             # We need to confirm this selection
             elif radon_status.get("code") == 11:
@@ -172,7 +200,8 @@ class Radon(threading.Thread):
     #
     #   A function to return a Radon Status
     def get_radon_status_from_text(self, text):
-        #print("\n\n{}\n\n".format(text))
+        if self.debug_is_printing_text:
+            print("\n\n{}\n\n".format(text))
         radon_status = {
            "code": 0,
            "status": "0: radon could not gather any useful information during this analysis of text"
@@ -180,6 +209,13 @@ class Radon(threading.Thread):
         #
         #   Exact matches only
         check_text = text.lower()
+        if "left the pm" in check_text or "msg" in check_text or "click here to chat" in check_text or " PM" in text:
+            radon_status = {
+                "code": 12,
+                "status": "12: some rando is trying to private message us"
+            }
+            #print(check_text)
+            #print(radon_status)
         if "login red" in check_text or "login blue" in check_text or "login yellow" in check_text:
             # PASS
             radon_status = {
@@ -198,7 +234,7 @@ class Radon(threading.Thread):
                "code": 21,
                "status": "21: this pokemon needs to evolve"
             }
-        if "learn move" in check_text or "cancel ok" in check_text or "cancel" in check_text:
+        if "learn move" in check_text or "cancel ok" in check_text or "cancel" in check_text or "learn" in check_text or "lmrn mmra" in check_text:
             # PASS
             radon_status = {
                "code": 11,
@@ -210,6 +246,32 @@ class Radon(threading.Thread):
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
             }
+        
+
+        #
+        #   Test, get the names of the pokemon we meed
+        #print(check_text)
+        if "wild" in check_text:
+            #
+            #   Pokemon data
+            pokemands = []
+            poke_file_data = ""
+            with open("pokemon.txt", "r") as pokefile:
+                poke_file_data = pokefile.read()
+            for poke in poke_file_data.split("\n"):
+                pokemands.append(poke)
+            #
+            #   Run a check here
+            for line in check_text.split("\n"):
+                    for pokemand in pokemands:
+                        if pokemand in line:
+                            with open("seenpokemon.txt", "a") as seen_pokefile:
+                                if time.time() - self.last_poke_save_time > 30:
+                                    status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
+                                    status_string += "29\t29: we are fighting a pokemon\t"
+                                    status_string += str(pokemand) + "\n"
+                                    seen_pokefile.write(status_string)
+                                    self.last_poke_save_time = time.time()
         #print(radon_status)
         return radon_status
 

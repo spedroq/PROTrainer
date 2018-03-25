@@ -122,8 +122,9 @@ class Farmer(threading.Thread):
                         tile["info"]["x_center"], tile["info"]["y_center"]
                     ))
                     click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
-                    # Perform a move sequence
-                    self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+            # Perform a move sequence
+            # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
+            self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
 
         # Return the current pause status
         return self.pause

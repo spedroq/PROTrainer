@@ -12,7 +12,7 @@ def main():
     cli = PROTrainerCLI(name="CLIThread")
     cli.start()
     # Create the fishing rod farmer
-    farmer_thread = VictoryRoadFarmer(name="FarmerThread")
+    farmer_thread = FishingRodFarmer(name="FarmerThread")
     # Farm
     farmer_thread.start()
 
