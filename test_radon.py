@@ -81,6 +81,19 @@ def test(r, test_name, screenshot_path, expected_error_code):
         r.grid_width = 8
         r.grid_height = 8
 
+    # We need to use a pokeball
+    elif radon_status.get("code") == 13:
+        matching_tiles = []
+        r.grid_width = 4
+        r.grid_height = 4
+        matching_tiles = r.get_tiles_matching_colour_from_pil_image_within_tolerance(
+            screenshot, r.colours["button_pokeball_colour"], 0.0
+        )
+        shuffle(matching_tiles)
+        radon_status["tiles"] = matching_tiles
+        is_tile_delivery = True
+        r.grid_width = 8
+        r.grid_height = 8
 
     if radon_status.get("code") != expected_error_code:
         fails += 1
@@ -108,6 +121,21 @@ def test(r, test_name, screenshot_path, expected_error_code):
 
 passes = 0
 fails = 0
+
+"""
+magikarp_test = test(r, "MAGIKARP TESTS", "radon/screenshots/magikarp.png", 13)
+if magikarp_test:
+    passes += 1
+else:
+    fails += 1
+"""
+items_menu_pokeball = test(r, "ITEMS MENU POKEBALL", "radon/screenshots/items_screen.png", 13)
+if items_menu_pokeball:
+    passes += 1
+else:
+    fails += 1
+
+
 
 private_message_test = test(r, "INCOMING RANDO MESSAGE #1", "radon/screenshots/private_message.png", 12)
 if private_message_test:
@@ -159,7 +187,6 @@ if login_text:
     passes += 1
 else:
     fails += 1
-
 
 
 

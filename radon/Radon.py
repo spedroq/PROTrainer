@@ -37,6 +37,7 @@ class Radon(threading.Thread):
         "button_accept_green": (33,165,17,), # ~
         "button_accept_red": (202,4,4,), # PASS
         "button_close_private_message": (186,186,186,), # 
+        "button_pokeball_colour": (255,148,58,), # 
         #"button_close_private_message": (71,71,71,), # 
         #"button_close_private_message": (71,71,71,), # 
         #"button_close_private_message": (17,17,17,), # 
@@ -45,6 +46,7 @@ class Radon(threading.Thread):
     grid_height = 8
     debug_is_printing_text = False
     last_poke_save_time = time.time()
+    last_poke_name = ""
 
     # Initialise
     def run(self):
@@ -106,13 +108,33 @@ class Radon(threading.Thread):
                 #matching_tiles.reverse()
                 #
                 #   Fix the x co-ord by 26px
+                final_tiles = []
                 for tile in matching_tiles:
-                    tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
-                radon_status["tiles"] = matching_tiles
+                    if int(tile["info"]["y_center"]) > 150 and int(tile["info"]["y_center"]) < 650:
+                        tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
+                        final_tiles.append(tile)
+                radon_status["tiles"] = final_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
                 self.grid_width = 8
                 self.grid_height = 8
+
+            # We need to use a pokeball
+            elif radon_status.get("code") == 13:
+                matching_tiles = []
+                self.grid_width = 4
+                self.grid_height = 4
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    screenshot, self.colours["button_pokeball_colour"], 0.00
+                )
+                shuffle(matching_tiles)
+                for tile in matching_tiles:
+                    tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 75
+                radon_status["tiles"] = matching_tiles
+                is_tile_delivery = True
+                self.grid_width = 8
+                self.grid_height = 8
+                self.farmer.deliver_radon_status(radon_status)
 
             # We need to confirm this selection
             elif radon_status.get("code") == 11:
@@ -209,7 +231,7 @@ class Radon(threading.Thread):
         #
         #   Exact matches only
         check_text = text.lower()
-        if "left the pm" in check_text or "msg" in check_text or "click here to chat" in check_text or " PM" in text:
+        if " PM" in text and "chat" in check_text:
             radon_status = {
                 "code": 12,
                 "status": "12: some rando is trying to private message us"
@@ -246,6 +268,12 @@ class Radon(threading.Thread):
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
             }
+        if "choose item" in check_text or "pokeball" in check_text or "(hoose" in check_text or " Item" in text :
+            # PASS
+            radon_status = {
+               "code": 13,
+               "status": "13: we are trying to catch a pokemon using a pokeball"
+            }
         
 
         #
@@ -265,14 +293,20 @@ class Radon(threading.Thread):
             for line in check_text.split("\n"):
                     for pokemand in pokemands:
                         if pokemand in line:
+                            try:
+                                self.farmer.last_poke_name = pokemand
+                            except:
+                                pass
+                            status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
+                            status_string += "29\t29: we are fighting a pokemon\t"
+                            status_string += str(pokemand) + "\n"
+                            print(status_string.split("\n")[0])
                             with open("seenpokemon.txt", "a") as seen_pokefile:
                                 if time.time() - self.last_poke_save_time > 30:
-                                    status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
-                                    status_string += "29\t29: we are fighting a pokemon\t"
-                                    status_string += str(pokemand) + "\n"
                                     seen_pokefile.write(status_string)
-                                    self.last_poke_save_time = time.time()
-        #print(radon_status)
+                                    self.last_poke_save_time = time.time()                                    
+                                    #self.farmer.change_to_catch_pokemon_move_sequence()
+        print(radon_status)
         return radon_status
 
 

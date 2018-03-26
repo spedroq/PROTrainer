@@ -22,7 +22,7 @@ class PROTrainerMoveSequence:
     """
     Class PROTrainerMoveSequence defines data structure for a sequence of moves.
     """
-    def __init__(self, move_sequence: list=list(), timeout: int=0.25):
+    def __init__(self, move_sequence: list=list(), timeout: float=0.25):
         self.move_sequence = move_sequence
         self.timeout = timeout
 

@@ -39,6 +39,9 @@ class Farmer(threading.Thread):
     poke_center_move_set = None
     default_move_set = None
 
+    # Last pokemon seen
+    last_poke_name = ""
+
     def run(self) -> None:
         """
         Method to init the Farmer class.
@@ -93,6 +96,8 @@ class Farmer(threading.Thread):
         self.radon_status = status
         #print(self.radon_status["status"])
 
+
+
     """ Validate Move Status """
 
     def validate(self) -> bool:
@@ -108,9 +113,29 @@ class Farmer(threading.Thread):
             # Speak to Nurse Joy Sequence, there is no PP
             # Perform a move sequence
             self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
+        
+        # We need to catch this pokemon by throwing a pokeball
+        if self.last_poke_name in ["magikarp"]:
+            print("VALID POKE, SHOULD CATCH")
+            #
+            #   Make sure we start pressing Items not Attack
+            throw_pokeball_move_sequence = PROTrainerMoveSequence(["3|15"],0.5)
+            self.keyboard.use_move_sequence(throw_pokeball_move_sequence, validate=False)
+            #
+            #   Handle clicking on the pokeball
+            mouse_click_sequences = []
+            if self.radon_status.get("tiles"):
+                for tile in self.radon_status.get("tiles"):
+                    mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                        tile["info"]["x_center"], tile["info"]["y_center"]
+                    ))
+                click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+                self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+            self.last_poke_name = ""
+
         # If Radon passed this tile element in the dictionary, we need to click
         # on the tiles it passed us
-        elif self.radon_status.get("tiles"):
+        if self.radon_status.get("tiles"):
             # Map these tiles onto a move sequence
             mouse_click_sequences = []
             for tile in self.radon_status.get("tiles"):
