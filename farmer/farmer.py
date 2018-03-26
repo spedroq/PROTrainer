@@ -31,14 +31,24 @@ class Farmer(threading.Thread):
         "status": "-1: initalising..."
     }
     # Init the Simulated Keyboard
-    keyboard = SimulatedKeyboard()
+    keyboard = None
     # Init farm move sequence
     farm_move_sequence = PROTrainerMoveSequence()
+
+    # Attributes need to be set by classes derived by Farmer
+    poke_center_move_set = None
+    default_move_set = None
+
+    # Last pokemon seen
+    last_poke_name = ""
 
     def run(self) -> None:
         """
         Method to init the Farmer class.
         """
+        # Init keyboard
+        self.keyboard = SimulatedKeyboard(farmer=self)
+        # Start Farming
         self.start_farming()
 
     """ Farm """
@@ -56,9 +66,13 @@ class Farmer(threading.Thread):
                 self.keyboard.use_move_sequence(self.farm_move_sequence)
                 # self.handle_radon_results(self.radon.read_text_from_screenshot_taken_right_row())
 
-    @abstractmethod
     def farm(self):
-        pass
+        """
+        Implement the abstract function farm() with the specific implementation
+        to farm with a fishing rod in the water.
+        """
+        # Farm Sequence
+        self.farm_move_sequence = self.default_move_set
 
     """
     @abstractmethod
@@ -80,6 +94,62 @@ class Farmer(threading.Thread):
 
     def deliver_radon_status(self, status: dict):
         self.radon_status = status
-        print(self.radon_status["status"])
+        #print(self.radon_status["status"])
 
 
+
+    """ Validate Move Status """
+
+    def validate(self) -> bool:
+        """
+        Validate if there is any radon output and if the farming is paused.
+        :return: bool value of weather the move should be played or not.
+        """
+        #
+        # Check what codes that Radon passed, if it's a high-priority code
+        # check it first, then look to see if we need to change our moveset
+        # to click on the screen
+        if self.radon_status.get("code") == 20:
+            # Speak to Nurse Joy Sequence, there is no PP
+            # Perform a move sequence
+            self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
+        
+        # We need to catch this pokemon by throwing a pokeball
+        if self.last_poke_name in ["magikarp"]:
+            print("VALID POKE, SHOULD CATCH")
+            #
+            #   Make sure we start pressing Items not Attack
+            throw_pokeball_move_sequence = PROTrainerMoveSequence(["3|15"],0.5)
+            self.keyboard.use_move_sequence(throw_pokeball_move_sequence, validate=False)
+            #
+            #   Handle clicking on the pokeball
+            mouse_click_sequences = []
+            if self.radon_status.get("tiles"):
+                for tile in self.radon_status.get("tiles"):
+                    mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                        tile["info"]["x_center"], tile["info"]["y_center"]
+                    ))
+                click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+                self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+            self.last_poke_name = ""
+
+        # If Radon passed this tile element in the dictionary, we need to click
+        # on the tiles it passed us
+        if self.radon_status.get("tiles"):
+            # Map these tiles onto a move sequence
+            mouse_click_sequences = []
+            for tile in self.radon_status.get("tiles"):
+                # Get the mid points of these tiles and then click there
+                # Add this click to the current move sequence at the center of
+                # the tile
+                if len(mouse_click_sequences) < 9:
+                    mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                        tile["info"]["x_center"], tile["info"]["y_center"]
+                    ))
+                    click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+            # Perform a move sequence
+            # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
+            self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+
+        # Return the current pause status
+        return self.pause

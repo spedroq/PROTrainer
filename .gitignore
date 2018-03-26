@@ -4,7 +4,14 @@ ocr/screenshots/
 screenshots/
 *.pyc
 */*.pyc
-farmer/___pycahce___/*
 temp.bmp
 temp.txt
 tesseract.log
+__pycache__/
+farmer/__pycache__/
+input_listener/__pycache__/
+move_set/__pycache__/
+ocr/__pycache__/
+radon/pytesseract/__pycache__/
+radon/__pycache__/
+cli/__pycache__/

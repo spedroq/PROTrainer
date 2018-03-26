@@ -5,6 +5,7 @@ import sys
 import threading
 import time
 from random import shuffle
+import datetime
 
 exitFlag = 0
 current_key = "1"
@@ -35,14 +36,24 @@ class Radon(threading.Thread):
         "button_learn_move_confirm_red": (200,1,1,),
         "button_accept_green": (33,165,17,), # ~
         "button_accept_red": (202,4,4,), # PASS
+        "button_close_private_message": (186,186,186,), # 
+        "button_pokeball_colour": (255,148,58,), # 
+        #"button_close_private_message": (71,71,71,), # 
+        #"button_close_private_message": (71,71,71,), # 
+        #"button_close_private_message": (17,17,17,), # 
     }
     grid_width = 8
     grid_height = 8
+    debug_is_printing_text = False
+    last_poke_save_time = time.time()
+    last_poke_name = ""
 
     # Initialise
     def run(self):
         while True:
+            self.start_timer()
             self.farmer = self._args[0]
+            self.cli = self._args[1]
             # Read the text from an screenshot taken right now
             screenshot = self.get_screenshot_pil_image()
             text = self.read_text_from_pil_image(screenshot)
@@ -57,7 +68,8 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_login_yellow"], 0.25
                 )
-                radon_status["tiles"] = shuffle(matching_tiles)
+                shuffle(matching_tiles)
+                radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -67,7 +79,8 @@ class Radon(threading.Thread):
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_accept_red"], 0.33
                 )
-                radon_status["tiles"] = shuffle(matching_tiles)
+                shuffle(matching_tiles)
+                radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -75,10 +88,52 @@ class Radon(threading.Thread):
             elif radon_status.get("code") == 22:
                 matching_tiles = []
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_learn_move_red"], 0.33
+                    screenshot, self.colours["button_learn_move_red"], 0.15
                 )
-                radon_status["tiles"] = shuffle(matching_tiles)
+                shuffle(matching_tiles)
+                radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
+                self.farmer.deliver_radon_status(radon_status)
+
+            #   We need to close this private message
+            elif radon_status.get("code") == 12:
+                matching_tiles = []
+                self.grid_width = 6
+                self.grid_height = 6
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    screenshot, self.colours["button_close_private_message"], 0.00
+                )
+                #print(matching_tiles)
+                #shuffle(matching_tiles)
+                #matching_tiles.reverse()
+                #
+                #   Fix the x co-ord by 26px
+                final_tiles = []
+                for tile in matching_tiles:
+                    if int(tile["info"]["y_center"]) > 150 and int(tile["info"]["y_center"]) < 650:
+                        tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
+                        final_tiles.append(tile)
+                radon_status["tiles"] = final_tiles
+                is_tile_delivery = True
+                self.farmer.deliver_radon_status(radon_status)
+                self.grid_width = 8
+                self.grid_height = 8
+
+            # We need to use a pokeball
+            elif radon_status.get("code") == 13:
+                matching_tiles = []
+                self.grid_width = 4
+                self.grid_height = 4
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    screenshot, self.colours["button_pokeball_colour"], 0.00
+                )
+                shuffle(matching_tiles)
+                for tile in matching_tiles:
+                    tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 75
+                radon_status["tiles"] = matching_tiles
+                is_tile_delivery = True
+                self.grid_width = 8
+                self.grid_height = 8
                 self.farmer.deliver_radon_status(radon_status)
 
             # We need to confirm this selection
@@ -88,7 +143,8 @@ class Radon(threading.Thread):
                     screenshot, self.colours["button_learn_move_confirm_green"], 0.33
                 )
                 #print(matching_tiles)
-                radon_status["tiles"] = shuffle(matching_tiles)
+                shuffle(matching_tiles)
+                radon_status["tiles"] = matching_tiles
                 is_tile_delivery = True
                 self.farmer.deliver_radon_status(radon_status)
 
@@ -96,6 +152,14 @@ class Radon(threading.Thread):
             # It's just a normal delivery, no tiles to click on 
             if not is_tile_delivery:
                 self.farmer.deliver_radon_status(radon_status)
+
+            # Metrics
+            self.end_timer()
+            self.cli.input_string_last_radon_time = str(self.get_processing_time_in_seconds())
+            self.cli.input_string_last_radon_status = str(radon_status["code"])
+            self.cli.input_string_last_radon_info = radon_status["status"]
+            #print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
+
                 
 
     #
@@ -113,7 +177,7 @@ class Radon(threading.Thread):
         a = self.radon_timer_a
         b = self.radon_timer_b
         time_difference = b - a
-        return time_difference
+        return round(time_difference, 1)
         #round(time_difference, 3)
     #
     #
@@ -158,7 +222,8 @@ class Radon(threading.Thread):
     #
     #   A function to return a Radon Status
     def get_radon_status_from_text(self, text):
-        #print("\n\n{}\n\n".format(text))
+        if self.debug_is_printing_text:
+            print("\n\n{}\n\n".format(text))
         radon_status = {
            "code": 0,
            "status": "0: radon could not gather any useful information during this analysis of text"
@@ -166,23 +231,36 @@ class Radon(threading.Thread):
         #
         #   Exact matches only
         check_text = text.lower()
-        if "left!!" in check_text or "has no" in check_text:
-            # PASS
+        if " PM" in text and "chat" in check_text:
             radon_status = {
-               "code": 20,
-               "status": "20: this pokemon has run out of pp for this move"
+                "code": 12,
+                "status": "12: some rando is trying to private message us"
             }
+            #print(check_text)
+            #print(radon_status)
         if "login red" in check_text or "login blue" in check_text or "login yellow" in check_text:
             # PASS
             radon_status = {
                "code": 10,
                "status": "10: warning, we are not logged in"
             }
-        if "evolving" in check_text or "no yes" in check_text or "no ves" in check_text:
+        if "left!!" in check_text or "has no" in check_text:
+            # PASS
+            radon_status = {
+               "code": 20,
+               "status": "20: this pokemon has run out of pp for this move"
+            }
+        if "evolving" in check_text or "no yes" in check_text or "no ves" in check_text or "evolv" in check_text:
             # PASS
             radon_status = {
                "code": 21,
                "status": "21: this pokemon needs to evolve"
+            }
+        if "learn move" in check_text or "cancel ok" in check_text or "cancel" in check_text or "learn" in check_text or "lmrn mmra" in check_text:
+            # PASS
+            radon_status = {
+               "code": 11,
+               "status": "11: we need to confirm our selection"
             }
         if "this move" in check_text:
             # PASS
@@ -190,13 +268,45 @@ class Radon(threading.Thread):
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
             }
-        if "learn move" in check_text or "cancel ok" in check_text or "cancel" in check_text:
+        if "choose item" in check_text or "pokeball" in check_text or "(hoose" in check_text or " Item" in text :
             # PASS
             radon_status = {
-               "code": 11,
-               "status": "11: we need to confirm our selection"
+               "code": 13,
+               "status": "13: we are trying to catch a pokemon using a pokeball"
             }
-        #print(radon_status)
+        
+
+        #
+        #   Test, get the names of the pokemon we meed
+        #print(check_text)
+        if "wild" in check_text:
+            #
+            #   Pokemon data
+            pokemands = []
+            poke_file_data = ""
+            with open("pokemon.txt", "r") as pokefile:
+                poke_file_data = pokefile.read()
+            for poke in poke_file_data.split("\n"):
+                pokemands.append(poke)
+            #
+            #   Run a check here
+            for line in check_text.split("\n"):
+                    for pokemand in pokemands:
+                        if pokemand in line:
+                            try:
+                                self.farmer.last_poke_name = pokemand
+                            except:
+                                pass
+                            status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
+                            status_string += "29\t29: we are fighting a pokemon\t"
+                            status_string += str(pokemand) + "\n"
+                            print(status_string.split("\n")[0])
+                            with open("seenpokemon.txt", "a") as seen_pokefile:
+                                if time.time() - self.last_poke_save_time > 30:
+                                    seen_pokefile.write(status_string)
+                                    self.last_poke_save_time = time.time()                                    
+                                    #self.farmer.change_to_catch_pokemon_move_sequence()
+        print(radon_status)
         return radon_status
 
 
@@ -204,8 +314,6 @@ class Radon(threading.Thread):
     #    A function to count the number of tiles that match in colour
     def get_tiles_matching_colour_from_pil_image_within_tolerance(self, pil_image, colour_to_find, tolerance):
         pil_tiles = self.get_radon_image_objects_from_pil_image(pil_image)
-        #self.end_timer()
-        #print("CREATE PIL TILES FROM SOURCE IMAGE : {}".format(self.get_processing_time_in_seconds()))
         #
         #    Colour analysis
         #self.start_timer()
