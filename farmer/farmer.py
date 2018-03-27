@@ -43,6 +43,8 @@ class Farmer(threading.Thread):
     last_poke_name = ""
 
     def run(self) -> None:
+        # Create a PROWatch
+        self.prowatch = self._args[0]
         """
         Method to init the Farmer class.
         """
@@ -64,6 +66,7 @@ class Farmer(threading.Thread):
                 # Farm away
                 self.farm()
                 self.keyboard.use_move_sequence(self.farm_move_sequence)
+                
                 # self.handle_radon_results(self.radon.read_text_from_screenshot_taken_right_row())
 
     def farm(self):
@@ -73,6 +76,12 @@ class Farmer(threading.Thread):
         """
         # Farm Sequence
         self.farm_move_sequence = self.default_move_set
+        self.prowatch.append_write_to_log(
+            1,
+            "protrainer started using the farm move sequence",
+            self.farm_move_sequence,
+            "None"
+        )
 
     """
     @abstractmethod
@@ -113,9 +122,15 @@ class Farmer(threading.Thread):
             # Speak to Nurse Joy Sequence, there is no PP
             # Perform a move sequence
             self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
+            self.prowatch.append_write_to_log(
+                1,
+                "protrainer started using pokecenter move sequence",
+                self.poke_center_move_set,
+                "None"
+            )
         
         # We need to catch this pokemon by throwing a pokeball
-        if self.last_poke_name in ["magikarp"]:
+        if False:
             print("VALID POKE, SHOULD CATCH")
             #
             #   Make sure we start pressing Items not Attack
@@ -132,24 +147,38 @@ class Farmer(threading.Thread):
                 click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
                 self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
             self.last_poke_name = ""
+            self.prowatch.append_write_to_log(
+                1,
+                "protrainer started using a catch pokemon move sequence",
+                click_on_tiles_move_sequence,
+                "None"
+            )
 
         # If Radon passed this tile element in the dictionary, we need to click
         # on the tiles it passed us
         if self.radon_status.get("tiles"):
+            radon_tiles = self.radon_status.get("tiles")
             # Map these tiles onto a move sequence
+            if len(radon_tiles) > 9:
+                radon_tiles = radon_tiles[:9]
             mouse_click_sequences = []
-            for tile in self.radon_status.get("tiles"):
+            for tile in radon_tiles:
                 # Get the mid points of these tiles and then click there
                 # Add this click to the current move sequence at the center of
                 # the tile
-                if len(mouse_click_sequences) < 9:
-                    mouse_click_sequences.append("mouse_left%{}%{}|1".format(
-                        tile["info"]["x_center"], tile["info"]["y_center"]
-                    ))
-                    click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+                mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                    tile["info"]["x_center"], tile["info"]["y_center"]
+                ))
+            click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
             # Perform a move sequence
             # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
             self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+            self.prowatch.append_write_to_log(
+                1,
+                "protrainer started using using click on tiles move sequence",
+                click_on_tiles_move_sequence,
+                "None"
+            )
 
         # Return the current pause status
         return self.pause

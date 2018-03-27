@@ -8,6 +8,8 @@ class InputListener(threading.Thread):
     """
     # Farmer instance to interact with
     farmer = None
+    cli = None
+    prowatch = None
 
     def run(self) -> None:
         """
@@ -15,6 +17,7 @@ class InputListener(threading.Thread):
         """
         self.farmer = self._args[0]
         self.cli = self._args[1]
+        self.prowatch = self._args[2]
         if self.farmer.pause:
             self.cli.input_string_mode = "paused"
         else:
@@ -26,6 +29,13 @@ class InputListener(threading.Thread):
         Method to analyse a key press and deal with it.
         :param key: a key to be analysed.
         """
+        # Log this kep press
+        self.prowatch.append_write_to_log(
+            90,
+            "a key press was detected",
+            key.name,
+            key.event_type
+        )
         # Check if it was a key release
         if key.event_type == 'up':
             # Check for q
@@ -48,16 +58,16 @@ class InputListener(threading.Thread):
                 #
                     self.cli.is_loading_screen = True
                     #self.cli.cli_mode["state"] = "loading"
-                    self.cli.show_loading_screen()
-                    
+                    self.cli.show_loading_screen()                    
 
                 # Toggle pause between True or False
                 self.farmer.toggle_pause()
+                print("Pause:{pause}".format(pause=self.farmer.pause))
                 if self.farmer.pause:
                     self.cli.input_string_mode = "paused"
                 if not self.farmer.pause:
                     self.cli.input_string_mode = "running"
-                print("Pause:{pause}".format(pause=self.farmer.pause))
+                
 
 
 

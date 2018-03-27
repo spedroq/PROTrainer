@@ -1,5 +1,5 @@
 from farmer.farmer import Farmer
-from move_set.move_set import PROTrainerMoveSequence
+from move_set.move_set import PROTrainerMoveSequence, PROTrainerMove
 
 
 class SurfFarmer(Farmer):
@@ -9,9 +9,12 @@ class SurfFarmer(Farmer):
     """
 
     # Define moves
-    default_move_set = PROTrainerMoveSequence(["s,1, ,mouse_left%1071%580|12", "w,1|4"])
-    poke_center_move_set = PROTrainerMoveSequence(["4,w|30", "4,w, |15", "1, ,s|15",
-                                                   "1, ,s,mouse_left%1071%580|15"])
+    default_move_set = PROTrainerMoveSequence([PROTrainerMove(["s", "1", "mouse_left%1071%580"], 12),
+                                               PROTrainerMove(["w", "1"], 4)])
+    poke_center_move_set = PROTrainerMoveSequence([PROTrainerMove(["4", "w"], 30),
+                                                   PROTrainerMove(["4", "w", " "], 15),
+                                                   PROTrainerMove(["1", " ", "s"], 15),
+                                                   PROTrainerMove(["1", " ", "s", "mouse_left%1071%580"], 15)])
 
     # Init farm move sequence
     farm_move_sequence = default_move_set

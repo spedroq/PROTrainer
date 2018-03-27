@@ -1,4 +1,5 @@
 from radon.pytesseract.pytesser import *
+from prowatch.PROWatch import *
 #from pyautogui import press, typewrite, hotkey
 from PIL import ImageGrab, Image
 import sys
@@ -47,13 +48,17 @@ class Radon(threading.Thread):
     debug_is_printing_text = False
     last_poke_save_time = time.time()
     last_poke_name = ""
+    
+    prowatch = None
 
     # Initialise
     def run(self):
+        #self.prowatch.start_logging()
         while True:
             self.start_timer()
             self.farmer = self._args[0]
             self.cli = self._args[1]
+            self.prowatch = self._args[2]
             # Read the text from an screenshot taken right now
             screenshot = self.get_screenshot_pil_image()
             text = self.read_text_from_pil_image(screenshot)
@@ -158,6 +163,12 @@ class Radon(threading.Thread):
             self.cli.input_string_last_radon_time = str(self.get_processing_time_in_seconds())
             self.cli.input_string_last_radon_status = str(radon_status["code"])
             self.cli.input_string_last_radon_info = radon_status["status"]
+            self.prowatch.append_write_to_log(
+                radon_status["code"],
+                radon_status["status"],
+                "None",
+                "None"
+            )
             #print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
 
                 
@@ -306,7 +317,8 @@ class Radon(threading.Thread):
                                     seen_pokefile.write(status_string)
                                     self.last_poke_save_time = time.time()                                    
                                     #self.farmer.change_to_catch_pokemon_move_sequence()
-        print(radon_status)
+        if self.debug_is_printing_text:
+            print(radon_status)
         return radon_status
 
 

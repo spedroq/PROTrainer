@@ -15,3 +15,5 @@ ocr/__pycache__/
 radon/pytesseract/__pycache__/
 radon/__pycache__/
 cli/__pycache__/
+prowatch/__pycache__/
+prowatch/logs/
