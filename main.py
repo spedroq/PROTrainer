@@ -8,9 +8,12 @@ from radon.Radon import *
 from cli.cli import *
 from prowatch.PROWatch import *
 
+
 def main():
+    # Create the PROWatch logger
     prowatch = PROWatch()
     prowatch.start_logging()
+
     # Create the CLI
     cli = PROTrainerCLI(name="CLIThread")
     cli.start()

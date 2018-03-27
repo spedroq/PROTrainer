@@ -11,11 +11,7 @@ class Farmer(threading.Thread):
     Defines:
         :attribute: wsh: Windows Shell to interface with Key presses.
         :attribute: pause: Boolean flag to represent pause state.
-        :method: press_1: Presses key 1.
-        :method: press_w: Presses key w.
-        :method: press_s: Presses key s.
-        :method: press_d: Presses key d.
-        :method: press_a: Presses key a.
+        :method: start_farming: Method to start farming.
         :method: farm: Abstract method to farm. Implemented by each
          implementation.
     """
@@ -83,12 +79,6 @@ class Farmer(threading.Thread):
             "None"
         )
 
-    """
-    @abstractmethod
-    def handle_radon_results(self, radon_results: str):
-        pass
-    """
-
     """ Pause """
 
     def toggle_pause(self) -> None:
@@ -104,8 +94,6 @@ class Farmer(threading.Thread):
     def deliver_radon_status(self, status: dict):
         self.radon_status = status
         #print(self.radon_status["status"])
-
-
 
     """ Validate Move Status """
 
