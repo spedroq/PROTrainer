@@ -1,6 +1,6 @@
 import threading
 import keyboard
-
+import mouse
 
 class InputListener(threading.Thread):
     """
@@ -23,6 +23,24 @@ class InputListener(threading.Thread):
         else:
             self.cli.input_string_mode = "running"
         keyboard.hook(self.analyse_key_press)
+        mouse.hook(self.analyse_mouse_interaction)
+
+
+    def analyse_mouse_interaction(self, mouse_interaction):
+        if type(mouse_interaction) == mouse.ButtonEvent:
+            mouse_interaction_string = "a mouse input was detected"
+            logging_code = 92
+            if mouse_interaction.event_type in ['up', 'down', 'left', 'right']:
+                # Mouse movement
+                logging_code = 93
+            self.prowatch.append_write_to_log(
+                logging_code,
+                mouse_interaction_string,
+                mouse_interaction,
+                mouse_interaction.event_type
+            )
+
+
 
     def analyse_key_press(self, key: keyboard.KeyboardEvent):
         """
