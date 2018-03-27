@@ -28,19 +28,38 @@ class InputListener(threading.Thread):
 
     def analyse_mouse_interaction(self, mouse_interaction):
         if type(mouse_interaction) == mouse.ButtonEvent:
-            mouse_interaction_string = "a mouse input was detected"
+            mouse_position = mouse.get_position()
+            mouse_interaction_string = "a mouse click was detected @ ({}|{})".format(
+               mouse_position[0], mouse_position[1]
+            )
             logging_code = 92
-            if mouse_interaction.event_type in ['up', 'down', 'left', 'right']:
-                # Mouse movement
-                logging_code = 93
+
             self.prowatch.append_write_to_log(
                 logging_code,
                 mouse_interaction_string,
-                mouse_interaction,
+                mouse_interaction.button,
                 mouse_interaction.event_type
             )
-
-
+        if type(mouse_interaction) == mouse.MoveEvent:
+            mouse_interaction_string = "a mouse movement was detected"
+            logging_code = 93
+            """
+            self.prowatch.append_write_to_log(
+                logging_code,
+                mouse_interaction_string,
+                str(mouse_interaction.x) + "|" + str(mouse_interaction.y),
+                mouse_interaction.time
+            )
+            """
+        if type(mouse_interaction) == mouse.WheelEvent:
+            mouse_interaction_string = "a mouse scroll wheel input was detected"
+            logging_code = 94
+            self.prowatch.append_write_to_log(
+                logging_code,
+                mouse_interaction_string,
+                mouse_interaction.delta,
+                mouse_interaction.time
+            )
 
     def analyse_key_press(self, key: keyboard.KeyboardEvent):
         """
