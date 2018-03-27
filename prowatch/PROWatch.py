@@ -15,6 +15,12 @@ import time
 #	
 class PROWatch(threading.Thread):
 	def __init__(self):
+		if "prowatch" not in os.getcwd():
+			self.logging_dir_prefix = "prowatch" + os.sep + "logs"
+		else:
+			self.logging_dir_prefix = "logs"
+		if not os.path.exists(self.logging_dir_prefix):
+			os.mkdir(self.logging_dir_prefix)
 		self.logging_dir = ""
 		self.logging_file = ""
 		self.logging_file_extension = ".csv"
@@ -35,7 +41,9 @@ class PROWatch(threading.Thread):
 		return chars
 
 	def get_log_file_path(self):
-		return "{}{}{}{}".format(
+		return "{}{}{}{}{}{}".format(
+			self.logging_dir_prefix,
+			os.sep,
 			self.logging_dir,
 			os.sep,
 			self.logging_file,
@@ -53,12 +61,14 @@ class PROWatch(threading.Thread):
 			","
 		)
 		return tidy_datetime
+	def get_logging_dir(self):
+		return self.logging_dir_prefix + os.sep + self.logging_dir
 
 	def start_logging(self):
 		#
 		#	Reset
 		self.logging_dir = self.get_tidy_name_for_new_folder()
-		os.mkdir(self.logging_dir)
+		os.mkdir(self.get_logging_dir())
 		self.logging_file = self.random_string(8)
 		self.log_write_header_row()
 
@@ -79,12 +89,16 @@ class PROWatch(threading.Thread):
 		if code == -1:
 			log_data_string = ""
 		else:
-			log_data_string = self.get_tidy_date_for_logging()
+			log_data_string = self.get_tidy_date_for_logging() + ","
 			log_data_string += str(code) + ","
 		
 		log_data_string += str(status)
 		if log_data_string[-1:] != ",":
 			log_data_string += ","
+
+		if code != -1:
+			log_data_string += str(key_press) + ","
+			log_data_string += str(key_press_type) + ","
 		log_data_string = log_data_string[:-1] + "\n"
 		with open(self.get_log_file_path(), "a") as log_file:
 			log_file.write(log_data_string)
@@ -101,5 +115,5 @@ def test():
 		pw.append_write_to_log(pw.random_int(random_i), "A random test function", "left mouse", "click")
 		time.sleep(random_i / 100)
 
-test()
+#test()
 
