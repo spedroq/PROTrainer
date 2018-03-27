@@ -13,7 +13,7 @@ import time
 # Everything is in CSV pretty much
 class PROWatch(threading.Thread):
 
-    logging_dir_prefix = logging_dir = logging_file = logging_file_extension = log_header_row = run_id = None
+    logging_dir_prefix = logging_dir = logging_file = logging_file_extension = log_header_row = run_id = ""
 
     def run(self):
         # Fix path for running instance of prowatch (log files)
@@ -32,6 +32,7 @@ class PROWatch(threading.Thread):
         self.logging_file_extension = ".csv"
         self.log_header_row = "date_time,log_id,code,status_message,key_press,key_press_type"
         self.run_id = self.random_string(8)
+        self.start_logging()
 
     def get_tidy_name_for_new_folder(self):
         now = datetime.datetime.now()

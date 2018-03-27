@@ -12,7 +12,8 @@ from prowatch.PROWatch import *
 def main():
     # Create the PROWatch logger
     prowatch = PROWatch()
-    prowatch.start_logging()
+    prowatch.start()
+    
 
     # Create the CLI
     cli = PROTrainerCLI(name="CLIThread")

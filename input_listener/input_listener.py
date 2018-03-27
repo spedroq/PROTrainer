@@ -30,13 +30,17 @@ class InputListener(threading.Thread):
         :param key: a key to be analysed.
         """
         # Log this kep press
+        logging_code = 90
+        if key.event_type == 'up':
+            logging_code = 91
         self.prowatch.append_write_to_log(
-            90,
+            logging_code,
             "a key press was detected",
             key.name,
             key.event_type
         )
         # Check if it was a key release
+        """
         if key.event_type == 'up':
             # Check for q
             if key.name == 'q':
@@ -46,6 +50,7 @@ class InputListener(threading.Thread):
                     self.cli.input_string_mode = "quitting"
                 print("Quit:(False)")
             # Check for p
+           
             if key.name == 'p':
                 #
                 #   Is it the first time we unpaused?
@@ -67,6 +72,7 @@ class InputListener(threading.Thread):
                     self.cli.input_string_mode = "paused"
                 if not self.farmer.pause:
                     self.cli.input_string_mode = "running"
+            """
                 
 
 
