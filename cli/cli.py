@@ -38,6 +38,7 @@ class PROTrainerCLI(threading.Thread):
 	# state: [ loading, overview ]
 	loading_screen_position = 0
 
+	last_screen_update_string = ""
 
 	def run(self):
 		#self.show_loading_screen()
