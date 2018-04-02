@@ -20,5 +20,5 @@ class FishingRodFarmer(Farmer):
                                                    PROTrainerMove(["s"], 25)])
 
     # Init farm move sequence
-    farm_move_sequence = default_move_set
+    #farm_move_sequence = default_move_set
 
