@@ -72,7 +72,7 @@ class Farmer(threading.Thread):
         to farm with a fishing rod in the water.
         """
         # Farm Sequence
-        """
+
         self.farm_move_sequence = self.default_move_set
         self.prowatch.append_write_to_log(
             1,
@@ -80,33 +80,7 @@ class Farmer(threading.Thread):
             self.farm_move_sequence,
             "None"
         )
-        """
-        #
-        #   Ok, let's convert a log file to move sequence
-        log_file = r"C:\Users\Louis\Desktop\PewterCityToRoute22\20180402-231817-bwaoajbm\wtusxvyd.csv"
-        prr = PROWatchReplay()
-        prr.active_logging_levels_for_replay.append({"91": "keyboard input up"})
-        prr.active_logging_levels_for_replay.append({"90": "keyboard input down"})
-        moves_at_times = prr.get_moves_at_times_using_logging_levels_from_logging_file(log_file)
-        #
-        #   Now assemble a move sequence
-        move_elements = []
-        
-        for i in range(0, len(moves_at_times)):
-            if i != len(moves_at_times) - 1:          
-                time_of_this_input = prr.get_adjusted_time_for_move_at_time(moves_at_times[i])
-                time_of_next_move = prr.get_adjusted_time_for_move_at_time(moves_at_times[i + 1])
-                length_of_this_input = (time_of_next_move - time_of_this_input).total_seconds()
-                if length_of_this_input > 0.05:
-                    move_elements.append(
-                        PROTrainerMove([moves_at_times[i][1]], 1, length_of_this_input)
-                    )
-                #print(PROTrainerMove([moves_at_times[i][1], "1"], length_of_this_input))
-          
-        ptms = PROTrainerMoveSequence(move_elements)
-        print(ptms)
-        self.farm_move_sequence = ptms
-        self.default_move_set = ptms
+
 
     """ Pause """
 

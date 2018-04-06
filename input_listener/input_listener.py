@@ -78,6 +78,7 @@ class InputListener(threading.Thread):
         )
         # Check if it was a key release
         if key.event_type == "up":
+            """
             #
             #   Start a new log
             #print(key.name)
@@ -87,6 +88,8 @@ class InputListener(threading.Thread):
                 #
                 #   Let's start our move sequence
                 self.farmer.farm()
+            """
+            pass
 
 
         
