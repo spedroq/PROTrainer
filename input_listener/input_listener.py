@@ -23,7 +23,7 @@ class InputListener(threading.Thread):
         else:
             self.cli.input_string_mode = "running"
         keyboard.hook(self.analyse_key_press)
-        #mouse.hook(self.analyse_mouse_interaction)
+        mouse.hook(self.analyse_mouse_interaction)
 
 
     def analyse_mouse_interaction(self, mouse_interaction):

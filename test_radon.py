@@ -129,6 +129,8 @@ if magikarp_test:
 else:
     fails += 1
 """
+
+"""
 items_menu_pokeball = test(r, "ITEMS MENU POKEBALL", "radon/screenshots/items_screen.png", 13)
 if items_menu_pokeball:
     passes += 1
@@ -182,13 +184,14 @@ if confirm_not_learn_move_text:
 else:
     fails += 1
 
-login_text = test(r, "LOGIN", "radon/screenshots/login_screen.png", 10)
+
+
+"""
+login_text = test(r, "LOGIN", "radon/screenshots/login.png", 10)
 if login_text:
     passes += 1
 else:
     fails += 1
-
-
 
 print("\n\nRESULTS  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -")
 print("\n\tPASSES: {}/{}\n\tFAILS: {}/{}\n\tOVERALL: {}%".format(
@@ -198,3 +201,4 @@ print("\nTESTING COMPLETE  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -"
 
 print("\nPress any key to exit")
 input()
+
