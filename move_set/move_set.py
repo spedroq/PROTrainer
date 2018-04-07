@@ -52,6 +52,11 @@ class SimulatedKeyboard:
         Ex.:
             - ["mouse_left%500%300"] -> ["mouse_left"] x 15 clicks at position [500, 300]
         :param protms: PRO Trainer Move Sequence object to execute.
+        :param validate: flag of whether this should call the validate() method or not.
+                         NOTE: This is crucial since we need call validate() from within this method,
+                               and validate() can call this method with a new move sequence to use.
+                               Otherwise we get stuck in an infinite loop.
+                         DEFAULT: True, as in do use validate().
         """
         # Iterate through moves in the move sequence
         for move in protms.move_sequence:
@@ -64,30 +69,26 @@ class SimulatedKeyboard:
             # Iterate through number of repetitions
             for i in range(0, loop_count):
                 # Iterate through number of keys
-                for key in keys:
-                    # Process each key
-
-                    # Check if we should validate the move or not
-                    # So that validation method can run moves
-                    if validate:
-                        # Check if we should press a key by validating the farmer
-                        # This also listens for radon output
-                        if not self.farmer.validate():
-                            self.perform_move(key, move)
-                            self.farmer.prowatch.append_write_to_log(
-                                2,
-                                "protrainer simulated some input",
-                                key,
-                                move
-                            )
-                    else:
+                key_index = 0
+                while key_index < len(keys):
+                    if not self.farmer.pause:
+                        # Check if we should validate the move or not
+                        # So that validation method can run moves
+                        if validate:
+                            self.farmer.validate()
+                        # Get the key
+                        key = keys[key_index]
+                        # Process key
                         self.perform_move(key, move)
+                        # Listen for radon output with PROWatch log
                         self.farmer.prowatch.append_write_to_log(
                             2,
                             "protrainer simulated some input",
                             key,
                             move
                         )
+                        # Increment index
+                        key_index += 1
 
     def perform_move(self, key: str, move: PROTrainerMove):
         if "mouse" in key:

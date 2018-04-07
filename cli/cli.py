@@ -44,8 +44,9 @@ class PROTrainerCLI(threading.Thread):
 		#self.show_loading_screen()
 		while True:
 			#
-			pass
-			#self.render_screen_to_console(self.fps)
+			# TODO: Change the Debug flag here
+			#pass
+			self.render_screen_to_console(self.fps)
 
 	#
 	#	A function to return the string of the correct template
@@ -196,7 +197,7 @@ class PROTrainerCLI(threading.Thread):
 
 	#
 	#	A Loop to continually display the screen with a timeout
-	def render_screen_to_console(self, fps=5):
+	def render_screen_to_console(self, fps=30):
 		delay = 1 / fps
 		#
 		#	Clear the screen

@@ -40,9 +40,9 @@ class InputListener(threading.Thread):
                 mouse_interaction.button,
                 mouse_interaction.event_type
             )
-        if type(mouse_interaction) == mouse.MoveEvent:
-            mouse_interaction_string = "a mouse movement was detected"
-            logging_code = 93
+        #if type(mouse_interaction) == mouse.MoveEvent:
+        #    mouse_interaction_string = "a mouse movement was detected"
+        #    logging_code = 93
             """
             self.prowatch.append_write_to_log(
                 logging_code,
@@ -77,7 +77,22 @@ class InputListener(threading.Thread):
             key.event_type
         )
         # Check if it was a key release
-        """
+        if key.event_type == "up":
+            """
+            #
+            #   Start a new log
+            #print(key.name)
+            if key.name == 'f1':
+                self.prowatch.start_logging()
+            if key.name == 'f3':
+                #
+                #   Let's start our move sequence
+                self.farmer.farm()
+            """
+            pass
+
+
+        
         if key.event_type == 'up':
             # Check for q
             if key.name == 'q':
@@ -87,7 +102,7 @@ class InputListener(threading.Thread):
                     self.cli.input_string_mode = "quitting"
                 print("Quit:(False)")
             # Check for p
-           
+        
             if key.name == 'p':
                 #
                 #   Is it the first time we unpaused?
@@ -109,7 +124,7 @@ class InputListener(threading.Thread):
                     self.cli.input_string_mode = "paused"
                 if not self.farmer.pause:
                     self.cli.input_string_mode = "running"
-            """
+        
                 
 
 
