@@ -73,28 +73,58 @@ class SimulatedKeyboard:
                 # Iterate through number of keys
                 key_index = 0
                 while key_index < len(keys):
+                    # Set default random_sleep in case the game is paused
+                    random_sleep = 0.5
                     if not self.farmer.pause:
-                        # Check if we should validate the move or not
-                        # So that validation method can run moves
-                        if validate:
-                            self.farmer.validate()
-                        # Get the key
-                        key = keys[key_index]
-                        # Process key
-                        self.perform_move(key, move)
-                        # Listen for radon output with PROWatch log
-                        self.farmer.prowatch.append_write_to_log(
-                            2,
-                            "protrainer simulated some input",
-                            key,
-                            move
-                        )
-                        # Increment index
-                        key_index += 1
-                    # Sleep every turn so we do not burn the pc
-                    # Randomize the sleep so it is more human
-                    random_sleep = random.uniform(move.timeout, move.timeout + move.random_deviation)
+
+                        """ AFK Check """
+
+                        # AFK Check
+                        if self.farmer.afk_timeout > 0:
+
+                            """ Not AFK """
+
+                            print('Not AFK - timeout: {}'.format(self.farmer.afk_timeout))
+                            # Check if we should validate the move or not
+                            # So that validation method can run moves
+                            if validate:
+                                self.farmer.validate()
+                            # Get the key
+                            key = keys[key_index]
+                            # Process key
+                            self.perform_move(key, move)
+                            # Listen for radon output with PROWatch log
+                            self.farmer.prowatch.append_write_to_log(
+                                2,
+                                "protrainer simulated some input",
+                                key,
+                                move
+                            )
+                            # Increment index
+                            key_index += 1
+                            # Sleep every turn so we do not burn the pc
+                            # Randomize the sleep so it is more human
+                            random_sleep = random.uniform(move.timeout, move.timeout + move.random_deviation)
+                            # Reduce the afk timeout
+                            self.farmer.reduce_afk_timeout(random_sleep)
+                        else:
+
+                            """ AFK """
+
+                            # Reset the afk timeout
+                            self.farmer.reset_afk_timeout()
+                            print('AFK - timeout: {} sleep for: {}'.format(self.farmer.afk_timeout,
+                                                                           self.farmer.get_afk_sleep()))
+                            # AFK Sleep
+                            time.sleep(self.farmer.get_afk_sleep())
+                            # Check if we should validate the move or not
+                            # So that validation method can run moves
+                            if validate:
+                                # Validate after AFK
+                                self.farmer.validate()
+
                     print(random_sleep)
+                    # Sleep for the move turn, partly randomized
                     time.sleep(random_sleep)
 
     def perform_move(self, key: str, move: PROTrainerMove):
