@@ -90,6 +90,7 @@ class SimulatedKeyboard:
                         )
 
     def perform_move(self, key: str, move: PROTrainerMove):
+        #print(key)
         if "mouse" in key:
             # Split the coordinates and mouse click
             mouse_config = key.split("%")

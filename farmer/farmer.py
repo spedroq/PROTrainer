@@ -2,7 +2,8 @@ import threading
 from abc import abstractmethod
 import time
 import win32com.client as com_client
-from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence
+from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence, PROTrainerMove
+from prowatch.PROWatchReplay import *
 
 
 class Farmer(threading.Thread):
@@ -71,6 +72,7 @@ class Farmer(threading.Thread):
         to farm with a fishing rod in the water.
         """
         # Farm Sequence
+
         self.farm_move_sequence = self.default_move_set
         self.prowatch.append_write_to_log(
             1,
@@ -78,6 +80,7 @@ class Farmer(threading.Thread):
             self.farm_move_sequence,
             "None"
         )
+
 
     """ Pause """
 
@@ -146,18 +149,28 @@ class Farmer(threading.Thread):
         # on the tiles it passed us
         if self.radon_status.get("tiles"):
             radon_tiles = self.radon_status.get("tiles")
+            print("TILES ")
             # Map these tiles onto a move sequence
             if len(radon_tiles) > 9:
                 radon_tiles = radon_tiles[:9]
             mouse_click_sequences = []
+            protrainer_moves = []
             for tile in radon_tiles:
                 # Get the mid points of these tiles and then click there
                 # Add this click to the current move sequence at the center of
                 # the tile
-                mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                #mouse_click_sequences.append("mouse_left%{}%{}1".format(
+                #    tile["info"]["x_center"], tile["info"]["y_center"]
+                #))
+                type_and_coordinates = "mouse_left%{}%{}".format(
                     tile["info"]["x_center"], tile["info"]["y_center"]
-                ))
-            click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+                )
+                protrainer_moves.append(
+                    PROTrainerMove([type_and_coordinates], 1, 0.5)
+                )
+
+            click_on_tiles_move_sequence = PROTrainerMoveSequence(protrainer_moves)
+            print(click_on_tiles_move_sequence)
             # Perform a move sequence
             # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
             self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)

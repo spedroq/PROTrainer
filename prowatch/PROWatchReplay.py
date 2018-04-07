@@ -1,4 +1,4 @@
-from PROWatch import *
+from prowatch.PROWatch import *
 from dateutil import parser
 import datetime
 import sys
@@ -342,5 +342,5 @@ input()
 
 """
 
-pwr = PROWatchReplay()
-pwr.mainline()
+#pwr = PROWatchReplay()
+#pwr.mainline()
