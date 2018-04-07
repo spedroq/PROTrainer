@@ -1,3 +1,4 @@
+import random
 import time
 import pythoncom
 import win32api
@@ -9,10 +10,11 @@ class PROTrainerMove:
     """
     Class PROTrainer Move defines the data for a single move.
     """
-    def __init__(self, input_characters: list=list(), iterations: int=1, timeout: float=0.25):
+    def __init__(self, input_characters: list=list(), iterations: int=1, timeout: float=0.25, random_deviation: float=0):
         self.input_characters = input_characters
         self.iterations = iterations
         self.timeout = timeout
+        self.random_deviation = random_deviation
 
     def __repr__(self):
         output_string = "PROTrainerMove: "
@@ -89,6 +91,11 @@ class SimulatedKeyboard:
                         )
                         # Increment index
                         key_index += 1
+                    # Sleep every turn so we do not burn the pc
+                    # Randomize the sleep so it is more human
+                    random_sleep = random.uniform(move.timeout, move.timeout + move.random_deviation)
+                    print(random_sleep)
+                    time.sleep(random_sleep)
 
     def perform_move(self, key: str, move: PROTrainerMove):
         if "mouse" in key:
@@ -97,13 +104,9 @@ class SimulatedKeyboard:
             key = mouse_config[0]
             x_coordinate = mouse_config[1]
             y_coordinate = mouse_config[2]
-            # Sleep
-            time.sleep(move.timeout)
             # Press key
             self.press_mouse(key, int(x_coordinate), int(y_coordinate))
         else:
-            # Sleep
-            time.sleep(move.timeout)
             # Press key
             self.press_key(key)
 

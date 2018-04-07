@@ -45,8 +45,8 @@ class PROTrainerCLI(threading.Thread):
 		while True:
 			#
 			# TODO: Change the Debug flag here
-			#pass
-			self.render_screen_to_console(self.fps)
+			pass
+			# self.render_screen_to_console(self.fps)
 
 	#
 	#	A function to return the string of the correct template
