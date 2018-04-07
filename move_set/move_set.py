@@ -84,7 +84,9 @@ class SimulatedKeyboard:
 
                             """ Not AFK """
 
-                            print('Not AFK - timeout: {}'.format(self.farmer.afk_timeout))
+                            # TODO: Log AFK status
+                            # print('Not AFK - timeout: {}'.format(self.farmer.afk_timeout))
+
                             # Check if we should validate the move or not
                             # So that validation method can run moves
                             if validate:
@@ -113,8 +115,11 @@ class SimulatedKeyboard:
 
                             # Reset the afk timeout
                             self.farmer.reset_afk_timeout()
-                            print('AFK - timeout: {} sleep for: {}'.format(self.farmer.afk_timeout,
-                                                                           self.farmer.get_afk_sleep()))
+
+                            # TODO: Log AFK status
+                            # print('AFK - timeout: {} sleep for: {}'.format(self.farmer.afk_timeout,
+                            #                                                self.farmer.get_afk_sleep()))
+
                             # AFK Sleep
                             time.sleep(self.farmer.get_afk_sleep())
                             # Check if we should validate the move or not
@@ -123,7 +128,9 @@ class SimulatedKeyboard:
                                 # Validate after AFK
                                 self.farmer.validate()
 
-                    print(random_sleep)
+                    # TODO: Log Random sleep status
+                    #  print(random_sleep)
+
                     # Sleep for the move turn, partly randomized
                     time.sleep(random_sleep)
 

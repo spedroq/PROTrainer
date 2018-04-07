@@ -6,6 +6,42 @@ from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence, PROTrai
 from prowatch.PROWatchReplay import *
 
 
+""" AFK Randomisers """
+
+
+def get_short_afk_sleep() -> float:
+    """
+    Static method to generate a random short AFK sleep time.
+    :return: a random AFK sleep time
+    """
+    # TODO: Log AFK status
+    # print('Short AFK')
+    # Between 5 secs and 10 secs
+    return random.uniform(5, 10)
+
+
+def get_long_afk_sleep() -> float:
+    """
+    Static method to generate a random long AFK sleep time.
+    :return: a random AFK sleep time
+    """
+    # TODO: Log AFK status
+    # print('Long AFK')
+    # Between 20 secs and 1800 secs - 30 mins
+    return random.uniform(20, 1800)
+
+
+def get_random_afk_timeout() -> int:
+    """
+    Method to reset the AFK timeout.
+    """
+    # Between 10 secs and 450 secs - 7.5 mins
+    return random.randint(10, 450)
+
+
+""" END AFK Randomisers"""
+
+
 class Farmer(threading.Thread):
     """
     Class that defines the abstract class for Farmer classes.
@@ -40,7 +76,7 @@ class Farmer(threading.Thread):
     last_poke_name = ""
 
     # AFK timeout
-    afk_timeout = random.randint(10, 20)
+    afk_timeout = get_random_afk_timeout()
 
     def run(self) -> None:
         # Create a PROWatch
@@ -60,6 +96,7 @@ class Farmer(threading.Thread):
         Method to start farming.
         """
         # Keep farming while quit is False
+        # TODO: Fix quit functionality
         while not self.quit:
             # Farm away
             self.farm()
@@ -195,40 +232,25 @@ class Farmer(threading.Thread):
         """
         self.afk_timeout -= reduce_by
 
-    def reset_afk_timeout(self) -> None:
-        """
-        Method to reset the AFK timeout.
-        """
-        # Between 10 secs and 450 secs - 7.5 mins
-        self.afk_timeout = random.randint(10, 450)
-
-    def get_afk_sleep(self) -> float:
+    @staticmethod
+    def get_afk_sleep() -> float:
         """
         Method that randomizes between long or short AFK time.
         :return: a short or long AFK sleep.
         """
-        rand = random.randint(0, 10)
-        if rand < 7:
-            return self.get_short_afk_sleep()
+        # 1 in every 20 AFKs it will be a long afk
+        one_in_every = 20
+        rand = random.randint(0, one_in_every) + 1
+        if rand < one_in_every:
+            sleep_timer = get_short_afk_sleep()
         else:
-            return self.get_long_afk_sleep()
+            sleep_timer = get_long_afk_sleep()
+        return sleep_timer
 
-    @staticmethod
-    def get_short_afk_sleep() -> float:
+    def reset_afk_timeout(self):
         """
-        Static method to generate a random short AFK sleep time.
-        :return: a random AFK sleep time
+        Static method to reset AFK timeout.
         """
-        print('Short AFK')
-        # Between 5 secs and 10 secs
-        return random.uniform(5, 10)
+        self.afk_timeout = get_random_afk_timeout()
 
-    @staticmethod
-    def get_long_afk_sleep() -> float:
-        """
-        Static method to generate a random long AFK sleep time.
-        :return: a random AFK sleep time
-        """
-        print('Short AFK')
-        # Between 20 secs and 1800 secs - 30 mins
-        return random.uniform(20, 1800)
+
