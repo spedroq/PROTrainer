@@ -89,6 +89,8 @@ class SimulatedKeyboard:
                         )
                         # Increment index
                         key_index += 1
+                        # Sleep
+                    time.sleep(move.timeout)
 
     def perform_move(self, key: str, move: PROTrainerMove):
         if "mouse" in key:
@@ -97,13 +99,9 @@ class SimulatedKeyboard:
             key = mouse_config[0]
             x_coordinate = mouse_config[1]
             y_coordinate = mouse_config[2]
-            # Sleep
-            time.sleep(move.timeout)
             # Press key
             self.press_mouse(key, int(x_coordinate), int(y_coordinate))
         else:
-            # Sleep
-            time.sleep(move.timeout)
             # Press key
             self.press_key(key)
 

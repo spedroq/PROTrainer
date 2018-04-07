@@ -12,7 +12,7 @@ class FishingRodFarmer(Farmer):
     WRAP_AROUND = 3
 
     # Define moves
-    default_move_set = PROTrainerMoveSequence([PROTrainerMove(["1"], 1)])
+    default_move_set = PROTrainerMoveSequence([PROTrainerMove(["1"], 1, timeout=1)])
     poke_center_move_set = PROTrainerMoveSequence([PROTrainerMove(["4", "w"], 25),
                                                    PROTrainerMove(["1", " ", "s"], 25),
                                                    PROTrainerMove(["s"], 25)])
