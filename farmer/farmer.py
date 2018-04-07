@@ -56,15 +56,11 @@ class Farmer(threading.Thread):
 
         # Keep farming while quit is False
         while not self.quit:
-            time.sleep(0.25)
+            # Farm away
+            self.farm()
+            self.keyboard.use_move_sequence(self.farm_move_sequence)
 
-            # Farm if pause is False
-            if not self.pause:
-                # Farm away
-                self.farm()
-                self.keyboard.use_move_sequence(self.farm_move_sequence)
-                
-                # self.handle_radon_results(self.radon.read_text_from_screenshot_taken_right_row())
+            # self.handle_radon_results(self.radon.read_text_from_screenshot_taken_right_row())
 
     def farm(self):
         """
@@ -80,7 +76,6 @@ class Farmer(threading.Thread):
             self.farm_move_sequence,
             "None"
         )
-
 
     """ Pause """
 
@@ -102,7 +97,7 @@ class Farmer(threading.Thread):
 
     def validate(self) -> bool:
         """
-        Validate if there is any radon output and if the farming is paused.
+        Validate if there is any radon output.
         :return: bool value of weather the move should be played or not.
         """
         #
@@ -159,9 +154,9 @@ class Farmer(threading.Thread):
                 # Get the mid points of these tiles and then click there
                 # Add this click to the current move sequence at the center of
                 # the tile
-                #mouse_click_sequences.append("mouse_left%{}%{}1".format(
-                #    tile["info"]["x_center"], tile["info"]["y_center"]
-                #))
+                # mouse_click_sequences.append("mouse_left%{}%{}1".format(
+                #     tile["info"]["x_center"], tile["info"]["y_center"]
+                # ))
                 type_and_coordinates = "mouse_left%{}%{}".format(
                     tile["info"]["x_center"], tile["info"]["y_center"]
                 )
@@ -180,6 +175,3 @@ class Farmer(threading.Thread):
                 click_on_tiles_move_sequence,
                 "None"
             )
-
-        # Return the current pause status
-        return self.pause
