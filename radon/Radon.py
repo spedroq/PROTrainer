@@ -66,9 +66,35 @@ class Radon(threading.Thread):
             #   We need to login            
             if radon_status.get("code") == 10:
                 matching_tiles = []
+
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_login_yellow"], 0.25
                 )
+                #print("MATCHES: {}".format(len(matching_tiles)))
+                #
+                #   We should only select tiles below the center line
+                max_tile_y = 0
+                min_tile_y = 99999
+                for tile in matching_tiles:
+                    #print(tile)
+                    if int(tile["info"]["y"]) > max_tile_y:
+                        max_tile_y = int(tile["info"]["y"])
+                    if int(tile["info"]["y"]) < min_tile_y:
+                        min_tile_y = int(tile["info"]["y"])
+                #
+                #   Select a mid point, if the tiles are above it, omit them
+                
+                minimum_valid_y_value = max_tile_y / 2
+                #print("MIN: {} | MAX: {} | THRESHOLD: {}".format(
+                #    min_tile_y, max_tile_y, minimum_valid_y_value
+                #))
+                valid_tiles = []
+                for tile in matching_tiles:
+                    if tile["info"]["y"] >= minimum_valid_y_value:
+                        valid_tiles.append(tile)
+
+                matching_tiles = valid_tiles
+                #print("FILTERED: {}".format(len(matching_tiles)))
                 shuffle(matching_tiles)
                 radon_status["tiles"] = matching_tiles
 
@@ -173,6 +199,7 @@ class Radon(threading.Thread):
     # Initialise
     def run(self):
         #self.prowatch.start_logging()
+        print("R A D O N  I S  S T A R T I N G  U P . . . ")
         self.farmer = self._args[0]
         self.cli = self._args[1]
         self.prowatch = self._args[2]
@@ -199,35 +226,7 @@ class Radon(threading.Thread):
         time_difference = b - a
         return round(time_difference, 1)
         #round(time_difference, 3)
-    #
-    #
-    #
-    #   N E W
-    #
-    #
-    #
 
-    def test(self):
-        while True:
-            #text = self.read_text_from_pil_image(self.get_screenshot_pil_image())
-            #self.get_radon_status_from_text(text)
-            screenshot = self.get_screenshot_pil_image()
-            tolerance = 0.25
-            # do a colour analysis
-            for key,colour in self.colours.items():
-                #print(key)
-                #print(colour)
-                #
-                #   Read this colour
-                tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, colour, tolerance
-                )
-                if len(tiles) > 0:
-                    print("{} = {} tiles @ {}% tolerance".format(
-                        key, len(tiles), tolerance*100
-                    ))
-                    for tile in tiles:
-                        print(self.get_center_point_of_tile(tile))
 
     #
     # A function to define the center point of an image
@@ -242,6 +241,21 @@ class Radon(threading.Thread):
     #
     #   A function to return a Radon Status
     def get_radon_status_from_text(self, text):
+        #
+        #   S T A T U S  D E F I N I T O N S
+        #
+        #   0:      Unknown
+        #   10-19:  Game/Input related
+        #   20-29:  Relating to Pokemon
+        #   30-39:  
+        #   40-49:  
+        #   50-59:  
+        #   60-69:  
+        #   70-79:  
+        #   80-89:  
+        #   90-99:  
+        #
+        #
         if self.debug_is_printing_text:
             print("\n\n{}\n\n".format(text))
         radon_status = {
@@ -251,98 +265,179 @@ class Radon(threading.Thread):
         #
         #   Exact matches only
         check_text = text.lower()
-        if " PM" in text and "chat" in check_text:
-            radon_status = {
-                "code": 12,
-                "status": "12: some rando is trying to private message us"
-            }
-        if "login red" in check_text or "login blue" in check_text or "login yellow" in check_text:
-            # PASS
-            radon_status = {
-               "code": 10,
-               "status": "10: warning, we are not logged in"
-            }
-               
-        
-        if "this move" in check_text or "not learn" in check_text or "forget " in check_text or "learn move" in check_text:
-            # PASS
-            radon_status = {
-               "code": 22,
-               "status": "22: this pokemon is trying to learn a move"
-            }
-        
-        if "chuuseltem" in check_text or "choose item" in check_text or "pokeball" in check_text or " Item" in text :
-            # PASS
-            radon_status = {
-               "code": 13,
-               "status": "13: we are trying to catch a pokemon using a pokeball"
-            }
-        if "please" in check_text or "wait" in check_text:
-            radon_status = {
-                "code": 14,
-                "status": "14: we are probably in a battle"
-            } 
-        if "yw wan" in check_text or  "evolving" in check_text or "no yes" in check_text or "no ves" in check_text or "evolv" in check_text or "ynur" in check_text:
-            # PASS
-            radon_status = {
-               "code": 21,
-               "status": "21: this pokemon needs to evolve"
-            }
-        if "cancel ok" in check_text or "cancel" in check_text:
-            # PASS
-            radon_status = {
-               "code": 11,
-               "status": "11: we need to confirm our selection"
-            }
-        if "left!!" in check_text or "has no" in check_text:
-            # PASS
-            radon_status = {
-               "code": 20,
-               "status": "20: this pokemon has run out of pp for this move"
-            }
-
-
-        
 
         #
-        #   Test, get the names of the pokemon we meed
-        #print(check_text)
+        #   Incoming private message from another player
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        pm_terms = [
+            (" PM", text,),
+            ("chat", check_text,)
+        ]
+        for term in pm_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 12,
+                    "status": "12: some rando is trying to private message us"
+                }
+
+        #
+        #   We need to login
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        login_terms = [
+            ("login red", check_text,),
+            ("login blue", check_text,),
+            ("login yellow", check_text,)
+        ]
+        for term in login_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                   "code": 10,
+                   "status": "10: warning, we are not logged in"
+                } 
+
+        #
+        #   Our pokemon is trying to learn a new move
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        learn_move_terms = [
+            ("this move", check_text,),
+            ("not learn", check_text,),
+            ("forget ", check_text,),
+            ("learn move ", check_text,)
+        ]
+        for term in learn_move_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 22,
+                    "status": "22: this pokemon is trying to learn a move"
+                }
+
+        #
+        #   The menu for selecting to throw a pokeball is open
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        pokeball_menu_terms = [
+            ("chuuseltem", check_text,),
+            ("choose item", check_text,),
+            ("pokeball", check_text,),
+            (" Item", text,)
+        ]
+        for term in pokeball_menu_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 13,
+                    "status": "13: we are trying to catch a pokemon using a pokeball"
+                }
+
+        #
+        #   Currently we are probably in the battle scene
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        battle_scene_menu_terms = [
+            ("wait", check_text,),
+            ("please", check_text,),
+        ]
+        for term in battle_scene_menu_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 14,
+                    "status": "14: we are probably in a battle"
+                }
+
+        #
+        #   Our pokemon is trying to evolve to its next stage
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        evolve_menu_terms = [
+            ("yw wan", check_text,),
+            ("evolving", check_text,),
+            ("no yes", check_text,),
+            ("no ves", check_text,),
+            ("evolv", check_text,),
+            ("ynur", check_text,)
+        ]
+        for term in evolve_menu_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 21,
+                    "status": "21: this pokemon needs to evolve"
+                }
+
+        #
+        #   We need to confirm a "Cancel"/"Ok" input on the screen
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        confirm_selection_menu_terms = [
+            ("cancel ok", check_text,),
+            ("cancel", check_text,),
+        ]
+        for term in confirm_selection_menu_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 11,
+                    "status": "11: we need to confirm our selection"
+                }
+
+        #
+        #   Our Pokemon has run out of PP
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        pp_check_terms = [
+            ("left!!", check_text,),
+            ("has no", check_text,),
+        ]
+        for term in pp_check_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 20,
+                    "status": "20: this pokemon has run out of pp for this move"
+                }
+
+        #
+        #   Check Radon to see if we are fighint a wild pokemon, verify it has a valid name
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
         if "wild" in check_text:
-            #
-            #   Pokemon data
-            pokemands = []
-            poke_file_data = ""
-            with open("pokemon.txt", "r") as pokefile:
-                poke_file_data = pokefile.read()
-            for poke in poke_file_data.split("\n"):
-                pokemands.append(poke)
-            #
-            #   Run a check here
-            status_string = ""
-            for line in check_text.split("\n"):
-                for pokemand in pokemands:
-                    if pokemand in line:
-                        try:
-                            self.farmer.last_poke_name = pokemand
-                        except:
-                            pass
-                        status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
-                        status_string += "29\t29: we are fighting a pokemon\t"
-                        status_string += str(pokemand) + "\n"
-                        if radon_status["code"] == 0:
-                            radon_status = {
-                                "code": 15,
-                                "status": "15: We are fighting a pokemon: {}".format(pokemand)
-                            }
-            if status_string != "":
-                with open("seenpokemon.txt", "a") as seen_pokefile:
-                    if time.time() - self.last_poke_save_time > 30:
-                        seen_pokefile.write(status_string)
-                        self.last_poke_save_time = time.time()
+            pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
+            if pokemon_radon_status["code"] != 100:
+                radon_status = pokemon_radon_status
         #
         #   If Debug, print
         if self.debug_is_printing_text:
             print(radon_status)
+        return radon_status
+
+    #
+    #   A function to check and see if there is a pokemon present in radon text
+    def search_radon_text_for_pokemon_name(self, check_text):
+        #
+        #   Output status (temporary)
+        radon_status = {
+            "code": 100,
+            "status": "100: this is an empty status from an initialised variable"
+        }
+        pokemands = []
+        poke_file_data = ""
+        with open("pokemon.txt", "r") as pokefile:
+            poke_file_data = pokefile.read()
+        for poke in poke_file_data.split("\n"):
+            pokemands.append(poke)
+        #
+        #   Run a check here
+        status_string = ""
+        for line in check_text.split("\n"):
+            for pokemand in pokemands:
+                if pokemand in line:
+                    try:
+                        self.farmer.last_poke_name = pokemand
+                    except:
+                        pass
+                    status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
+                    status_string += "29\t29: we are fighting a pokemon\t"
+                    status_string += str(pokemand) + "\n"
+                    radon_status = {
+                        "code": 29,
+                        "status": "29: we are fighting a pokemon: {}".format(pokemand)
+                    }
+                        
+        if status_string != "":
+            with open("seenpokemon.txt", "a") as seen_pokefile:
+                if time.time() - self.last_poke_save_time > 15:
+                    seen_pokefile.write(status_string)
+                    self.last_poke_save_time = time.time()
         return radon_status
 
 
@@ -369,16 +464,6 @@ class Radon(threading.Thread):
                 matched_tiles.append(tile)
         return matched_tiles
 
-
-
-
-    #
-    #
-    #
-    #   E N D  N E W
-    #
-    #
-    #
 
     #
     #    I M A G E S
@@ -509,7 +594,6 @@ class Radon(threading.Thread):
         return analysis
 
 
-
     #
     #    O C R
     #    Optical Character Recognition
@@ -524,17 +608,5 @@ class Radon(threading.Thread):
         return text
 
 
-def main():
-    r = Radon()
 
-
-
-    while True:
-        r.test()
-    sys.exit(0)
-
-#main()
-
-
-print("\tradon started analysing the screen")
 

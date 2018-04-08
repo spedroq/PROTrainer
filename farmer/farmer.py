@@ -153,11 +153,11 @@ class Farmer(threading.Thread):
             if self.unknown_radon_statuses_counter > (self.emergency_reset_radon_unknown_statuses_limit * 0.80):
                 self.prowatch.append_write_to_log(
                     98,
-                    "warning, protrainer has been experiencing sequential unknown radon statuses: limit 80% reached",
+                    "warning, protrainer has been experiencing sequential unknown radon statuses, limit 80% reached",
                     "None"
                     "None"
                 )
-                print("warning, protrainer has been experiencing sequential unknown radon statuses: limit 80% reached")
+                print("warning, protrainer has been experiencing sequential unknown radon statuses, limit 80% reached")
         #
         #   If it's not equal to 0, reset the counter as it's a sequential counter
         if status["code"] != 0:
@@ -238,7 +238,9 @@ class Farmer(threading.Thread):
         # on the tiles it passed us
         if self.radon_status.get("tiles"):
             radon_tiles = self.radon_status.get("tiles")
-            print("TILES ")
+            print("\tR A D O N  D E L I V E R E D  {}  T I L E S".format(
+                len(radon_tiles)
+            ))
             # Map these tiles onto a move sequence
             if len(radon_tiles) > 9:
                 radon_tiles = radon_tiles[:9]
@@ -259,7 +261,7 @@ class Farmer(threading.Thread):
                 )
 
             click_on_tiles_move_sequence = PROTrainerMoveSequence(protrainer_moves)
-            print(click_on_tiles_move_sequence)
+            #print(click_on_tiles_move_sequence)
             # Perform a move sequence
             # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
             self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
