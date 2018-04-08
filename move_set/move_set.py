@@ -116,7 +116,7 @@ class SimulatedKeyboard:
                         else:
 
                             """ AFK """
-
+                            print('AFK')
                             # Reset the afk timeout
                             self.farmer.reset_afk_timeout()
 
