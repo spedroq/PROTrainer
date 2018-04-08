@@ -80,6 +80,10 @@ class Farmer(threading.Thread):
 
     # AFK timeout
     afk_timeout = get_random_afk_timeout()
+    #
+    #   Emergency Reset Counter
+    emergency_reset_radon_unknown_statuses_limit = 25
+    unknown_radon_statuses_counter = 0
 
     def run(self) -> None:
         # Create a PROWatch
@@ -142,6 +146,21 @@ class Farmer(threading.Thread):
 
     def deliver_radon_status(self, status: dict) -> None:
         self.radon_status = status
+        #
+        #   When the status is delivered, count up any sequential 0s
+        if status["code"] == 0:
+            self.unknown_radon_statuses_counter += 1
+            if self.unknown_radon_statuses_counter > (self.emergency_reset_radon_unknown_statuses_limit * 0.80):
+                self.prowatch.append_write_to_log(
+                    98,
+                    "warning, protrainer has been experiencing sequential unknown radon statuses: limit 80% reached",
+                    "None"
+                    "None"
+                )
+        #
+        #   If it's not equal to 0, reset the counter as it's a sequential counter
+        if status["code"] != 1:
+            self.unknown_radon_statuses_counter = 0
         print(self.radon_status["status"])
 
     """ Validate Move Status """
@@ -155,7 +174,16 @@ class Farmer(threading.Thread):
         # Check what codes that Radon passed, if it's a high-priority code
         # check it first, then look to see if we need to change our moveset
         # to click on the screen
-        if self.radon_status.get("code") == 20:
+        if self.radon_status.get("code") == 20 or self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
+            if self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
+                self.prowatch.append_write_to_log(
+                    99,
+                    "protrainer is lost, using emergency reset: 'go to pokecenter'",
+                    self.poke_center_move_set,
+                    "None"
+                )
+                self.unknown_radon_statuses_counter = 0
+
             # Speak to Nurse Joy Sequence, there is no PP
             # Perform a move sequence
             self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
