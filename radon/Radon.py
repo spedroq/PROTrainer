@@ -395,7 +395,7 @@ class Radon(threading.Thread):
         if "wild" in check_text or "vs" in check_text or "vs=" in check_text:
             #
             #   Don't check for this if we need to catch [13] or learn move [22]
-            if radon_status["code"] != 22 and radon_status["code"] != 13:
+            if radon_status["code"] != 22 and radon_status["code"] != 13 and radon_status["code"] != 20:
                 radon_status = {
                         "code": 28,
                         "status": "28: an unknown wild pokemon is fighting us"
@@ -413,6 +413,23 @@ class Radon(threading.Thread):
                 print(radon_status["code"])
                 
                 radon_status = pokemon_radon_status
+
+        #
+        #   Let's fix the status string to put the time in there
+        parts = radon_status["status"].split(" ")
+        updated_status_string = ""
+        i = 0
+        for part in parts:
+            updated_status_string += part + " "
+            if i == 0:
+                self.end_timer()
+                updated_status_string += "[{}] ".format(
+                    self.get_processing_time_in_seconds()
+                )
+            i += 1
+        #print(updated_status_string)
+        radon_status["status"] = updated_status_string
+
         #
         #   If Debug, print
         if self.debug_is_printing_text:
@@ -440,7 +457,7 @@ class Radon(threading.Thread):
         is_found = False
         for line in check_text.split("\n"):
             for pokemand in pokemands:
-                if pokemand.lower() in line.lower():
+                if pokemand.lower() in line.lower() and pokemand != "mew" and "we are fighting a" not in line:
                     print(line)
                     try:
                         self.farmer.last_poke_name = pokemand
@@ -448,7 +465,10 @@ class Radon(threading.Thread):
                         pass
                     status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
                     status_string += "29\t29: we are fighting a pokemon\t"
-                    status_string += str(pokemand) + "\n"
+                    fixed_typed_pokemand = ""
+                    for c in pokemand:
+                        fixed_typed_pokemand += c + ":"
+                    status_string += str(fixed_typed_pokemand) + "\n"
                     radon_status = {
                         "code": 29,
                         "status": "29: we are fighting a pokemon: {}".format(pokemand)
@@ -460,6 +480,7 @@ class Radon(threading.Thread):
                 if time.time() - self.last_poke_save_time > 15:
                     seen_pokefile.write(status_string)
                     self.last_poke_save_time = time.time()
+
         return radon_status
 
 
