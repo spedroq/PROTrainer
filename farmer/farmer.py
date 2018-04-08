@@ -82,7 +82,7 @@ class Farmer(threading.Thread):
     afk_timeout = get_random_afk_timeout()
     #
     #   Emergency Reset Counter
-    emergency_reset_radon_unknown_statuses_limit = 25
+    emergency_reset_radon_unknown_statuses_limit = 15
     unknown_radon_statuses_counter = 0
 
     def run(self) -> None:
@@ -157,9 +157,10 @@ class Farmer(threading.Thread):
                     "None"
                     "None"
                 )
+                print("warning, protrainer has been experiencing sequential unknown radon statuses: limit 80% reached")
         #
         #   If it's not equal to 0, reset the counter as it's a sequential counter
-        if status["code"] != 1:
+        if status["code"] != 0:
             self.unknown_radon_statuses_counter = 0
         print(self.radon_status["status"])
 
