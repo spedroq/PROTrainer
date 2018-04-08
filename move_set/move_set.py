@@ -109,6 +109,10 @@ class SimulatedKeyboard:
                             random_sleep = random.uniform(move.timeout, move.timeout + move.random_deviation)
                             # Reduce the afk timeout
                             self.farmer.reduce_afk_timeout(random_sleep)
+                            # Check if we should validate the move or not
+                            # So that validation method can run moves
+                            if validate:
+                                self.farmer.validate()
                         else:
 
                             """ AFK """

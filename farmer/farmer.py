@@ -74,6 +74,10 @@ class Farmer(threading.Thread):
 
     # Last pokemon seen
     last_poke_name = ""
+    pokes_to_catch = [
+        "magikarp",
+        "psyduck"
+    ]
 
     # AFK timeout
     afk_timeout = get_random_afk_timeout()
@@ -139,7 +143,7 @@ class Farmer(threading.Thread):
 
     def deliver_radon_status(self, status: dict) -> None:
         self.radon_status = status
-        #print(self.radon_status["status"])
+        print(self.radon_status["status"])
 
     """ Validate Move Status """
 
@@ -162,31 +166,45 @@ class Farmer(threading.Thread):
                 self.poke_center_move_set,
                 "None"
             )
-        
+
+        """ CATCH POKEMON """
         # We need to catch this pokemon by throwing a pokeball
-        if False:
+        if self.last_poke_name.lower() in self.pokes_to_catch:
             print("VALID POKE, SHOULD CATCH")
             #
             #   Make sure we start pressing Items not Attack
-            throw_pokeball_move_sequence = PROTrainerMoveSequence(["3|15"],0.5)
+            throw_pokeball_move_sequence = PROTrainerMoveSequence([PROTrainerMove(["3"], 15, 0.5)])
             self.keyboard.use_move_sequence(throw_pokeball_move_sequence, validate=False)
             #
             #   Handle clicking on the pokeball
             mouse_click_sequences = []
             if self.radon_status.get("tiles"):
-                for tile in self.radon_status.get("tiles"):
-                    mouse_click_sequences.append("mouse_left%{}%{}|1".format(
+                radon_tiles = self.radon_status.get("tiles")
+                protrainer_moves = []
+                for tile in radon_tiles:
+                    # Get the mid points of these tiles and then click there
+                    # Add this click to the current move sequence at the center of
+                    # the tile
+                    # mouse_click_sequences.append("mouse_left%{}%{}1".format(
+                    #     tile["info"]["x_center"], tile["info"]["y_center"]
+                    # ))
+                    type_and_coordinates = "mouse_left%{}%{}".format(
                         tile["info"]["x_center"], tile["info"]["y_center"]
-                    ))
-                click_on_tiles_move_sequence = PROTrainerMoveSequence(mouse_click_sequences)
+                    )
+                    protrainer_moves.append(
+                        PROTrainerMove([type_and_coordinates], 1, 0.5)
+                    )
+
+                click_on_tiles_move_sequence = PROTrainerMoveSequence(protrainer_moves)
+                print(click_on_tiles_move_sequence)
                 self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+                self.prowatch.append_write_to_log(
+                    1,
+                    "protrainer started using a catch pokemon move sequence",
+                    click_on_tiles_move_sequence,
+                    "None"
+                )
             self.last_poke_name = ""
-            self.prowatch.append_write_to_log(
-                1,
-                "protrainer started using a catch pokemon move sequence",
-                click_on_tiles_move_sequence,
-                "None"
-            )
 
         # If Radon passed this tile element in the dictionary, we need to click
         # on the tiles it passed us

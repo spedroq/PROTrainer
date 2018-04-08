@@ -279,12 +279,18 @@ class Radon(threading.Thread):
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
             }
-        if "choose item" in check_text or "pokeball" in check_text or "(hoose" in check_text or " Item" in text :
+        if "choose item" in check_text or "pokeball" in check_text or "(hoose":
             # PASS
             radon_status = {
                "code": 13,
                "status": "13: we are trying to catch a pokemon using a pokeball"
             }
+        if "please" in check_text or "wait" in check_text:
+            radon_status = {
+                "code": 14,
+                "status": "14: we are probably in a battle"
+            }
+
         
 
         #
