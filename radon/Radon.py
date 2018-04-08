@@ -471,7 +471,7 @@ class Radon(threading.Thread):
                     status_string += str(fixed_typed_pokemand) + "\n"
                     radon_status = {
                         "code": 29,
-                        "status": "29: we are fighting a pokemon: {}".format(pokemand)
+                        "status": "29: we are fighting a pokemon: {}".format(fixed_typed_pokemand)
                     }
                     break
                         
