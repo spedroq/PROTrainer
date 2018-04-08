@@ -52,12 +52,14 @@ class Radon(threading.Thread):
     prowatch = None
     farmer = None
 
-    def mainline(self, screenshot=None):
+    def mainline(self, input_screenshot=None):
         while True:
             self.start_timer()
             # Read the text from an screenshot taken right now
-            if screenshot == None:
-                screenshot = self.get_screenshot_pil_image()
+            #if screenshot == None:
+            screenshot = self.get_screenshot_pil_image()
+            if input_screenshot != None:
+                screenshot = input_screenshot
             text = self.read_text_from_pil_image(screenshot)
             # Ok, cool we have the text, let's check for colours
             radon_status = self.get_radon_status_from_text(text)
@@ -137,6 +139,7 @@ class Radon(threading.Thread):
             #
             #   Development
             if self.farmer:
+                #print(text)
                 self.farmer.deliver_radon_status(radon_status)
                     # Metrics
                 self.end_timer()
@@ -149,11 +152,13 @@ class Radon(threading.Thread):
                     "None",
                     "None"
                 )
+                screenshot = None
             else:
                 #
                 #   Test Framework
+                return [radon_status, text]
                 break
-        return [radon_status, text]
+                
 
     # Initialise
     def run(self):
@@ -285,6 +290,7 @@ class Radon(threading.Thread):
                 "status": "14: we are probably in a battle"
             }
 
+
         
 
         #
@@ -324,6 +330,7 @@ class Radon(threading.Thread):
                                     #self.farmer.change_to_catch_pokemon_move_sequence()
         if self.debug_is_printing_text:
             print(radon_status)
+        #print(radon_status)
         return radon_status
 
 
