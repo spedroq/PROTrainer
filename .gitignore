@@ -1,7 +1,5 @@
 venv/
 .idea/
-ocr/screenshots/
-screenshots/
 *.pyc
 */*.pyc
 temp.bmp
