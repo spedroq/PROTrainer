@@ -405,7 +405,7 @@ class Radon(threading.Thread):
                 if error[0] in check_text:
                     check_text = check_text.replace(error[0], error[1])
             pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
-            if pokemon_radon_status["code"] != 100 and radon_status["code"] != 22:
+            if pokemon_radon_status["code"] != 100 and radon_status["code"] != 22 and radon_status["code"] != 13:
                 radon_status = pokemon_radon_status
         #
         #   If Debug, print
