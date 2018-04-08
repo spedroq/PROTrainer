@@ -392,7 +392,7 @@ class Radon(threading.Thread):
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
         if "wild" in check_text or "vs" in check_text or "vs=" in check_text:
             pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
-            if pokemon_radon_status["code"] != 100 and radon_status["code"] != 13:
+            if pokemon_radon_status["code"] != 100:
                 radon_status = pokemon_radon_status
         #
         #   If Debug, print
@@ -421,7 +421,7 @@ class Radon(threading.Thread):
         is_found = False
         for line in check_text.split("\n"):
             for pokemand in pokemands:
-                if pokemand in line:
+                if pokemand.lower() in line.lower():
                     print(line)
                     try:
                         self.farmer.last_poke_name = pokemand
