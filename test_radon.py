@@ -14,7 +14,7 @@ def test_all_screenshots(r):
         ("interaction_cancel_ok", 11),
         ("learnthismoveselect", 22),
         ("login", 10),
-        ("pokebattle", 15),
+        ("pokebattle", 29),
         ("pokecenter", -1),
         ("pokeevolveprompt", 21),
         ("pokemoncenteroutside", -1),
@@ -168,3 +168,4 @@ print("\nPress any key to exit")
 input()
 
 """
+input()

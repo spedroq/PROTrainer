@@ -100,8 +100,8 @@ class Radon(threading.Thread):
 
             #   This pokemon needs to evolve
             elif radon_status.get("code") == 21:
-                self.grid_width = 4
-                self.grid_height = 4
+                self.grid_width = 6
+                self.grid_height = 6
                 matching_tiles = []
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_accept_red"], 0.75
@@ -142,8 +142,8 @@ class Radon(threading.Thread):
             # We need to use a pokeball
             elif radon_status.get("code") == 13:
                 matching_tiles = []
-                self.grid_width = 4
-                self.grid_height = 4
+                self.grid_width = 6
+                self.grid_height = 6
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_pokeball_colour"], 0.00
                 )
@@ -157,8 +157,8 @@ class Radon(threading.Thread):
 
             # We need to confirm this selection
             elif radon_status.get("code") == 11:
-                self.grid_width = 4
-                self.grid_height = 4
+                self.grid_width = 6
+                self.grid_height = 6
                 matching_tiles = []
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_learn_move_confirm_green"], 0.75
@@ -302,7 +302,7 @@ class Radon(threading.Thread):
             ("this move", check_text,),
             ("not learn", check_text,),
             ("forget ", check_text,),
-            ("learn move ", check_text,)
+            ("learn move", check_text,)
         ]
         for term in learn_move_terms:
             if term[0] in term[1]:
@@ -391,8 +391,21 @@ class Radon(threading.Thread):
         #   Check Radon to see if we are fighint a wild pokemon, verify it has a valid name
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
         if "wild" in check_text or "vs" in check_text or "vs=" in check_text:
+            radon_status = {
+                    "code": 28,
+                    "status": "28: an unknown wild pokemon is fighting us"
+                }
+            #
+            #   Manual fixes
+            error_list = [
+                ("magnemmte", "magnemite",),
+                ("pmdgey", "pidgey",)
+            ]
+            for error in error_list:
+                if error[0] in check_text:
+                    check_text = check_text.replace(error[0], error[1])
             pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
-            if pokemon_radon_status["code"] != 100:
+            if pokemon_radon_status["code"] != 100 and radon_status["code"] != 22:
                 radon_status = pokemon_radon_status
         #
         #   If Debug, print

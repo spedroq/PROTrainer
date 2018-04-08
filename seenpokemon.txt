@@ -569,3 +569,11 @@
 [18-04-08-20-47-04]	29	29: we are fighting a pokemon	squirtle
 [18-04-08-20-47-27]	29	29: we are fighting a pokemon	krabby
 [18-04-08-20-47-45]	29	29: we are fighting a pokemon	tentacool
+[18-04-08-20-50-49]	29	29: we are fighting a pokemon	magikarp
+[18-04-08-20-51-35]	29	29: we are fighting a pokemon	magikarp
+[18-04-08-20-54-35]	29	29: we are fighting a pokemon	magikarp
+[18-04-08-21-08-28]	29	29: we are fighting a pokemon	krabby
+[18-04-08-21-09-43]	29	29: we are fighting a pokemon	krabby
+[18-04-08-21-12-30]	29	29: we are fighting a pokemon	krabby
+[18-04-08-21-14-02]	29	29: we are fighting a pokemon	krabby
+[18-04-08-21-15-51]	29	29: we are fighting a pokemon	krabby
