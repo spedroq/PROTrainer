@@ -50,115 +50,94 @@ class Radon(threading.Thread):
     last_poke_name = ""
     
     prowatch = None
+    farmer = None
 
-    # Initialise
-    def run(self):
-        #self.prowatch.start_logging()
-        while True:
-            self.start_timer()
-            self.farmer = self._args[0]
-            self.cli = self._args[1]
-            self.prowatch = self._args[2]
-            # Read the text from an screenshot taken right now
+    def mainline(self, screenshot=None):
+        self.start_timer()
+        # Read the text from an screenshot taken right now
+        if screenshot == None:
             screenshot = self.get_screenshot_pil_image()
-            text = self.read_text_from_pil_image(screenshot)
-            # Ok, cool we have the text, let's check for colours
-            radon_status = self.get_radon_status_from_text(text)
-            # Is it a tile delivery?
-            is_tile_delivery = False
+        text = self.read_text_from_pil_image(screenshot)
+        # Ok, cool we have the text, let's check for colours
+        radon_status = self.get_radon_status_from_text(text)
+        #   We need to login            
+        if radon_status.get("code") == 10:
+            matching_tiles = []
+            matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                screenshot, self.colours["button_login_yellow"], 0.25
+            )
+            shuffle(matching_tiles)
+            radon_status["tiles"] = matching_tiles
 
-            #   We need to login            
-            if radon_status.get("code") == 10:
-                matching_tiles = []
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_login_yellow"], 0.25
-                )
-                shuffle(matching_tiles)
-                radon_status["tiles"] = matching_tiles
-                is_tile_delivery = True
-                self.farmer.deliver_radon_status(radon_status)
+        #   This pokemon needs to evolve
+        elif radon_status.get("code") == 21:
+            matching_tiles = []
+            matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                screenshot, self.colours["button_accept_red"], 0.33
+            )
+            shuffle(matching_tiles)
+            radon_status["tiles"] = matching_tiles
 
-            #   This pokemon needs to evolve
-            elif radon_status.get("code") == 21:
-                matching_tiles = []
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_accept_red"], 0.33
-                )
-                shuffle(matching_tiles)
-                radon_status["tiles"] = matching_tiles
-                is_tile_delivery = True
-                self.farmer.deliver_radon_status(radon_status)
+        #   This pokemon needs to learn a move
+        elif radon_status.get("code") == 22:
+            matching_tiles = []
+            matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                screenshot, self.colours["button_learn_move_red"], 0.15
+            )
+            shuffle(matching_tiles)
+            radon_status["tiles"] = matching_tiles
 
-            #   This pokemon needs to learn a move
-            elif radon_status.get("code") == 22:
-                matching_tiles = []
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_learn_move_red"], 0.15
-                )
-                shuffle(matching_tiles)
-                radon_status["tiles"] = matching_tiles
-                is_tile_delivery = True
-                self.farmer.deliver_radon_status(radon_status)
+        #   We need to close this private message
+        elif radon_status.get("code") == 12:
+            matching_tiles = []
+            self.grid_width = 6
+            self.grid_height = 6
+            matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                screenshot, self.colours["button_close_private_message"], 0.00
+            )
+            #
+            #   Fix the x co-ord by 26px
+            final_tiles = []
+            for tile in matching_tiles:
+                if int(tile["info"]["y_center"]) > 150 and int(tile["info"]["y_center"]) < 650:
+                    tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
+                    final_tiles.append(tile)
+            radon_status["tiles"] = final_tiles
+            self.grid_width = 8
+            self.grid_height = 8
 
-            #   We need to close this private message
-            elif radon_status.get("code") == 12:
-                matching_tiles = []
-                self.grid_width = 6
-                self.grid_height = 6
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_close_private_message"], 0.00
-                )
-                #print(matching_tiles)
-                #shuffle(matching_tiles)
-                #matching_tiles.reverse()
-                #
-                #   Fix the x co-ord by 26px
-                final_tiles = []
-                for tile in matching_tiles:
-                    if int(tile["info"]["y_center"]) > 150 and int(tile["info"]["y_center"]) < 650:
-                        tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
-                        final_tiles.append(tile)
-                radon_status["tiles"] = final_tiles
-                is_tile_delivery = True
-                self.farmer.deliver_radon_status(radon_status)
-                self.grid_width = 8
-                self.grid_height = 8
-
-            # We need to use a pokeball
-            elif radon_status.get("code") == 13:
-                matching_tiles = []
-                self.grid_width = 4
-                self.grid_height = 4
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_pokeball_colour"], 0.00
-                )
-                shuffle(matching_tiles)
-                for tile in matching_tiles:
-                    tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 75
-                radon_status["tiles"] = matching_tiles
-                is_tile_delivery = True
-                self.grid_width = 8
-                self.grid_height = 8
-                self.farmer.deliver_radon_status(radon_status)
-
-            # We need to confirm this selection
-            elif radon_status.get("code") == 11:
-                matching_tiles = []
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_learn_move_confirm_green"], 0.33
-                )
-                #print(matching_tiles)
-                shuffle(matching_tiles)
-                radon_status["tiles"] = matching_tiles
-                is_tile_delivery = True
-                self.farmer.deliver_radon_status(radon_status)
+        # We need to use a pokeball
+        elif radon_status.get("code") == 13:
+            matching_tiles = []
+            self.grid_width = 4
+            self.grid_height = 4
+            matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                screenshot, self.colours["button_pokeball_colour"], 0.00
+            )
+            shuffle(matching_tiles)
+            for tile in matching_tiles:
+                tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 75
+            radon_status["tiles"] = matching_tiles
+            self.grid_width = 8
+            self.grid_height = 8
 
 
-            # It's just a normal delivery, no tiles to click on 
-            if not is_tile_delivery:
-                self.farmer.deliver_radon_status(radon_status)
+        # We need to confirm this selection
+        elif radon_status.get("code") == 11:
+            matching_tiles = []
+            matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                screenshot, self.colours["button_learn_move_confirm_green"], 0.33
+            )
+            #print(matching_tiles)
+            shuffle(matching_tiles)
+            radon_status["tiles"] = matching_tiles
 
-            # Metrics
+
+        #
+        #   Development
+        if self.farmer:
+            self.farmer.deliver_radon_status(radon_status)
+                # Metrics
             self.end_timer()
             self.cli.input_string_last_radon_time = str(self.get_processing_time_in_seconds())
             self.cli.input_string_last_radon_status = str(radon_status["code"])
@@ -169,7 +148,20 @@ class Radon(threading.Thread):
                 "None",
                 "None"
             )
-            #print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
+        else:
+            #
+            #   Test Framework
+            return [radon_status, text]
+
+    # Initialise
+    def run(self):
+        #self.prowatch.start_logging()
+        self.farmer = self._args[0]
+        self.cli = self._args[1]
+        self.prowatch = self._args[2]
+        self.mainline()
+        #print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
+
 
                 
 
@@ -242,6 +234,7 @@ class Radon(threading.Thread):
         #
         #   Exact matches only
         check_text = text.lower()
+        check_text = text.lower()
         if " PM" in text and "chat" in check_text:
             radon_status = {
                 "code": 12,
@@ -261,7 +254,7 @@ class Radon(threading.Thread):
                "code": 20,
                "status": "20: this pokemon has run out of pp for this move"
             }
-        if "evolving" in check_text or "no yes" in check_text or "no ves" in check_text or "evolv" in check_text:
+        if "yw wan" in check_text or  "evolving" in check_text or "no yes" in check_text or "no ves" in check_text or "evolv" in check_text or "ynur" in check_text:
             # PASS
             radon_status = {
                "code": 21,
@@ -273,13 +266,13 @@ class Radon(threading.Thread):
                "code": 11,
                "status": "11: we need to confirm our selection"
             }
-        if "this move" in check_text:
+        if "this move" in check_text or "not learn" in check_text or "forget " in check_text or "learn move" in check_text:
             # PASS
             radon_status = {
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
             }
-        if "choose item" in check_text or "pokeball" in check_text or "(hoose":
+        if "chuuseltem" in check_text or "choose item" in check_text or "pokeball" in check_text or "(hoose" in check_text or " Item" in text :
             # PASS
             radon_status = {
                "code": 13,
@@ -317,6 +310,11 @@ class Radon(threading.Thread):
                             status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
                             status_string += "29\t29: we are fighting a pokemon\t"
                             status_string += str(pokemand) + "\n"
+                            if radon_status["code"] == 0:
+                                radon_status = {
+                                    "code": 15,
+                                    "status": "15: We are fighting a pokemon: {}".format(pokemand)
+                                }
                             print(status_string.split("\n")[0])
                             with open("seenpokemon.txt", "a") as seen_pokefile:
                                 if time.time() - self.last_poke_save_time > 30:

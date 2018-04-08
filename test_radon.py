@@ -1,105 +1,70 @@
 from radon.Radon import *
 from PIL import Image
 import time
-
+import os
 #    Radon object
-r = Radon()
 
 
 
-def test(r, test_name, screenshot_path, expected_error_code):
+
+def test_all_screenshots(r):
+   
+
+    mappings = [
+        ("interaction_cancel_ok", 11),
+        ("learnthismoveselect", 22),
+        ("login", 10),
+        ("pokebattle", 15),
+        ("pokecenter", -1),
+        ("pokeevolveprompt", 21),
+        ("pokemoncenteroutside", -1),
+    ]
+
+    #
+    #   Get the screenshots
+    screenshot_paths = []
+    screenshot_dir = "radon/screenshots"
+    for s_f in os.listdir(screenshot_dir):
+        if len(s_f) > 2:
+            screenshot_paths.append(
+                screenshot_dir + "/" + s_f
+            )
+    #
+    #   For each screenshot, run a test
+    for screenshot_path in screenshot_paths:
+        #
+        #   Get the test type
+        test_type = ""
+        test_expected_error = -2
+        for mapping in mappings:
+            if mapping[0] in screenshot_path:
+                test_type = mapping[0]
+                test_expected_error = mapping[1]
+
+        #
+        #   Run the test
+        outcome = radon_test(r, test_type, screenshot_path, test_expected_error)
+
+
+def radon_test(r, test_name, screenshot_path, expected_error_code):
+    print("\n\n\n")
+    screenshot = Image.open(screenshot_path)
+    print(screenshot_path)
     r.start_timer()
+    resp = r.mainline(screenshot)
+    #print(resp)
+    radon_status = resp[0]
+    print(radon_status["status"])
+    radon_text = resp[1]
     passes = 0
     fails = 0
-    with open("temp.txt", "w") as f:
-        f.write("")
-    #
-    #    Test for no pp
-    screenshot = Image.open(screenshot_path)
-    #screenshot.show()
-    text = r.read_text_from_pil_image(screenshot)
-    #print(text)
-    # Ok, cool we have the text, let's check for colours
-    radon_status = r.get_radon_status_from_text(text)
-    print("\n")
-    print(test_name + " TEST  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -")
-    print("\t" + str(radon_status))
-    matching_tiles = []
-    #   We need to login            
-    if radon_status.get("code") == 10:
-        matching_tiles = r.get_tiles_matching_colour_from_pil_image_within_tolerance(
-            screenshot, r.colours["button_login_yellow"], 0.25
-        )
-        shuffle(matching_tiles)
-        radon_status["tiles"] = matching_tiles
-        is_tile_delivery = True
-        
-    #   This pokemon needs to evolve
-    elif radon_status.get("code") == 21:
-        matching_tiles = r.get_tiles_matching_colour_from_pil_image_within_tolerance(
-            screenshot, r.colours["button_accept_red"], 0.5
-        )
-        shuffle(matching_tiles)
-        radon_status["tiles"] = matching_tiles
-        is_tile_delivery = True
-
-    #   This pokemon needs to learn a move
-    elif radon_status.get("code") == 22:
-        matching_tiles = r.get_tiles_matching_colour_from_pil_image_within_tolerance(
-            screenshot, r.colours["button_learn_move_red"], 0.15
-        )
-        shuffle(matching_tiles)
-        radon_status["tiles"] = matching_tiles
-        is_tile_delivery = True
-
-    # We need to confirm this selection
-    elif radon_status.get("code") == 11:
-        matching_tiles = r.get_tiles_matching_colour_from_pil_image_within_tolerance(
-            screenshot, r.colours["button_learn_move_confirm_green"], 0.5
-        )
-        #print(matching_tiles)
-        shuffle(matching_tiles)
-        radon_status["tiles"] = matching_tiles
-        is_tile_delivery = True
-    # We need to confirm this selection
-    elif radon_status.get("code") == 12:
-        matching_tiles = []
-        r.grid_width = 6
-        r.grid_height = 6
-        matching_tiles = r.get_tiles_matching_colour_from_pil_image_within_tolerance(
-            screenshot, r.colours["button_close_private_message"], 0.00
-        )
-        #print(matching_tiles)
-        #shuffle(matching_tiles)
-        #matching_tiles.reverse()
-        #
-        #   Fix the x co-ord by 26px
-        for tile in matching_tiles:
-            tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
-        radon_status["tiles"] = matching_tiles
-        is_tile_delivery = True
-        r.grid_width = 8
-        r.grid_height = 8
-
-    # We need to use a pokeball
-    elif radon_status.get("code") == 13:
-        matching_tiles = []
-        r.grid_width = 4
-        r.grid_height = 4
-        matching_tiles = r.get_tiles_matching_colour_from_pil_image_within_tolerance(
-            screenshot, r.colours["button_pokeball_colour"], 0.0
-        )
-        shuffle(matching_tiles)
-        radon_status["tiles"] = matching_tiles
-        is_tile_delivery = True
-        r.grid_width = 8
-        r.grid_height = 8
-
+    
     if radon_status.get("code") != expected_error_code:
         fails += 1
         print("\t{} TEST | FAILED".format(test_name))
+        print(radon_text)
         with open("radon/tests/{}.txt".format(test_name), "w") as fi:
-            fi.write(text)
+            fi.write(radon_text)
     else:
         passes += 1
         print("\t{} TEST | PASSED".format(test_name))
@@ -119,8 +84,8 @@ def test(r, test_name, screenshot_path, expected_error_code):
     if passes == 1:
         return True
 
-passes = 0
-fails = 0
+r = Radon()
+test_all_screenshots(r)
 
 """
 magikarp_test = test(r, "MAGIKARP TESTS", "radon/screenshots/magikarp.png", 13)
@@ -186,7 +151,7 @@ else:
 
 
 
-"""
+
 login_text = test(r, "LOGIN", "radon/screenshots/login.png", 10)
 if login_text:
     passes += 1
@@ -202,3 +167,4 @@ print("\nTESTING COMPLETE  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -"
 print("\nPress any key to exit")
 input()
 
+"""
