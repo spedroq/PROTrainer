@@ -136,7 +136,13 @@ class SimulatedKeyboard:
                     #  print(random_sleep)
 
                     # Sleep for the move turn, partly randomized
+                    # TODO: Make the sleep incrementally check radon
                     time.sleep(random_sleep)
+                    # Check if we should validate the move or not
+                    # So that validation method can run moves
+                    if validate:
+                        # Validate after AFK
+                        self.farmer.validate()
 
     def perform_move(self, key: str, move: PROTrainerMove):
         if "mouse" in key:

@@ -75,8 +75,7 @@ class Farmer(threading.Thread):
     # Last pokemon seen
     last_poke_name = ""
     pokes_to_catch = [
-        "magikarp",
-        "psyduck"
+        "magikarp"
     ]
 
     # AFK timeout
