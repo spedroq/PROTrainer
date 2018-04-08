@@ -207,7 +207,7 @@ class Farmer(threading.Thread):
         """ CATCH POKEMON """
         # We need to catch this pokemon by throwing a pokeball
         if self.last_poke_name.lower() in self.pokes_to_catch:
-            print("VALID POKE, SHOULD CATCH")
+            print("V A L I D  P O K E  -  S H O U L D  C A T C H")
             #
             #   Make sure we start pressing Items not Attack
             throw_pokeball_move_sequence = PROTrainerMoveSequence([PROTrainerMove(["3"], 15, 0.5)])
