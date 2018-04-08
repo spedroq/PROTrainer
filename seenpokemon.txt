@@ -577,3 +577,4 @@
 [18-04-08-21-12-30]	29	29: we are fighting a pokemon	krabby
 [18-04-08-21-14-02]	29	29: we are fighting a pokemon	krabby
 [18-04-08-21-15-51]	29	29: we are fighting a pokemon	krabby
+[18-04-08-23-15-00]	29	29: we are fighting a pokemon	b:e:l:l:s:p:r:o:u:t:
