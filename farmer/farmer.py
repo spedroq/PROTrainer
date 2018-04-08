@@ -83,7 +83,9 @@ class Farmer(threading.Thread):
         "jigglypuff",
         "vulpix",
         "haunter",
-        "gastly"
+        "gastly",
+        "gengar",
+        "cubone"
     ]
 
     # AFK timeout

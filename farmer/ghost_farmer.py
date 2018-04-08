@@ -9,12 +9,15 @@ class GhostTowerFarmer(Farmer):
     """
 
     # Define moves
-    default_move_set = PROTrainerMoveSequence([PROTrainerMove(["s", "1"], 10), PROTrainerMove(["w", "1"], 10)])
-    poke_center_move_set = PROTrainerMoveSequence([PROTrainerMove(["4", "w"], 30),
-                                                   PROTrainerMove(["4", "d"], 15),
-                                                   PROTrainerMove(["1", " ", "a"], 15),
-                                                   PROTrainerMove(["a"], 10)])
+    default_move_set = PROTrainerMoveSequence([PROTrainerMove(["w"], 15, timeout=0.05, random_deviation=0.1),
+                                               PROTrainerMove(["s"], 15, timeout=0.05, random_deviation=0.1),
+                                               PROTrainerMove(["w"], 15, timeout=0.05, random_deviation=0.1),
+                                               PROTrainerMove(["s"], 15, timeout=0.05, random_deviation=0.1),
+                                               PROTrainerMove(["1"], 1, timeout=1, random_deviation=1)])
+    poke_center_move_set = PROTrainerMoveSequence([PROTrainerMove(["4", "w"], 45, timeout=0.05, random_deviation=0.1),
+                                                   PROTrainerMove(["4", "d"], 25, timeout=0.05, random_deviation=0.1),
+                                                   PROTrainerMove(["1", " ", "a"], 25, timeout=0.05, random_deviation=0.1),
+                                                   PROTrainerMove(["a"], 25, timeout=0.05, random_deviation=0.1)])
 
     # Init farm move sequence
     farm_move_sequence = default_move_set
-
