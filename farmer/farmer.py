@@ -74,8 +74,16 @@ class Farmer(threading.Thread):
 
     # Last pokemon seen
     last_poke_name = ""
+    # Pokemon we want to catch
     pokes_to_catch = [
-        "magikarp"
+        "magikarp",
+        "ditto",
+        "meowth",
+        "growlithe",
+        "jigglypuff",
+        "vulpix",
+        "haunter",
+        "gastly"
     ]
 
     # AFK timeout
