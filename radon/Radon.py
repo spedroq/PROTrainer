@@ -307,30 +307,31 @@ class Radon(threading.Thread):
                 pokemands.append(poke)
             #
             #   Run a check here
+            status_string = ""
             for line in check_text.split("\n"):
-                    for pokemand in pokemands:
-                        if pokemand in line:
-                            try:
-                                self.farmer.last_poke_name = pokemand
-                            except:
-                                pass
-                            status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
-                            status_string += "29\t29: we are fighting a pokemon\t"
-                            status_string += str(pokemand) + "\n"
-                            if radon_status["code"] == 0:
-                                radon_status = {
-                                    "code": 15,
-                                    "status": "15: We are fighting a pokemon: {}".format(pokemand)
-                                }
-                            print(status_string.split("\n")[0])
-                            with open("seenpokemon.txt", "a") as seen_pokefile:
-                                if time.time() - self.last_poke_save_time > 30:
-                                    seen_pokefile.write(status_string)
-                                    self.last_poke_save_time = time.time()                                    
-                                    #self.farmer.change_to_catch_pokemon_move_sequence()
+                for pokemand in pokemands:
+                    if pokemand in line:
+                        try:
+                            self.farmer.last_poke_name = pokemand
+                        except:
+                            pass
+                        status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
+                        status_string += "29\t29: we are fighting a pokemon\t"
+                        status_string += str(pokemand) + "\n"
+                        if radon_status["code"] == 0:
+                            radon_status = {
+                                "code": 15,
+                                "status": "15: We are fighting a pokemon: {}".format(pokemand)
+                            }
+            if status_string != "":
+                with open("seenpokemon.txt", "a") as seen_pokefile:
+                    if time.time() - self.last_poke_save_time > 30:
+                        seen_pokefile.write(status_string)
+                        self.last_poke_save_time = time.time()
+        #
+        #   If Debug, print
         if self.debug_is_printing_text:
             print(radon_status)
-        #print(radon_status)
         return radon_status
 
 
