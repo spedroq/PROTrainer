@@ -82,7 +82,7 @@ class Farmer(threading.Thread):
     afk_timeout = get_random_afk_timeout()
     #
     #   Emergency Reset Counter
-    emergency_reset_radon_unknown_statuses_limit = 15
+    emergency_reset_radon_unknown_statuses_limit = 25
     unknown_radon_statuses_counter = 0
 
     def run(self) -> None:
@@ -177,6 +177,7 @@ class Farmer(threading.Thread):
         # to click on the screen
         if self.radon_status.get("code") == 20 or self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
             if self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
+                print("E R R O R:  W E  A R E  L O S T  -  G O  T O  P O K E C E N T E R")
                 self.prowatch.append_write_to_log(
                     99,
                     "protrainer is lost, using emergency reset: 'go to pokecenter'",

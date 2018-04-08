@@ -308,7 +308,7 @@ class Radon(threading.Thread):
             if term[0] in term[1]:
                 radon_status = {
                     "code": 22,
-                    "status": "22: this pokemon is trying to learn a move"
+                    "status": "22: our pokemon is trying to learn a move"
                 }
 
         #
@@ -356,7 +356,7 @@ class Radon(threading.Thread):
             if term[0] in term[1]:
                 radon_status = {
                     "code": 21,
-                    "status": "21: this pokemon needs to evolve"
+                    "status": "21: our pokemon wants to evolve"
                 }
 
         #
@@ -384,15 +384,15 @@ class Radon(threading.Thread):
             if term[0] in term[1]:
                 radon_status = {
                     "code": 20,
-                    "status": "20: this pokemon has run out of pp for this move"
+                    "status": "20: our pokemon has run out of pp for this move"
                 }
 
         #
         #   Check Radon to see if we are fighint a wild pokemon, verify it has a valid name
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
-        if "wild" in check_text:
+        if "wild" in check_text or "vs" in check_text or "vs=" in check_text:
             pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
-            if pokemon_radon_status["code"] != 100:
+            if pokemon_radon_status["code"] != 100 and radon_status["code"] != 13:
                 radon_status = pokemon_radon_status
         #
         #   If Debug, print
@@ -418,9 +418,11 @@ class Radon(threading.Thread):
         #
         #   Run a check here
         status_string = ""
+        is_found = False
         for line in check_text.split("\n"):
             for pokemand in pokemands:
                 if pokemand in line:
+                    print(line)
                     try:
                         self.farmer.last_poke_name = pokemand
                     except:
@@ -432,6 +434,7 @@ class Radon(threading.Thread):
                         "code": 29,
                         "status": "29: we are fighting a pokemon: {}".format(pokemand)
                     }
+                    break
                         
         if status_string != "":
             with open("seenpokemon.txt", "a") as seen_pokefile:
