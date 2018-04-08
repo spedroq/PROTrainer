@@ -74,12 +74,16 @@ class Radon(threading.Thread):
 
             #   This pokemon needs to evolve
             elif radon_status.get("code") == 21:
+                self.grid_width = 4
+                self.grid_height = 4
                 matching_tiles = []
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_accept_red"], 0.33
+                    screenshot, self.colours["button_accept_red"], 0.75
                 )
                 shuffle(matching_tiles)
                 radon_status["tiles"] = matching_tiles
+                self.grid_width = 8
+                self.grid_height = 8
 
             #   This pokemon needs to learn a move
             elif radon_status.get("code") == 22:
@@ -127,13 +131,17 @@ class Radon(threading.Thread):
 
             # We need to confirm this selection
             elif radon_status.get("code") == 11:
+                self.grid_width = 4
+                self.grid_height = 4
                 matching_tiles = []
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_learn_move_confirm_green"], 0.33
+                    screenshot, self.colours["button_learn_move_confirm_green"], 0.75
                 )
                 #print(matching_tiles)
                 shuffle(matching_tiles)
                 radon_status["tiles"] = matching_tiles
+                self.grid_width = 8
+                self.grid_height = 8
 
 
             #
@@ -149,9 +157,11 @@ class Radon(threading.Thread):
                 self.prowatch.append_write_to_log(
                     radon_status["code"],
                     radon_status["status"],
-                    "None",
+                    self.get_processing_time_in_seconds(),
                     "None"
                 )
+                #
+                #   Wipe the memory of the current screenshot
                 screenshot = None
             else:
                 #
@@ -246,38 +256,21 @@ class Radon(threading.Thread):
                 "code": 12,
                 "status": "12: some rando is trying to private message us"
             }
-            #print(check_text)
-            #print(radon_status)
         if "login red" in check_text or "login blue" in check_text or "login yellow" in check_text:
             # PASS
             radon_status = {
                "code": 10,
                "status": "10: warning, we are not logged in"
             }
-        if "left!!" in check_text or "has no" in check_text:
-            # PASS
-            radon_status = {
-               "code": 20,
-               "status": "20: this pokemon has run out of pp for this move"
-            }
-        if "yw wan" in check_text or  "evolving" in check_text or "no yes" in check_text or "no ves" in check_text or "evolv" in check_text or "ynur" in check_text:
-            # PASS
-            radon_status = {
-               "code": 21,
-               "status": "21: this pokemon needs to evolve"
-            }
-        if "learn move" in check_text or "cancel ok" in check_text or "cancel" in check_text or "learn" in check_text or "lmrn mmra" in check_text:
-            # PASS
-            radon_status = {
-               "code": 11,
-               "status": "11: we need to confirm our selection"
-            }
+               
+        
         if "this move" in check_text or "not learn" in check_text or "forget " in check_text or "learn move" in check_text:
             # PASS
             radon_status = {
                "code": 22,
                "status": "22: this pokemon is trying to learn a move"
             }
+        
         if "chuuseltem" in check_text or "choose item" in check_text or "pokeball" in check_text or " Item" in text :
             # PASS
             radon_status = {
@@ -288,6 +281,24 @@ class Radon(threading.Thread):
             radon_status = {
                 "code": 14,
                 "status": "14: we are probably in a battle"
+            } 
+        if "yw wan" in check_text or  "evolving" in check_text or "no yes" in check_text or "no ves" in check_text or "evolv" in check_text or "ynur" in check_text:
+            # PASS
+            radon_status = {
+               "code": 21,
+               "status": "21: this pokemon needs to evolve"
+            }
+        if "cancel ok" in check_text or "cancel" in check_text:
+            # PASS
+            radon_status = {
+               "code": 11,
+               "status": "11: we need to confirm our selection"
+            }
+        if "left!!" in check_text or "has no" in check_text:
+            # PASS
+            radon_status = {
+               "code": 20,
+               "status": "20: this pokemon has run out of pp for this move"
             }
 
 
