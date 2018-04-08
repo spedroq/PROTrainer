@@ -392,7 +392,7 @@ class Radon(threading.Thread):
         #
         #   Check Radon to see if we are fighint a wild pokemon, verify it has a valid name
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
-        if "wild" in check_text or "vs" in check_text or "vs=" in check_text:
+        if "wild" in check_text:
             #
             #   Don't check for this if we need to catch [13] or learn move [22]
             if radon_status["code"] != 22 and radon_status["code"] != 13 and radon_status["code"] != 20:
