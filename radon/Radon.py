@@ -411,8 +411,8 @@ class Radon(threading.Thread):
                         check_text = check_text.replace(error[0], error[1])
                 pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
                 print(radon_status["code"])
-                
-                radon_status = pokemon_radon_status
+                if pokemon_radon_status["code"] != 100:
+                    radon_status = pokemon_radon_status
 
         #
         #   Let's fix the status string to put the time in there
