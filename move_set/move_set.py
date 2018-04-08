@@ -137,12 +137,30 @@ class SimulatedKeyboard:
 
                     # Sleep for the move turn, partly randomized
                     # TODO: Make the sleep incrementally check radon
-                    time.sleep(random_sleep)
+                    self.sleep(random_sleep)
+
                     # Check if we should validate the move or not
                     # So that validation method can run moves
                     if validate:
-                        # Validate after AFK
+                        # Validate after sleep
                         self.farmer.validate()
+
+    def sleep(self, sleep_amount: float):
+        # Split the time into integer and fraction integer parts
+        integer = int(sleep_amount)
+        fraction = sleep_amount - integer
+        # Sleep for the integer part
+        if integer:
+            for sec in range(0, integer):
+                # Validate after sleep
+                self.farmer.validate()
+                # Sleep for a second
+                time.sleep(sec)
+                # Validate after sleep
+                self.farmer.validate()
+
+        # Sleep for the fraction part
+        time.sleep(fraction)
 
     def perform_move(self, key: str, move: PROTrainerMove):
         if "mouse" in key:
