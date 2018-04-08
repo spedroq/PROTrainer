@@ -18,6 +18,7 @@ def test_all_screenshots(r):
         ("pokecenter", -1),
         ("pokeevolveprompt", 21),
         ("pokemoncenteroutside", -1),
+        ("pokeballthrow", 13),
     ]
 
     #

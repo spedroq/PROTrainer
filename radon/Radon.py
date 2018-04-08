@@ -310,23 +310,7 @@ class Radon(threading.Thread):
                     "code": 22,
                     "status": "22: our pokemon is trying to learn a move"
                 }
-
-        #
-        #   The menu for selecting to throw a pokeball is open
-        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
-        pokeball_menu_terms = [
-            ("chuuseltem", check_text,),
-            ("choose item", check_text,),
-            ("pokeball", check_text,),
-            (" Item", text,)
-        ]
-        for term in pokeball_menu_terms:
-            if term[0] in term[1]:
-                radon_status = {
-                    "code": 13,
-                    "status": "13: we are trying to catch a pokemon using a pokeball"
-                }
-
+ 
         #
         #   Currently we are probably in the battle scene
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
@@ -340,6 +324,24 @@ class Radon(threading.Thread):
                     "code": 14,
                     "status": "14: we are probably in a battle"
                 }
+
+        #
+        #   The menu for selecting to throw a pokeball is open
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        pokeball_menu_terms = [
+            ("chuuseltem", check_text,),
+            ("(house Item", check_text,),
+            ("choose item", check_text,),
+            ("pokeball", check_text,),
+            (" Item", text,)
+        ]
+        for term in pokeball_menu_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 13,
+                    "status": "13: we are trying to catch a pokemon using a pokeball"
+                }
+
 
         #
         #   Our pokemon is trying to evolve to its next stage
@@ -391,21 +393,25 @@ class Radon(threading.Thread):
         #   Check Radon to see if we are fighint a wild pokemon, verify it has a valid name
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
         if "wild" in check_text or "vs" in check_text or "vs=" in check_text:
-            radon_status = {
-                    "code": 28,
-                    "status": "28: an unknown wild pokemon is fighting us"
-                }
             #
-            #   Manual fixes
-            error_list = [
-                ("magnemmte", "magnemite",),
-                ("pmdgey", "pidgey",)
-            ]
-            for error in error_list:
-                if error[0] in check_text:
-                    check_text = check_text.replace(error[0], error[1])
-            pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
-            if pokemon_radon_status["code"] != 100 and radon_status["code"] != 22 and radon_status["code"] != 13:
+            #   Don't check for this if we need to catch [13] or learn move [22]
+            if radon_status["code"] != 22 and radon_status["code"] != 13:
+                radon_status = {
+                        "code": 28,
+                        "status": "28: an unknown wild pokemon is fighting us"
+                    }
+                #
+                #   Manual fixes
+                error_list = [
+                    ("magnemmte", "magnemite",),
+                    ("pmdgey", "pidgey",)
+                ]
+                for error in error_list:
+                    if error[0] in check_text:
+                        check_text = check_text.replace(error[0], error[1])
+                pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
+                print(radon_status["code"])
+                
                 radon_status = pokemon_radon_status
         #
         #   If Debug, print
