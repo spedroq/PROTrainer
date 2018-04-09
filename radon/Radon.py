@@ -165,8 +165,8 @@ class Radon(threading.Thread):
             # We need to use a pokeball
             elif radon_status.get("code") == 13:
                 matching_tiles = []
-                self.grid_width = 6
-                self.grid_height = 6
+                self.grid_width = 4
+                self.grid_height = 4
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
                     screenshot, self.colours["button_pokeball_colour"], 0.00
                 )
