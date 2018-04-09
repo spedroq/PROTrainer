@@ -10,6 +10,9 @@ class InputListener(threading.Thread):
     farmer = None
     cli = None
     prowatch = None
+    radon = None
+
+    last_key_press = ""
 
     def run(self) -> None:
         """
@@ -18,6 +21,7 @@ class InputListener(threading.Thread):
         self.farmer = self._args[0]
         self.cli = self._args[1]
         self.prowatch = self._args[2]
+        self.radon = self._args[3]
         if self.farmer.pause:
             self.cli.input_string_mode = "paused"
         else:
@@ -40,10 +44,35 @@ class InputListener(threading.Thread):
                 mouse_interaction.button,
                 mouse_interaction.event_type
             )
+            #
+            #   Save the location of PRO
+            did_set = False
+            if mouse_interaction.event_type == "down":
+                if self.last_key_press == "f7":
+
+                    if self.radon.TOP_LEFT_CORNER == (-1,-1,):
+                        print("SETTING TOP LEFT {}".format(mouse_position))
+                        self.radon.TOP_LEFT_CORNER = mouse_position
+                        did_set = True
+
+                    if self.radon.TOP_LEFT_CORNER != (-1,-1,) and self.radon.BOTTOM_RIGHT_CORNER == (-1,-1,) and not did_set:
+                        print("SETTING BOTTOM RIGHT {}".format(mouse_position))
+                        self.radon.BOTTOM_RIGHT_CORNER = mouse_position
+                        print("RADON SET TO:\n{}, {}".format(
+                            self.radon.TOP_LEFT_CORNER,
+                            self.radon.BOTTOM_RIGHT_CORNER
+                        ))
+                if self.last_key_press == "f8":
+                    print("RESETTING LOCATION")
+                    self.radon.TOP_LEFT_CORNER = (-1,-1,)
+                    self.radon.BOTTOM_RIGHT_CORNER = (-1,-1,)
+            
+
+
         #if type(mouse_interaction) == mouse.MoveEvent:
         #    mouse_interaction_string = "a mouse movement was detected"
         #    logging_code = 93
-            """
+            """1
             self.prowatch.append_write_to_log(
                 logging_code,
                 mouse_interaction_string,
@@ -66,6 +95,11 @@ class InputListener(threading.Thread):
         Method to analyse a key press and deal with it.
         :param key: a key to be analysed.
         """
+        self.last_key_press = key.name
+        #print(self.last_key_press)
+            
+
+
         # Log this kep press
         logging_code = 90
         if key.event_type == 'up':

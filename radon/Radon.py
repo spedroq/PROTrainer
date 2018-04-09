@@ -1,3 +1,17 @@
+#   
+#                            .o8                        
+#                           "888                        
+#   oooo d8b  .oooo.    .oooo888   .ooooo.  ooo. .oo.   
+#   `888""8P `P  )88b  d88' `888  d88' `88b `888P"Y88b  
+#    888      .oP"888  888   888  888   888  888   888  
+#    888     d8(  888  888   888  888   888  888   888  
+#   d888b    `Y888""8o `Y8bod88P" `Y8bod8P' o888o o888o 
+#
+#
+#   R A D O N
+#   Image analysis for PRO (Pokemon Revolution Online) using Tesseract.
+#
+
 from radon.pytesseract.pytesser import *
 from prowatch.PROWatch import *
 #from pyautogui import press, typewrite, hotkey
@@ -51,6 +65,12 @@ class Radon(threading.Thread):
     
     prowatch = None
     farmer = None
+
+    TOP_LEFT_CORNER = (-1,-1,)
+    BOTTOM_RIGHT_CORNER = (-1,-1,)
+
+    with open("radon/splash.txt") as r:
+        print(r.read())
 
     def mainline(self, input_screenshot=None):
         while True:
@@ -169,6 +189,10 @@ class Radon(threading.Thread):
                 self.grid_width = 8
                 self.grid_height = 8
 
+
+            #
+            #   Let's fix the status string to put the time in there
+            radon_status = self.insert_process_time_into_radon_status(radon_status)
 
             #
             #   Development
@@ -392,30 +416,63 @@ class Radon(threading.Thread):
         #
         #   Check Radon to see if we are fighint a wild pokemon, verify it has a valid name
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
-        if "wild" in check_text:
+        if "wild" in check_text or "VS" in text or "vS=" in text:
             #
             #   Don't check for this if we need to catch [13] or learn move [22]
             if radon_status["code"] != 22 and radon_status["code"] != 13 and radon_status["code"] != 20:
-                radon_status = {
-                        "code": 28,
-                        "status": "28: an unknown wild pokemon is fighting us"
-                    }
                 #
-                #   Manual fixes
+                #   Set default "unknown" poke status
+                radon_status = {
+                    "code": 28,
+                    "status": "28: an unknown wild pokemon is fighting us"
+                }
+                #
+                #   Check to see if we are fighting an NPC
+                #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+                trainer_battle_terms = [
+                    ("Gamer", text,),
+                    ("Maniac", text,),
+                ]
+                for term in trainer_battle_terms:
+                    if term[0] in term[1]:
+                        radon_status = {
+                            "code": 27,
+                            "status": "27: we are probably in a battle with an npc"
+                        }
+                #
+                #   Manual fixes for pokemon names (tesseract errors)
                 error_list = [
                     ("magnemmte", "magnemite",),
-                    ("pmdgey", "pidgey",)
+                    ("pmdgey", "pidgey",),
+                    ("ratmcate", "raticate",),
+                    ("ratmzate", "raticate",),
+                    ("taterpme", "bellsprout",),
+                    ("x=k=====", "kakuna",),
+                    ("persman", "persian",)
                 ]
                 for error in error_list:
                     if error[0] in check_text:
                         check_text = check_text.replace(error[0], error[1])
+                #
+                #   Set our status, if it's 100, it's still unknown
                 pokemon_radon_status = self.search_radon_text_for_pokemon_name(check_text)
                 #print(radon_status["code"])
-                if pokemon_radon_status["code"] != 100:
+                #
+                #   If the pokemon was valid and we are not in trainer battle
+                if pokemon_radon_status["code"] != 100 and radon_status["code"] != 27:
                     radon_status = pokemon_radon_status
 
+        
+
         #
-        #   Let's fix the status string to put the time in there
+        #   If Debug, print
+        if self.debug_is_printing_text:
+            print(radon_status)
+        return radon_status
+
+    #
+    #   A function to insert the process time into a status string
+    def insert_process_time_into_radon_status(self, radon_status):
         parts = radon_status["status"].split(" ")
         updated_status_string = ""
         i = 0
@@ -429,11 +486,6 @@ class Radon(threading.Thread):
             i += 1
         #print(updated_status_string)
         radon_status["status"] = updated_status_string
-
-        #
-        #   If Debug, print
-        if self.debug_is_printing_text:
-            print(radon_status)
         return radon_status
 
     #
@@ -457,7 +509,7 @@ class Radon(threading.Thread):
         is_found = False
         for line in check_text.split("\n"):
             for pokemand in pokemands:
-                if pokemand.lower() in line.lower() and pokemand != "mew" and "we are fighting a" not in line:
+                if pokemand.lower() in line.lower() and pokemand != "mew" and "we are fighting a" not in line and " go " not in line.lower():
                     print(line)
                     try:
                         self.farmer.last_poke_name = pokemand
@@ -468,7 +520,7 @@ class Radon(threading.Thread):
                     fixed_typed_pokemand = ""
                     for c in pokemand:
                         fixed_typed_pokemand += c + ":"
-                    status_string += str(fixed_typed_pokemand) + "\n"
+                    status_string += str(pokemand) + "\n"
                     radon_status = {
                         "code": 29,
                         "status": "29: we are fighting a pokemon: {}".format(fixed_typed_pokemand)
@@ -516,7 +568,22 @@ class Radon(threading.Thread):
     def get_screenshot_pil_image(self):
         #
         #    See import PIL
-        return ImageGrab.grab()
+        screenshot = ImageGrab.grab()
+        #
+        #   Ok, so here we can cut it down to size if the user gave us the window size
+        if self.TOP_LEFT_CORNER != (-1,-1,) and self.BOTTOM_RIGHT_CORNER != (-1,-1,):
+            #
+            #   Crop this image
+            a = self.TOP_LEFT_CORNER
+            b = (self.BOTTOM_RIGHT_CORNER[0], self.TOP_LEFT_CORNER[1])
+            c = (self.TOP_LEFT_CORNER[0], self.BOTTOM_RIGHT_CORNER[1])
+            d = self.BOTTOM_RIGHT_CORNER
+            box = (
+                self.TOP_LEFT_CORNER[0], self.TOP_LEFT_CORNER[1],
+                self.BOTTOM_RIGHT_CORNER[0], self.BOTTOM_RIGHT_CORNER[1]
+            )
+            screenshot = screenshot.crop(box)
+        return screenshot
     #
     #    Return a list of RadonImage objects
     def get_radon_image_objects_from_pil_image(self, pil_image):
@@ -534,6 +601,12 @@ class Radon(threading.Thread):
         #
         #    Using this grid, create the images sections we need and return them
         x,y = 0,0
+        if self.TOP_LEFT_CORNER != (-1,-1,) and self.BOTTOM_RIGHT_CORNER != (-1,-1,):
+        	#
+        	#	We have set a crop, assign the TOP_LEFT_CORNER co-ordinates to x,y
+        	x = self.TOP_LEFT_CORNER[0]
+        	y = self.TOP_LEFT_CORNER[1]
+        
         tiles = []
         for current_grid_tile in range(0, total_squares):
             tile_data = {

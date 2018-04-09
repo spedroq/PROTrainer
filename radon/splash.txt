@@ -1,0 +1,19 @@
+#
+#   
+#                             .o8                        
+#                            "888                        
+#    oooo d8b  .oooo.    .oooo888   .ooooo.  ooo. .oo.   
+#    `888""8P `P  )88b  d88' `888  d88' `88b `888P"Y88b  
+#     888      .oP"888  888   888  888   888  888   888  
+#     888     d8(  888  888   888  888   888  888   888  
+#    d888b    `Y888""8o `Y8bod88P" `Y8bod8P' o888o o888o 
+#
+#
+#    R A D O N
+#    Image analysis for PRO (Pokemon Revolution Online) using Tesseract.
+#
+#
+#    V E R S I O N
+#    RADON-ALPHA-100008
+#
+#

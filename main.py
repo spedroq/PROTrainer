@@ -3,6 +3,7 @@ from farmer.fishing_rod_farmer import FishingRodFarmer
 from farmer.ghost_farmer import GhostTowerFarmer
 from farmer.surf_famer import SurfFarmer
 from farmer.victory_road_farmer import VictoryRoadFarmer
+from farmer.celadon_farmer import CeladonFarmer
 from input_listener.input_listener import InputListener
 from radon.Radon import *
 from cli.cli import *
@@ -18,21 +19,23 @@ def main():
     cli = PROTrainerCLI(name="CLIThread")
     cli.start()
     # Create the fishing rod farmer
-    farmer_thread = FishingRodFarmer(name="FarmerThread",
+    farmer_thread = CeladonFarmer(name="FarmerThread",
                                      args=(prowatch,))
     # Farm
     farmer_thread.start()
 
-    # Input listener thread
-    listener_thread = InputListener(name="InputListenerThread",
-                                    args=(farmer_thread,cli,prowatch,))
-    # Listen for input
-    listener_thread.start()
+    
 
     # Create Radon thread for managing screenshots / OCR
     radon_thread = Radon(name="TesseractInteractionThread",
                          args=(farmer_thread,cli,prowatch,))
-    radon_thread.run()
+    radon_thread.start()
+
+    # Input listener thread
+    listener_thread = InputListener(name="InputListenerThread",
+                                    args=(farmer_thread,cli,prowatch,radon_thread))
+    # Listen for input
+    listener_thread.start()
 
 
 # Start the main function
