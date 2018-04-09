@@ -297,6 +297,7 @@ class Farmer(threading.Thread):
         Method that randomizes between long or short AFK time.
         :return: a short or long AFK sleep.
         """
+        """
         # 1 in every 20 AFKs it will be a long afk
         one_in_every = 20
         rand = random.randint(0, one_in_every) + 1
@@ -305,6 +306,11 @@ class Farmer(threading.Thread):
         else:
             sleep_timer = get_long_afk_sleep()
         return sleep_timer
+        """
+        # For now only afk for a short time
+        # in case we reset to an unknown location such as a pokecenter
+        # when battling in the ghost town or cave
+        return get_short_afk_sleep()
 
     def reset_afk_timeout(self):
         """

@@ -19,12 +19,10 @@ def main():
     cli = PROTrainerCLI(name="CLIThread")
     cli.start()
     # Create the fishing rod farmer
-    farmer_thread = CeladonFarmer(name="FarmerThread",
+    farmer_thread = GhostTowerFarmer(name="FarmerThread",
                                      args=(prowatch,))
     # Farm
     farmer_thread.start()
-
-    
 
     # Create Radon thread for managing screenshots / OCR
     radon_thread = Radon(name="TesseractInteractionThread",
