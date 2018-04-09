@@ -53,6 +53,9 @@ class Radon(threading.Thread):
         "button_accept_red": (202,4,4,), # PASS
         "button_close_private_message": (186,186,186,), # 
         "button_pokeball_colour": (255,148,58,), # 
+        "button_pwo_login_green_light": (136,184,91,),
+        "button_pwo_login_blue": (100,182,160,),
+        "button_pwo_login_green_dark": (95,184,118,),
         #"button_close_private_message": (71,71,71,), # 
         #"button_close_private_message": (71,71,71,), # 
         #"button_close_private_message": (17,17,17,), # 
@@ -191,6 +194,47 @@ class Radon(threading.Thread):
 
 
             #
+            #   Start PWO
+            
+            if radon_status.get("code") == 110:
+                #
+                #   P W O  L O G I N
+                matching_tiles = []
+                self.grid_width = 4
+                self.grid_height = 5
+                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                    screenshot, self.colours["button_pwo_login_green_light"], 0.03
+                )
+                shuffle(matching_tiles)
+                max_tile_y = 0
+                min_tile_y = 99999
+                for tile in matching_tiles:
+                    #print(tile)
+                    if int(tile["info"]["y"]) > max_tile_y:
+                        max_tile_y = int(tile["info"]["y"])
+                    if int(tile["info"]["y"]) < min_tile_y:
+                        min_tile_y = int(tile["info"]["y"])
+                #
+                #   Select a mid point, if the tiles are above it, omit them
+                
+                minimum_valid_y_value = max_tile_y / 2
+                #print("MIN: {} | MAX: {} | THRESHOLD: {}".format(
+                #    min_tile_y, max_tile_y, minimum_valid_y_value
+                #))
+                valid_tiles = []
+                for tile in matching_tiles:
+                    if tile["info"]["y"] >= minimum_valid_y_value:
+                        valid_tiles.append(tile)
+
+                matching_tiles = valid_tiles
+                radon_status["tiles"] = matching_tiles
+                self.grid_width = 8
+                self.grid_height = 8
+            #   End PWO
+            #   
+
+
+            #
             #   Let's fix the status string to put the time in there
             radon_status = self.insert_process_time_into_radon_status(radon_status)
 
@@ -261,6 +305,29 @@ class Radon(threading.Thread):
         )
         return center
 
+    def get_radon_status_from_text_for_pwo(self, text, check_text):
+        radon_status = {
+            "code": 0,
+            "status": "0: [pwo] radon could not gather any useful information during this analysis of text"
+        }
+
+        #
+        #   Incoming private message from another player
+        #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
+        login_terms = [
+            ("P 0 K 6 M C N", text,),
+            ("POKeMON", text,),
+            ("p o k e m o n", check_text),
+        ]
+        for term in login_terms:
+            if term[0] in term[1]:
+                radon_status = {
+                    "code": 110,
+                    "status": "110: we need to login"
+                }
+
+        return radon_status
+
 
     #
     #   A function to return a Radon Status
@@ -289,6 +356,16 @@ class Radon(threading.Thread):
         #
         #   Exact matches only
         check_text = text.lower()
+
+        #
+        #   PWO CODE
+        pwo_enabled = False
+        if pwo_enabled:
+            pwo_radon_status = self.get_radon_status_from_text_for_pwo(text, check_text)
+            return pwo_radon_status
+
+        #   END PWO CODE
+        #
 
         #
         #   Incoming private message from another player
@@ -462,7 +539,8 @@ class Radon(threading.Thread):
                 if pokemon_radon_status["code"] != 100 and radon_status["code"] != 27:
                     radon_status = pokemon_radon_status
 
-        
+        if radon_status.get("tiles"):
+            print(radon_status)
 
         #
         #   If Debug, print
@@ -601,12 +679,8 @@ class Radon(threading.Thread):
         #
         #    Using this grid, create the images sections we need and return them
         x,y = 0,0
-        if self.TOP_LEFT_CORNER != (-1,-1,) and self.BOTTOM_RIGHT_CORNER != (-1,-1,):
-        	#
-        	#	We have set a crop, assign the TOP_LEFT_CORNER co-ordinates to x,y
-        	x = self.TOP_LEFT_CORNER[0]
-        	y = self.TOP_LEFT_CORNER[1]
-        
+
+
         tiles = []
         for current_grid_tile in range(0, total_squares):
             tile_data = {
@@ -639,6 +713,21 @@ class Radon(threading.Thread):
             #   } 
             #
             #    Save to our output array
+            #
+            #   If we have modified the size of our Radon screenshot, update it here
+            if self.TOP_LEFT_CORNER != (-1,-1,) and self.BOTTOM_RIGHT_CORNER != (-1,-1,):
+                #
+                #   Modify the co-ordinates back to the real PC
+                alt_x = int(tile["info"]["x"]) + self.TOP_LEFT_CORNER[0]
+                alt_y = int(tile["info"]["y"]) + self.TOP_LEFT_CORNER[1]
+                tile_data = {
+                    "x": alt_x,
+                    "y": alt_y,
+                    "x_center": int(alt_x + (grid_width / 2)),
+                    "y_center": int(alt_y + (grid_height / 2)),
+                    "coordinates": (alt_x,alt_y,alt_x+grid_width,alt_y+grid_height,)
+                }
+                tile["info"] = tile_data
             tiles.append(tile)
             #
             #    Iterate through our grid, updating our co-ordinated each time
@@ -649,6 +738,7 @@ class Radon(threading.Thread):
                     y = 0
                 else:
                     y += grid_height
+
         return tiles
 
     #
