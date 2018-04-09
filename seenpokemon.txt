@@ -681,3 +681,7 @@
 [18-04-09-03-38-10]	29	29: we are fighting a pokemon	vulpix
 [18-04-09-03-45-18]	29	29: we are fighting a pokemon	spearow
 [18-04-09-03-47-19]	29	29: we are fighting a pokemon	vulpix
+[18-04-09-22-03-27]	29	29: we are fighting a pokemon	spearow
+[18-04-09-22-06-04]	29	29: we are fighting a pokemon	squirtle
+[18-04-09-22-08-36]	29	29: we are fighting a pokemon	rattata
+[18-04-09-22-14-56]	29	29: we are fighting a pokemon	spearow
