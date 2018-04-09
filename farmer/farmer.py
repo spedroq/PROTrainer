@@ -85,14 +85,15 @@ class Farmer(threading.Thread):
         "haunter",
         "gastly",
         "gengar",
-        "cubone"
+        "cubone",
+        "abra"
     ]
 
     # AFK timeout
     afk_timeout = get_random_afk_timeout()
     #
     #   Emergency Reset Counter
-    emergency_reset_radon_unknown_statuses_limit = 100
+    emergency_reset_radon_unknown_statuses_limit = 999
     unknown_radon_statuses_counter = 0
 
     def run(self) -> None:

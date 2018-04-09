@@ -509,6 +509,8 @@ class Radon(threading.Thread):
                 trainer_battle_terms = [
                     ("Gamer", text,),
                     ("Maniac", text,),
+                    ("Rocket", text,),
+                    ("Ghost", text,),
                 ]
                 for term in trainer_battle_terms:
                     if term[0] in term[1]:

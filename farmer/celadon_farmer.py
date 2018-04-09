@@ -16,8 +16,8 @@ class CeladonFarmer(Farmer):
         
         #
         #   Farm
-        PROTrainerMove(["d"], 12, timeout=0.05, random_deviation=0.1),
-        PROTrainerMove(["a"], 12, timeout=0.05, random_deviation=0.1),
+        PROTrainerMove(["d"], 15, timeout=0.05, random_deviation=0.1),
+        PROTrainerMove(["a"], 15, timeout=0.05, random_deviation=0.1),
         PROTrainerMove(["1"], 10, timeout=.75, random_deviation=0.5)
 
     ])
