@@ -13,7 +13,8 @@ class GhostTowerFarmer(Farmer):
                                                PROTrainerMove(["s"], 15, timeout=0.05, random_deviation=0.1),
                                                PROTrainerMove(["w"], 15, timeout=0.05, random_deviation=0.1),
                                                PROTrainerMove(["s"], 15, timeout=0.05, random_deviation=0.1),
-                                               PROTrainerMove(["1"], 1, timeout=1, random_deviation=1)])
+                                               PROTrainerMove([" "], 15, timeout=0.05, random_deviation=0.1),
+                                               PROTrainerMove(["1"], 1, timeout=0.6, random_deviation=0.5)])
     poke_center_move_set = PROTrainerMoveSequence([PROTrainerMove(["4", "w"], 45, timeout=0.05, random_deviation=0.1),
                                                    PROTrainerMove(["4", "d"], 25, timeout=0.05, random_deviation=0.1),
                                                    PROTrainerMove(["1", " ", "a"], 25, timeout=0.05, random_deviation=0.1),

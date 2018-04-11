@@ -76,17 +76,17 @@ class Farmer(threading.Thread):
     last_poke_name = ""
     # Pokemon we want to catch
     pokes_to_catch = [
-        "magikarp",
+        "kadabra",
+        "abra",
+        "squirtle",
         "ditto",
-        "meowth",
         "growlithe",
         "jigglypuff",
         "vulpix",
-        "haunter",
         "gastly",
         "gengar",
         "cubone",
-        "abra"
+        "staryu"
     ]
 
     # AFK timeout

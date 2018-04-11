@@ -135,9 +135,9 @@ class InputListener(threading.Thread):
                 if self.farmer.quit:
                     self.cli.input_string_mode = "quitting"
                 print("Quit:(False)")
-            # Check for p
-        
-            if key.name == 'p':
+
+            # Check for Caps Lock
+            if key.name == 'caps lock':
                 #
                 #   Is it the first time we unpaused?
                 #print(self.cli.cli_mode["state"])

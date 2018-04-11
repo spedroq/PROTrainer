@@ -1,5 +1,6 @@
 from farmer.cave_famer import CaveFarmer
 from farmer.fishing_rod_farmer import FishingRodFarmer
+from farmer.fuchsia_fish_farmer import FuchsiaFishFarmer
 from farmer.ghost_farmer import GhostTowerFarmer
 from farmer.surf_famer import SurfFarmer
 from farmer.victory_road_farmer import VictoryRoadFarmer
@@ -19,8 +20,8 @@ def main():
     cli = PROTrainerCLI(name="CLIThread")
     cli.start()
     # Create the fishing rod farmer
-    farmer_thread = CeladonFarmer(name="FarmerThread",
-                                     args=(prowatch,))
+    farmer_thread = FuchsiaFishFarmer(name="FarmerThread",
+                                      args=(prowatch,))
     # Farm
     farmer_thread.start()
 

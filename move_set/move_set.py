@@ -163,17 +163,18 @@ class SimulatedKeyboard:
         time.sleep(fraction)
 
     def perform_move(self, key: str, move: PROTrainerMove):
-        if "mouse" in key:
-            # Split the coordinates and mouse click
-            mouse_config = key.split("%")
-            key = mouse_config[0]
-            x_coordinate = mouse_config[1]
-            y_coordinate = mouse_config[2]
-            # Press key
-            self.press_mouse(key, int(x_coordinate), int(y_coordinate))
-        else:
-            # Press key
-            self.press_key(key)
+        if key != "nothing":
+            if "mouse" in key:
+                # Split the coordinates and mouse click
+                mouse_config = key.split("%")
+                key = mouse_config[0]
+                x_coordinate = mouse_config[1]
+                y_coordinate = mouse_config[2]
+                # Press key
+                self.press_mouse(key, int(x_coordinate), int(y_coordinate))
+            else:
+                # Press key
+                self.press_key(key)
 
     def press_key(self, key: str) -> None:
         """
