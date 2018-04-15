@@ -88,6 +88,7 @@ class Farmer(threading.Thread):
         "cubone",
         "staryu"
     ]
+    pokes_to_catch = []
 
     # AFK timeout
     afk_timeout = get_random_afk_timeout()

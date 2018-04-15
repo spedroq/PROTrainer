@@ -20,7 +20,7 @@ def main():
     cli = PROTrainerCLI(name="CLIThread")
     cli.start()
     # Create the fishing rod farmer
-    farmer_thread = FuchsiaFishFarmer(name="FarmerThread",
+    farmer_thread = FishingRodFarmer(name="FarmerThread",
                                       args=(prowatch,))
     # Farm
     farmer_thread.start()
