@@ -78,7 +78,6 @@ class Farmer(threading.Thread):
     pokes_to_catch = [
         "kadabra",
         "abra",
-        "squirtle",
         "ditto",
         "growlithe",
         "jigglypuff",
@@ -86,16 +85,24 @@ class Farmer(threading.Thread):
         "gastly",
         "gengar",
         "cubone",
-        "staryu"
+        "staryu",
+        "pikachu"
     ]
-    pokes_to_catch = []
+    #pokes_to_catch = []
 
     # AFK timeout
     afk_timeout = get_random_afk_timeout()
     #
     #   Emergency Reset Counter
-    emergency_reset_radon_unknown_statuses_limit = 999
+    emergency_reset_radon_unknown_statuses_limit = 500
     unknown_radon_statuses_counter = 0
+    sequential_radon_status_limit = 500
+    sequential_radon_status_count = 0
+    last_radon_status = {}
+
+    is_emergency = False
+
+
 
     def run(self) -> None:
         # Create a PROWatch
@@ -157,23 +164,55 @@ class Farmer(threading.Thread):
     """ Radon Interaction """
 
     def deliver_radon_status(self, status: dict) -> None:
+        #
+        #   Deliver the Radon Status
         self.radon_status = status
+        #
+        #   Marker for is an emergency
+        is_emergency = self.is_emergency
+        #
+        #   E M E R G E N C Y  C H E C K
+        if self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
+            self.is_emergency = True
+        if self.sequential_radon_status_count > self.sequential_radon_status_limit:
+            self.is_emergency = True
+
+        if self.is_emergency:
+            self.prowatch.append_write_to_log(
+                97,
+                "emergency, protrainer has been reading the same radon status for too long",
+                "None",
+                "None"
+            )
+            print("E M E R G E N C Y  -  P A U S I N G")
+            #
+            #   P A U S E
+            self.paused = True
+            self.is_emergency = True
+
         #
         #   When the status is delivered, count up any sequential 0s
         if status["code"] == 0:
-            self.unknown_radon_statuses_counter += 1
-            if self.unknown_radon_statuses_counter > (self.emergency_reset_radon_unknown_statuses_limit * 0.80):
-                self.prowatch.append_write_to_log(
-                    98,
-                    "warning, protrainer has been experiencing sequential unknown radon statuses, limit 80% reached",
-                    "None"
-                    "None"
-                )
-                print("warning, protrainer has been experiencing sequential unknown radon statuses, limit 80% reached")
+            #
+            #   If it's a 0, add up the 0 counter
+            self.unknown_radon_statuses_counter += 1            
         #
-        #   If it's not equal to 0, reset the counter as it's a sequential counter
+        #   If it's not equal to 0, reset the counter as it's a sequential count for unknowns
         if status["code"] != 0:
             self.unknown_radon_statuses_counter = 0
+        #
+        #   If this status is different to the last one reset the sequential count
+        if status != self.last_radon_status:
+            self.sequential_radon_status_count = 0
+        #
+        #   If this status is the same as the last one, add one to the counter
+        if status == self.last_radon_status:
+            self.sequential_radon_status_count += 1
+        #
+        #   Set our last status
+        self.last_radon_status = self.radon_status
+        #
+        #   Print the status 
         print(self.radon_status["status"])
 
     """ Validate Move Status """
@@ -187,20 +226,7 @@ class Farmer(threading.Thread):
         # Check what codes that Radon passed, if it's a high-priority code
         # check it first, then look to see if we need to change our moveset
         # to click on the screen
-        if self.radon_status.get("code") == 20 or self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
-            if self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
-                print("E R R O R:  W E  A R E  L O S T  -  A B O R T  B Y  P A U S I N G")
-                self.prowatch.append_write_to_log(
-                    99,
-                    "protrainer is lost, paused inputs",
-                    self.poke_center_move_set,
-                    "None"
-                )
-                self.unknown_radon_statuses_counter = 0
-                #
-                #   Pause all input
-                self.pause = True
-
+        if self.radon_status.get("code") == 20:
             # Speak to Nurse Joy Sequence, there is no PP
             # Perform a move sequence
             self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
