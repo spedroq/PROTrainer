@@ -20,6 +20,7 @@ import sys
 import threading
 import time
 from random import shuffle
+import random
 import datetime
 
 exitFlag = 0
@@ -267,7 +268,7 @@ class Radon(threading.Thread):
     # Initialise
     def run(self):
         #self.prowatch.start_logging()
-        print("R A D O N  I S  S T A R T I N G  U P . . . ")
+        #print("R A D O N  I S  S T A R T I N G  U P . . . ")
         self.farmer = self._args[0]
         self.cli = self._args[1]
         self.prowatch = self._args[2]
@@ -371,8 +372,7 @@ class Radon(threading.Thread):
         #   Incoming private message from another player
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
         pm_terms = [
-            (" PM", text,),
-            ("chat", check_text,)
+            (" PM", text,)
         ]
         for term in pm_terms:
             if term[0] in term[1]:
@@ -431,10 +431,10 @@ class Radon(threading.Thread):
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
         pokeball_menu_terms = [
             ("chuuseltem", check_text,),
-            ("(house Item", check_text,),
+            ("(house Item", text,),
             ("choose item", check_text,),
-            ("pokeball", check_text,),
-            (" Item", text,)
+            ("pokeball", check_text,)
+            #(" Item", text,)
         ]
         for term in pokeball_menu_terms:
             if term[0] in term[1]:
@@ -605,13 +605,14 @@ class Radon(threading.Thread):
                         "code": 29,
                         "status": "29: we are fighting a pokemon: {}".format(fixed_typed_pokemand)
                     }
-                    break
+                    if status_string != "":
+                        with open("seenpokemon.txt", "a") as seen_pokefile:
+                            if time.time() - self.last_poke_save_time > 15:
+                                seen_pokefile.write(status_string)
+                                self.last_poke_save_time = time.time()
+                    return radon_status
                         
-        if status_string != "":
-            with open("seenpokemon.txt", "a") as seen_pokefile:
-                if time.time() - self.last_poke_save_time > 15:
-                    seen_pokefile.write(status_string)
-                    self.last_poke_save_time = time.time()
+        
 
         return radon_status
 
@@ -667,6 +668,7 @@ class Radon(threading.Thread):
     #
     #    Return a list of RadonImage objects
     def get_radon_image_objects_from_pil_image(self, pil_image):
+        a = time.time()
         #
         #    Read and store the input image information
         origin_width, origin_height = pil_image.size
@@ -740,13 +742,17 @@ class Radon(threading.Thread):
                     y = 0
                 else:
                     y += grid_height
-
+        b = time.time() - a
+        #print("{}  T I L E S  C R E A T E D  I N  {}s".format(
+        #    len(tiles), round(b, 4) 
+        #))
         return tiles
 
     #
     #    A function to handle colour analysis
     # Tolerance here is a percentage representated as a decimal
     def colour_analysis_for_given_colour(self, pil_image_rgb, search_colour=(255,255,255,), tolerance=0.1):
+        a = time.time()
         #
         #    Ok, so let's adapt our search_colour for tolerance
         toleranced_search_colour_max = (
@@ -776,9 +782,14 @@ class Radon(threading.Thread):
         x_width, y_height = pil_image_rgb.size
         #
         #    What colour is this pixel?
-        r, g, b = pil_image_rgb.getpixel(
-            (int(x_width / 2), int(y_height / 2))
-        )
+        #   Select a random pixel
+        rand_x = random.randint(0,x_width - 1)
+        rand_y = random.randint(0,y_height - 1)
+        #print("RANDOM: {},{}".format(rand_x, rand_y))
+        r, g, b = pil_image_rgb.getpixel((rand_x, rand_y))
+        #r, g, b = pil_image_rgb.getpixel(
+        #    (int(x_width / 2), int(y_height / 2))
+        #)
         #
         #    Analyse this colour, if it matches each of our inputs - we are valid
         is_valid_red, is_valid_blue, is_valid_green = False,False,False
@@ -799,6 +810,8 @@ class Radon(threading.Thread):
             "g_analysis": is_valid_green,
             "b_analysis": is_valid_blue
         }
+        b = time.time() - a
+        #print("C O L O U R  A N A L Y S I S  I N  {}s".format(round(b, 4)))
         return analysis
 
 

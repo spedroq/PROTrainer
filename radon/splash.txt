@@ -1,4 +1,18 @@
 #
+#     _____  _____   ____ _______        _                                                
+#    |  __ \|  __ \ /____\__   __|      (_)                                               
+#    | |__) | |__) |______| | | |_ __ __ _ _ _    ___ _ __                                
+#    |  ___/|  _  /|_(__)_| | | '__/ _` | | '_ \ / _ \ '__|                               
+#    | |    | | \ \|      | | | | | (_| | | | | |  __/ |                                  
+#    |_|    |_|  \_\\____/  |_|_|  \__,_|_|_| |_|\___|_|                                  
+#
+#
+#    p r o t r a i n e r
+#    A Pokemon Revolution Online trainer.
+#
+#    -    =    -    =    -    =    -    =    -    =    -    =    -    = 
+#
+#                     p o w e r e d  b y 
 #   
 #                             .o8                        
 #                            "888                        
@@ -9,11 +23,9 @@
 #    d888b    `Y888""8o `Y8bod88P" `Y8bod8P' o888o o888o 
 #
 #
-#    R A D O N
-#    Image analysis for PRO (Pokemon Revolution Online) using Tesseract.
+#    r a d o n
+#    Image analysis for Pokemon Revolution Online using Tesseract.
 #
-#
-#    V E R S I O N
-#    RADON-ALPHA-100008
+#    -    =    -    =    -    =    -    =    -    =    -    =    -    =
 #
 #

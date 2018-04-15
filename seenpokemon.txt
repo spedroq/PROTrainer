@@ -686,3 +686,5 @@
 [18-04-09-22-08-36]	29	29: we are fighting a pokemon	rattata
 [18-04-09-22-14-56]	29	29: we are fighting a pokemon	spearow
 [18-04-09-22-42-26]	29	29: we are fighting a pokemon	spearow
+[18-04-15-05-43-54]	29	29: we are fighting a pokemon	weedle
+[18-04-15-05-44-11]	29	29: we are fighting a pokemon	kakuna
