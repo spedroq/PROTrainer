@@ -63,7 +63,7 @@ class Radon(threading.Thread):
     }
     grid_width = 8
     grid_height = 8
-    debug_is_printing_text = False
+    debug_is_printing_text = True
     last_poke_save_time = time.time()
     last_poke_name = ""
     
@@ -147,10 +147,10 @@ class Radon(threading.Thread):
             #   We need to close this private message
             elif radon_status.get("code") == 12:
                 matching_tiles = []
-                self.grid_width = 6
-                self.grid_height = 6
+                self.grid_width = 3
+                self.grid_height = 3
                 matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_close_private_message"], 0.00
+                    screenshot, self.colours["button_close_private_message"], 0.05
                 )
                 #
                 #   Fix the x co-ord by 26px
@@ -372,7 +372,9 @@ class Radon(threading.Thread):
         #   Incoming private message from another player
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
         pm_terms = [
-            (" PM", text,)
+            (" PM", text,),
+            ("MSG", text),
+            (" says ", text,),
         ]
         for term in pm_terms:
             if term[0] in term[1]:
@@ -402,7 +404,7 @@ class Radon(threading.Thread):
         learn_move_terms = [
             ("this move", check_text,),
             ("not learn", check_text,),
-            ("forget ", check_text,),
+            (" Forget ", text,),
             ("learn move", check_text,)
         ]
         for term in learn_move_terms:
@@ -468,6 +470,7 @@ class Radon(threading.Thread):
         confirm_selection_menu_terms = [
             ("cancel ok", check_text,),
             ("cancel", check_text,),
+            ("learn move?", check_text)
         ]
         for term in confirm_selection_menu_terms:
             if term[0] in term[1]:
@@ -496,7 +499,7 @@ class Radon(threading.Thread):
         if "wild" in check_text or "VS" in text or "vS=" in text:
             #
             #   Don't check for this if we need to catch [13] or learn move [22]
-            if radon_status["code"] != 22 and radon_status["code"] != 13 and radon_status["code"] != 20:
+            if radon_status["code"] != 22 and radon_status["code"] != 13 and radon_status["code"] != 20 and radon_status["code"] != 11:
                 #
                 #   Set default "unknown" poke status
                 radon_status = {

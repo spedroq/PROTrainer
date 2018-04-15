@@ -88,7 +88,7 @@ class Farmer(threading.Thread):
         "staryu",
         "pikachu"
     ]
-    #pokes_to_catch = []
+    pokes_to_catch = []
 
     # AFK timeout
     afk_timeout = get_random_afk_timeout()
@@ -187,7 +187,7 @@ class Farmer(threading.Thread):
             print("E M E R G E N C Y  -  P A U S I N G")
             #
             #   P A U S E
-            self.paused = True
+            #self.paused = True
             self.is_emergency = True
 
         #
@@ -226,7 +226,7 @@ class Farmer(threading.Thread):
         # Check what codes that Radon passed, if it's a high-priority code
         # check it first, then look to see if we need to change our moveset
         # to click on the screen
-        if self.radon_status.get("code") == 20:
+        if self.radon_status.get("code") == 20 or self.is_emergency:
             # Speak to Nurse Joy Sequence, there is no PP
             # Perform a move sequence
             self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
@@ -236,6 +236,7 @@ class Farmer(threading.Thread):
                 self.poke_center_move_set,
                 "None"
             )
+            self.is_emergency = False
 
         """ CATCH POKEMON """
         # We need to catch this pokemon by throwing a pokeball

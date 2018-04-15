@@ -11,6 +11,7 @@ def test_all_screenshots(r):
    
 
     mappings = [
+        ("private_message", 12),
         ("interaction_cancel_ok", 11),
         ("learnthismoveselect", 22),
         ("login", 10),
@@ -22,6 +23,8 @@ def test_all_screenshots(r):
         ("nothing", 0),
         ("pokebattle_trainer", 27),
     ]
+
+    failed_screenshots = []
 
     #
     #   Get the screenshots
@@ -54,6 +57,8 @@ def test_all_screenshots(r):
             passes += 1
         else:
             fails += 1
+            failed_screenshots.append(screenshot_path)
+
 
     print("\n-    =    -    =    -    =    -    =    -    =    -    =    -    =    -    =    -    =    -    =    -    =\n")
 
@@ -61,6 +66,8 @@ def test_all_screenshots(r):
         passes, passes + fails,
         fails, passes + fails,
     ))
+    for fs in failed_screenshots:
+        print("\n\tFAIL: {}".format(fs))
     print("\n\tCOMPLETE: {}% PASS\n".format(
         round(passes / (passes + fails) * 100, 2)
     ))
