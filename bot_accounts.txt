@@ -6,6 +6,7 @@ Username: Ruspinfirl
 Password: bee8caiK4h
 Email: AbbeyKAyala@teleworm.us
 Clean: Yes
+Banned: No
 
 
 #2
@@ -14,6 +15,7 @@ Username: Anxing
 Password: eaMoh0foh
 Email: NingKang@dayrep.com
 Clean: Yes
+Banned: Yes
 
 
 
@@ -22,4 +24,13 @@ Assignee: Pedro
 Username: Brokinights
 Password: SiuDoh9Gi8
 Email: RafaelaCardosoAlves@dayrep.com
-Clean: ?
+Clean: Yes
+
+
+
+#4
+Assignee: Pedro
+Username: Sublon
+Password: Miano5ahwie
+Email: StefanoMarchand@armyspy.com
+Clean: Yes
