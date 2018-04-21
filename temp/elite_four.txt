@@ -1,0 +1,728 @@
+PS C:\____Development\PROTrainer> python api.py
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  dewgong
+T Y P E  :  water
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+water vs. fire = 2
+water vs. ground = 2
+water vs. rock = 2
+2x      3
+1x      12
+0.5x    3
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. water = 0.5
+water vs. water = 0.5
+electric vs. water = 2
+grass vs. water = 2
+ice vs. water = 0.5
+steel vs. water = 0.5
+2x      2
+1x      12
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'electric': 1, 'grass': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  cloyster
+T Y P E  :  water
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+water vs. fire = 2
+water vs. ground = 2
+water vs. rock = 2
+2x      3
+1x      12
+0.5x    3
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. water = 0.5
+water vs. water = 0.5
+electric vs. water = 2
+grass vs. water = 2
+ice vs. water = 0.5
+steel vs. water = 0.5
+2x      2
+1x      12
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'electric': 1, 'grass': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  slowbro
+T Y P E  :  water
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+water vs. fire = 2
+water vs. ground = 2
+water vs. rock = 2
+2x      3
+1x      12
+0.5x    3
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. water = 0.5
+water vs. water = 0.5
+electric vs. water = 2
+grass vs. water = 2
+ice vs. water = 0.5
+steel vs. water = 0.5
+2x      2
+1x      12
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'electric': 1, 'grass': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  jynx
+T Y P E  :  ice
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+ice vs. grass = 2
+ice vs. ground = 2
+ice vs. flying = 2
+ice vs. dragon = 2
+2x      4
+1x      10
+0.5x    4
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. ice = 2
+ice vs. ice = 0.5
+fighting vs. ice = 2
+rock vs. ice = 2
+steel vs. ice = 2
+2x      4
+1x      13
+0.5x    1
+0x      0
+
+A N A L Y S I S
+{'fire': 1, 'fighting': 1, 'rock': 1, 'steel': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  lapras
+T Y P E  :  water
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+water vs. fire = 2
+water vs. ground = 2
+water vs. rock = 2
+2x      3
+1x      12
+0.5x    3
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. water = 0.5
+water vs. water = 0.5
+electric vs. water = 2
+grass vs. water = 2
+ice vs. water = 0.5
+steel vs. water = 0.5
+2x      2
+1x      12
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'electric': 1, 'grass': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  onix
+T Y P E  :  rock
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+rock vs. fire = 2
+rock vs. ice = 2
+rock vs. flying = 2
+rock vs. bug = 2
+2x      4
+1x      11
+0.5x    3
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+normal vs. rock = 0.5
+fire vs. rock = 0.5
+water vs. rock = 2
+grass vs. rock = 2
+fighting vs. rock = 2
+poison vs. rock = 0.5
+ground vs. rock = 2
+flying vs. rock = 0.5
+steel vs. rock = 2
+2x      5
+1x      9
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'water': 1, 'grass': 1, 'fighting': 1, 'ground': 1, 'steel': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  hitmonchan
+T Y P E  :  fighting
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+fighting vs. normal = 2
+fighting vs. ice = 2
+fighting vs. rock = 2
+fighting vs. dark = 2
+fighting vs. steel = 2
+2x      5
+1x      7
+0.5x    5
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+flying vs. fighting = 2
+psychic vs. fighting = 2
+bug vs. fighting = 0.5
+rock vs. fighting = 0.5
+dark vs. fighting = 0.5
+fairy vs. fighting = 2
+2x      3
+1x      12
+0.5x    3
+0x      0
+
+A N A L Y S I S
+{'flying': 1, 'psychic': 1, 'fairy': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  hitmonlee
+T Y P E  :  fighting
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+fighting vs. normal = 2
+fighting vs. ice = 2
+fighting vs. rock = 2
+fighting vs. dark = 2
+fighting vs. steel = 2
+2x      5
+1x      7
+0.5x    5
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+flying vs. fighting = 2
+psychic vs. fighting = 2
+bug vs. fighting = 0.5
+rock vs. fighting = 0.5
+dark vs. fighting = 0.5
+fairy vs. fighting = 2
+2x      3
+1x      12
+0.5x    3
+0x      0
+
+A N A L Y S I S
+{'flying': 1, 'psychic': 1, 'fairy': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  onix
+T Y P E  :  rock
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+rock vs. fire = 2
+rock vs. ice = 2
+rock vs. flying = 2
+rock vs. bug = 2
+2x      4
+1x      11
+0.5x    3
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+normal vs. rock = 0.5
+fire vs. rock = 0.5
+water vs. rock = 2
+grass vs. rock = 2
+fighting vs. rock = 2
+poison vs. rock = 0.5
+ground vs. rock = 2
+flying vs. rock = 0.5
+steel vs. rock = 2
+2x      5
+1x      9
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'water': 1, 'grass': 1, 'fighting': 1, 'ground': 1, 'steel': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  machamp
+T Y P E  :  fighting
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+fighting vs. normal = 2
+fighting vs. ice = 2
+fighting vs. rock = 2
+fighting vs. dark = 2
+fighting vs. steel = 2
+2x      5
+1x      7
+0.5x    5
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+flying vs. fighting = 2
+psychic vs. fighting = 2
+bug vs. fighting = 0.5
+rock vs. fighting = 0.5
+dark vs. fighting = 0.5
+fairy vs. fighting = 2
+2x      3
+1x      12
+0.5x    3
+0x      0
+
+A N A L Y S I S
+{'flying': 1, 'psychic': 1, 'fairy': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  gengar
+T Y P E  :  ghost
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+ghost vs. psychic = 2
+ghost vs. ghost = 2
+2x      2
+1x      14
+0.5x    1
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+poison vs. ghost = 0.5
+bug vs. ghost = 0.5
+ghost vs. ghost = 2
+dark vs. ghost = 2
+2x      2
+1x      12
+0.5x    2
+0x      2
+
+A N A L Y S I S
+{'ghost': 1, 'dark': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  golbat
+T Y P E  :  poison
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+poison vs. grass = 2
+poison vs. fairy = 2
+2x      2
+1x      11
+0.5x    4
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+grass vs. poison = 0.5
+fighting vs. poison = 0.5
+poison vs. poison = 0.5
+ground vs. poison = 2
+psychic vs. poison = 2
+bug vs. poison = 0.5
+fairy vs. poison = 0.5
+2x      2
+1x      11
+0.5x    5
+0x      0
+
+A N A L Y S I S
+{'ground': 1, 'psychic': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  haunter
+T Y P E  :  ghost
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+ghost vs. psychic = 2
+ghost vs. ghost = 2
+2x      2
+1x      14
+0.5x    1
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+poison vs. ghost = 0.5
+bug vs. ghost = 0.5
+ghost vs. ghost = 2
+dark vs. ghost = 2
+2x      2
+1x      12
+0.5x    2
+0x      2
+
+A N A L Y S I S
+{'ghost': 1, 'dark': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  arbok
+T Y P E  :  poison
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+poison vs. grass = 2
+poison vs. fairy = 2
+2x      2
+1x      11
+0.5x    4
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+grass vs. poison = 0.5
+fighting vs. poison = 0.5
+poison vs. poison = 0.5
+ground vs. poison = 2
+psychic vs. poison = 2
+bug vs. poison = 0.5
+fairy vs. poison = 0.5
+2x      2
+1x      11
+0.5x    5
+0x      0
+
+A N A L Y S I S
+{'ground': 1, 'psychic': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  gengar
+T Y P E  :  ghost
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+ghost vs. psychic = 2
+ghost vs. ghost = 2
+2x      2
+1x      14
+0.5x    1
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+poison vs. ghost = 0.5
+bug vs. ghost = 0.5
+ghost vs. ghost = 2
+dark vs. ghost = 2
+2x      2
+1x      12
+0.5x    2
+0x      2
+
+A N A L Y S I S
+{'ghost': 1, 'dark': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  gyarados
+T Y P E  :  water
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+water vs. fire = 2
+water vs. ground = 2
+water vs. rock = 2
+2x      3
+1x      12
+0.5x    3
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. water = 0.5
+water vs. water = 0.5
+electric vs. water = 2
+grass vs. water = 2
+ice vs. water = 0.5
+steel vs. water = 0.5
+2x      2
+1x      12
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'electric': 1, 'grass': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  dragonair
+T Y P E  :  dragon
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+dragon vs. dragon = 2
+2x      1
+1x      15
+0.5x    1
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. dragon = 0.5
+water vs. dragon = 0.5
+electric vs. dragon = 0.5
+grass vs. dragon = 0.5
+ice vs. dragon = 2
+dragon vs. dragon = 2
+fairy vs. dragon = 2
+2x      3
+1x      11
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'ice': 1, 'dragon': 1, 'fairy': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  dragonair
+T Y P E  :  dragon
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+dragon vs. dragon = 2
+2x      1
+1x      15
+0.5x    1
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. dragon = 0.5
+water vs. dragon = 0.5
+electric vs. dragon = 0.5
+grass vs. dragon = 0.5
+ice vs. dragon = 2
+dragon vs. dragon = 2
+fairy vs. dragon = 2
+2x      3
+1x      11
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'ice': 1, 'dragon': 1, 'fairy': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  aerodactyl
+T Y P E  :  rock
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+rock vs. fire = 2
+rock vs. ice = 2
+rock vs. flying = 2
+rock vs. bug = 2
+2x      4
+1x      11
+0.5x    3
+0x      0
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+normal vs. rock = 0.5
+fire vs. rock = 0.5
+water vs. rock = 2
+grass vs. rock = 2
+fighting vs. rock = 2
+poison vs. rock = 0.5
+ground vs. rock = 2
+flying vs. rock = 0.5
+steel vs. rock = 2
+2x      5
+1x      9
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'water': 1, 'grass': 1, 'fighting': 1, 'ground': 1, 'steel': 1}
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+P O K E M O N  :  dragonite
+T Y P E  :  dragon
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+A T T A C K
+dragon vs. dragon = 2
+2x      1
+1x      15
+0.5x    1
+0x      1
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+D E F E N D
+
+-       =       -       =       -       =       -       =       -       =       -       =       -   =
+
+fire vs. dragon = 0.5
+water vs. dragon = 0.5
+electric vs. dragon = 0.5
+grass vs. dragon = 0.5
+ice vs. dragon = 2
+dragon vs. dragon = 2
+fairy vs. dragon = 2
+2x      3
+1x      11
+0.5x    4
+0x      0
+
+A N A L Y S I S
+{'ice': 1, 'dragon': 1, 'fairy': 1}
+PS C:\____Development\PROTrainer>

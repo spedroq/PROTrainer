@@ -1,0 +1,61 @@
+A T T A C K (L O W  D A M A G E  [0x or 0.5x]) {
+
+	'steel_x1': 13,
+	'steel_x2': 4,
+	'poison_x1': 8,
+	'ground_x1': 8,
+	'ghost_x1': 8,
+	'grass_x1': 7,
+	'rock_x1': 7,
+	'rock_x2': 1,
+	'fairy_x1': 6,
+	'dragon_x1': 5,
+	'psychic_x1': 5,
+	'dark_x1': 5,
+	'flying_x1': 5,
+	'bug_x1': 5,	
+}
+
+D E F E N D (H I G H  D A M A G E  [2x]) {
+	
+	'ground_x1': 8,
+
+	'psychic_x1': 8,
+
+	'rock_x1': 8,
+
+	'electric_x1': 7,
+	'electric_x2': 1,
+
+	'ice_x1': 7,
+
+	'steel_x1': 7,
+
+	'fighting_x1': 7,
+
+	'grass_x1': 6,
+
+	'fairy_x1': 6,	
+
+	'ghost_x1': 5,
+
+	'dark_x1': 5,
+
+	
+}
+
+steel = 24
+ground = 16
+rock= 16
+ghost = 13
+grass = 13
+psychic = 13
+fairy = 12
+
+steelix
+golem 
+gengar
+venasaur
+wigglytuff/clefable
+alakazam
+

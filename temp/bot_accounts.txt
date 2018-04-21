@@ -1,0 +1,36 @@
+bot_accounts
+
+#1
+Assignee: Louis
+Username: Ruspinfirl
+Password: bee8caiK4h
+Email: AbbeyKAyala@teleworm.us
+Clean: Yes
+Banned: No
+
+
+#2
+Assignee: Pedro
+Username: Anxing
+Password: eaMoh0foh
+Email: NingKang@dayrep.com
+Clean: Yes
+Banned: Yes
+
+
+
+#3
+Assignee: Pedro
+Username: Brokinights
+Password: SiuDoh9Gi8
+Email: RafaelaCardosoAlves@dayrep.com
+Clean: Yes
+
+
+
+#4
+Assignee: Pedro
+Username: Sublon
+Password: Miano5ahwie
+Email: StefanoMarchand@armyspy.com
+Clean: Yes

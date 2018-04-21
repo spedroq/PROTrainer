@@ -22,6 +22,7 @@ import time
 from random import shuffle
 import random
 import datetime
+import json
 import requests
 
 exitFlag = 0
@@ -58,6 +59,7 @@ class Radon(threading.Thread):
         "button_pwo_login_green_light": (136,184,91,),
         "button_pwo_login_blue": (100,182,160,),
         "button_pwo_login_green_dark": (95,184,118,),
+        "button_login_gold": (255, 193, 0),
         #"button_close_private_message": (71,71,71,), # 
         #"button_close_private_message": (71,71,71,), # 
         #"button_close_private_message": (17,17,17,), # 
@@ -67,16 +69,15 @@ class Radon(threading.Thread):
     debug_is_printing_text = False
     last_poke_save_time = time.time()
     last_poke_name = ""
+    
+    control_thread = None
+    prowatch_thread = None
+    farmer_thread = None
 
     TOP_LEFT_CORNER = (-1,-1,)
     BOTTOM_RIGHT_CORNER = (-1,-1,)
 
     pause = False
-
-    # OTHER THREAD MODULES
-    control_thread = None
-    prowatch_thread = None
-    farmer_thread = None
 
 
 
@@ -101,7 +102,7 @@ class Radon(threading.Thread):
                     matching_tiles = []
 
                     matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                        screenshot, self.colours["button_login_yellow"], 0.25
+                        screenshot, self.colours["button_login_gold"], 0.05
                     )
                     #print("MATCHES: {}".format(len(matching_tiles)))
                     #
@@ -301,6 +302,14 @@ class Radon(threading.Thread):
 
 
 
+    #
+    #   A function to read pokemon data from the radon api
+    def get_radon_api_info_for_poke(self, poke_name):
+        url = "http://kerbin.xyz/pokes?mode=lookup&poke={}".format(poke_name)
+        poke_data = requests.get(url)
+        return json.loads(poke_data.text)
+
+
 
 
 
@@ -422,7 +431,9 @@ class Radon(threading.Thread):
         login_terms = [
             ("login red", check_text,),
             ("login blue", check_text,),
-            ("login yellow", check_text,)
+            ("login yellow", check_text,),
+            ("login gold", check_text,),
+            ("login silver", check_text,)
         ]
         for term in login_terms:
             if term[0] in term[1]:
@@ -628,7 +639,7 @@ class Radon(threading.Thread):
                 if pokemand.lower() in line.lower() and pokemand != "mew" and "we are fighting a" not in line and " go " not in line.lower():
                     print(line)
                     try:
-                        self.farmer_thread.last_poke_name = pokemand
+                       self.farmer_thread.last_poke_name = pokemand
                     except:
                         pass
                     status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")
@@ -641,6 +652,24 @@ class Radon(threading.Thread):
                         "code": 29,
                         "status": "29: we are fighting a pokemon: {}".format(fixed_typed_pokemand)
                     }
+                    #
+                    #   Load API Info
+                    a = time.time()
+                    api_info = self.get_radon_api_info_for_poke(pokemand)
+                    print("\nE V  S T A T S  {}s".format(
+                        round(time.time() - a, 3)
+                    ))
+                    print("hp: {} | attack: {} | defence: {} | special_attack: {} | special_defence: {} | speed: {}\n".format(
+                        api_info["ev_data"]["hp"],
+                        api_info["ev_data"]["attack"],
+                        api_info["ev_data"]["defence"],
+                        api_info["ev_data"]["special_attack"],
+                        api_info["ev_data"]["special_defence"],
+                        api_info["ev_data"]["speed"]
+                    ))
+                    radon_status["type_data"] = api_info["pokemon"]
+                    radon_status["type_data"] =  api_info["types"]
+                    radon_status["ev_data"] = api_info["ev_data"]
                     if status_string != "":
                         with open("seenpokemon.txt", "a") as seen_pokefile:
                             if time.time() - self.last_poke_save_time > 15:
