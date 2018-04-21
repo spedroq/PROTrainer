@@ -58,8 +58,8 @@ class Control(threading.Thread):
         """ FARMER """
 
         # Create the fishing rod farmer
-        self.farmer_thread = FishingRodFarmer(name="FarmerThread",
-                                              args=(self,))
+        self.farmer_thread = CaveFarmer(name="FarmerThread",
+                                        args=(self,))
         # Farm
         self.farmer_thread.start()
         # Create Radon thread for managing screenshots / OCR
@@ -81,15 +81,25 @@ class Control(threading.Thread):
             self.interpret_configuration(line)
 
     def interpret_configuration(self, line):
+        attribute = self.get_config_attribute(line)
         # Check which configuration to set
-        if line == "farmer_pause":
+        if attribute == "farmer_pause":
             self.farmer_pause = bool(self.get_config_value(line))
-        elif line == "radon_pause":
+        elif attribute == "radon_pause":
             self.radon_pause = bool(self.get_config_value(line))
-        elif line == "catch_pokemon":
+        elif attribute == "catch_pokemon":
             self.catch_pokemon = bool(self.get_config_value(line))
-        elif line == "emergency_reset":
+        elif attribute == "emergency_reset":
             self.emergency_reset = bool(self.get_config_value(line))
+
+    @staticmethod
+    def get_config_attribute(line: str) -> str:
+        list_attributes = line.split(":")
+        if len(list_attributes) == 2:
+            attribute = list_attributes[0]
+            return attribute
+        else:
+            raise Exception("Configuration file has incorrect format.")
 
     @staticmethod
     def get_config_value(line: str) -> str:
