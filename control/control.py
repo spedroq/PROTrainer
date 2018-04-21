@@ -82,21 +82,24 @@ class Control(threading.Thread):
 
     def interpret_configuration(self, line):
         attribute = self.get_config_attribute(line)
+        value = self.get_config_value(line)
+        print(attribute + ":" + value)
         # Check which configuration to set
         if attribute == "farmer_pause":
-            self.farmer_pause = bool(self.get_config_value(line))
+            print("set: farmer_pause to: {}".format(value == "True"))
+            self.farmer_pause = True if value == "True" else False
         elif attribute == "radon_pause":
-            self.radon_pause = bool(self.get_config_value(line))
+            self.radon_pause = True if value == "True" else False
         elif attribute == "catch_pokemon":
-            self.catch_pokemon = bool(self.get_config_value(line))
+            self.catch_pokemon = True if value == "True" else False
         elif attribute == "emergency_reset":
-            self.emergency_reset = bool(self.get_config_value(line))
+            self.emergency_reset = True if value == "True" else False
 
     @staticmethod
     def get_config_attribute(line: str) -> str:
         list_attributes = line.split(":")
         if len(list_attributes) == 2:
-            attribute = list_attributes[0]
+            attribute = list_attributes[0].strip()
             return attribute
         else:
             raise Exception("Configuration file has incorrect format.")
@@ -105,7 +108,7 @@ class Control(threading.Thread):
     def get_config_value(line: str) -> str:
         list_values = line.split(":")
         if len(list_values) == 2:
-            value = list_values[1]
+            value = list_values[1].strip()
             return value
         else:
             raise Exception("Configuration file has incorrect format.")

@@ -41,7 +41,6 @@ class PROTrainerGUI(tk.Frame):
         try:
             self.draw_gui()
         except AttributeError:
-            print("LELELE")
             time.sleep(0.1)
             self.draw_gui_thread_safe()
 

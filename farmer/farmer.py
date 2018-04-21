@@ -55,7 +55,7 @@ class Farmer(threading.Thread):
     # Init Windows Shell with WScript Shell
     wsh = com_client.Dispatch("WScript.Shell")
     # Init the flag to pause the farming
-    pause = True
+    pause = False
     # Init the flag to quit the farming
     quit = False
     # Init the radon text to blank
