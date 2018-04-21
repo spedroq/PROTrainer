@@ -290,7 +290,7 @@ class Farmer(threading.Thread):
             print("\tR A D O N  D E L I V E R E D  {}  T I L E S".format(
                 len(radon_tiles)
             ))
-            if radon_status.get("code") == 12:
+            if self.radon_status.get("code") == 12:
                 print("I G N O R E D  I N C O M I N G  R A N D O  M E S S A G E  S T A T U S")
             else:
                 # Map these tiles onto a move sequence

@@ -32,13 +32,17 @@ class PROTrainerGUI(tk.Frame):
         #
         #   Define everything
         self.setup_window()
-        self.define_variables()
+        
 
         self.draw_gui_thread_safe()
+
+
 
     def draw_gui_thread_safe(self):
 
         try:
+            time.sleep(5)
+            self.define_variables()
             self.draw_gui()
         except AttributeError:
             time.sleep(0.1)
@@ -60,7 +64,12 @@ class PROTrainerGUI(tk.Frame):
     def define_variables(self):
         self.intvar_protrainer_pause = tk.IntVar()
         self.intvar_radon_pause = tk.IntVar()
-
+        #print("FARMER STATUS: {}".format(self.control_thread.farmer_thread.pause))
+        if self.control_thread.farmer_thread.pause:
+            self.intvar_protrainer_pause.set(1)
+        if self.control_thread.radon_thread.pause:
+            self.intvar_radon_pause.set(1)
+       
     #
     #   A function to draw our GUI
     def draw_gui(self):

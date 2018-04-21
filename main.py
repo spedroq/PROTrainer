@@ -17,6 +17,7 @@ def main():
 
     # S T A R T
     pro_gui = PROTrainerGUI(root=root, control_thread=control_thread)
+    
     pro_gui.mainloop()
 
 
