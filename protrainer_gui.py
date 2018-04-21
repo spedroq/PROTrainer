@@ -101,9 +101,7 @@ class PROTrainerGUI(tk.Frame):
             height=self.height / 4 * 3,
             padx=self.padding[self.default_padding],
             pady=self.padding[self.default_padding]
-        )
-
-        
+        )        
 
         self.frame_left.grid_rowconfigure(0, weight=1)
         self.frame_left.grid_rowconfigure(1, weight=1)
