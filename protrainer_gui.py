@@ -20,13 +20,14 @@ class PROTrainerGUI(tk.Frame):
     default_padding = "1em"
     #
     #   Initialise
-    def __init__(self, master=None, farmer=None, radon=None):
-        super().__init__(master)
+    def __init__(self, root, control):
+        super().__init__(root)
         self.pack(fill=tk.BOTH, expand=1)
-         #
-        #   Import farmer
-        self.farmer = farmer
-        self.radon = radon
+        #
+        #   Import farmer_thread
+        self.farmer_thread = control.farmer_thread
+        #   Import radon_thread
+        self.radon_thread = control.radon_thread
         #
         #   Define everything
         self.setup_window()
@@ -106,14 +107,14 @@ class PROTrainerGUI(tk.Frame):
             text="PROTrainer Pause", 
             variable=self.intvar_protrainer_pause,
             bg=self.colours["foreground"],
-            command=self.farmer.toggle_pause
+            command=self.farmer_thread.toggle_pause
         )
         self.checkbox_radon_pause = tk.Checkbutton(
             self.frame_left, 
             text="Radon Pause", 
             variable=self.intvar_radon_pause,
             bg=self.colours["foreground"],
-            command=self.radon.toggle_pause
+            command=self.radon_thread.toggle_pause
         )
 
 
