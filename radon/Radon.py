@@ -283,6 +283,7 @@ class Radon(threading.Thread):
         self.cli_thread = self.control_thread.cli_thread
         self.prowatch_thread = self.control_thread.prowatch_thread
         self.mainline()
+        self.pause = self.control_thread.radon_pause
         #print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
 
     """ Pause """

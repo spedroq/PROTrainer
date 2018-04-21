@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import font
 
+import time
+
+
 class PROTrainerGUI(tk.Frame):
     width = 720
     height = 405
@@ -20,20 +23,27 @@ class PROTrainerGUI(tk.Frame):
     default_padding = "1em"
     #
     #   Initialise
-    def __init__(self, root, control):
+    def __init__(self, root, control_thread):
         super().__init__(root)
         self.pack(fill=tk.BOTH, expand=1)
         #
-        #   Import farmer_thread
-        self.farmer_thread = control.farmer_thread
-        #   Import radon_thread
-        self.radon_thread = control.radon_thread
+        #   Import control thread
+        self.control_thread = control_thread
         #
         #   Define everything
         self.setup_window()
         self.define_variables()
-        self.draw_gui()
 
+        self.draw_gui_thread_safe()
+
+    def draw_gui_thread_safe(self):
+
+        try:
+            self.draw_gui()
+        except AttributeError:
+            print("LELELE")
+            time.sleep(0.1)
+            self.draw_gui_thread_safe()
 
     #
     #   A function to setup our window
@@ -107,14 +117,14 @@ class PROTrainerGUI(tk.Frame):
             text="PROTrainer Pause", 
             variable=self.intvar_protrainer_pause,
             bg=self.colours["foreground"],
-            command=self.farmer_thread.toggle_pause
+            command=self.control_thread.farmer_thread.toggle_pause
         )
         self.checkbox_radon_pause = tk.Checkbutton(
             self.frame_left, 
             text="Radon Pause", 
             variable=self.intvar_radon_pause,
             bg=self.colours["foreground"],
-            command=self.radon_thread.toggle_pause
+            command=self.control_thread.radon_thread.toggle_pause
         )
 
 

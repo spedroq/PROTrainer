@@ -110,6 +110,7 @@ class Farmer(threading.Thread):
         # Create a PROWatch
         self.control_thread = self._args[0]
         self.prowatch_thread = self.control_thread.prowatch_thread
+        self.pause = self.control_thread.farmer_pause
         """
         Method to init the Farmer class.
         """

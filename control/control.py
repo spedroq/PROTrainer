@@ -23,6 +23,11 @@ class Control(threading.Thread):
     :attribute listener_thread: used listen for input.
     :attribute cli_thread: used output into the console client.
     """
+    # Configuration
+    farmer_pause = False
+    radon_pause = False
+    catch_pokemon = False
+    emergency_reset = False
 
     # CONTROL THREADS
     prowatch_thread = None
@@ -35,6 +40,8 @@ class Control(threading.Thread):
         """
         Method to init the Control class thread.
         """
+        """ LOAD CONFIGURATION FILE """
+        self.load_configuration()
 
         """ PROWATCH """
 
@@ -68,11 +75,27 @@ class Control(threading.Thread):
         # Listen for input
         self.listener_thread.start()
 
-        """ GUI """
+    def load_configuration(self):
+        file = open("configuration.txt", "r")
+        for line in file:
+            self.interpret_configuration(line)
 
-        # S E T U P
-        root = tk.Tk()
+    def interpret_configuration(self, line):
+        # Check which configuration to set
+        if line == "farmer_pause":
+            self.farmer_pause = bool(self.get_config_value(line))
+        elif line == "radon_pause":
+            self.radon_pause = bool(self.get_config_value(line))
+        elif line == "catch_pokemon":
+            self.catch_pokemon = bool(self.get_config_value(line))
+        elif line == "emergency_reset":
+            self.emergency_reset = bool(self.get_config_value(line))
 
-        # S T A R T
-        pro_gui = PROTrainerGUI(root=root, control=self)
-        pro_gui.mainloop()
+    @staticmethod
+    def get_config_value(line: str) -> str:
+        list_values = line.split(":")
+        if len(list_values) == 2:
+            value = list_values[1]
+            return value
+        else:
+            raise Exception("Configuration file has incorrect format.")
