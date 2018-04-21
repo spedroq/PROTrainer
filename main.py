@@ -10,6 +10,7 @@ from input_listener.input_listener import InputListener
 from radon.Radon import *
 from cli.cli import *
 from prowatch.PROWatch import *
+from protrainer_gui import *
 
 
 def main():
@@ -36,6 +37,15 @@ def main():
                                     args=(farmer_thread,cli,prowatch,radon_thread))
     # Listen for input
     listener_thread.start()
+
+    #
+    #   S E T U P
+    root = tk.Tk()
+
+    #
+    #   S T A R T
+    pro_gui = PROTrainerGUI(master=root, farmer=farmer_thread, radon=radon_thread)
+    pro_gui.mainloop()
 
 
 # Start the main function

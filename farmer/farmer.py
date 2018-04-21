@@ -153,6 +153,7 @@ class Farmer(threading.Thread):
         """
         # Toggle pause between True or False
         self.pause = not self.pause
+        print(self.pause)
 
     def set_quit(self) -> None:
         """
@@ -169,26 +170,26 @@ class Farmer(threading.Thread):
         self.radon_status = status
         #
         #   Marker for is an emergency
-        is_emergency = self.is_emergency
+        #is_emergency = self.is_emergency
         #
         #   E M E R G E N C Y  C H E C K
-        if self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
-            self.is_emergency = True
-        if self.sequential_radon_status_count > self.sequential_radon_status_limit:
-            self.is_emergency = True
+        #if self.unknown_radon_statuses_counter > self.emergency_reset_radon_unknown_statuses_limit:
+        #    self.is_emergency = True
+        #if self.sequential_radon_status_count > self.sequential_radon_status_limit:
+        #    self.is_emergency = True
 
-        if self.is_emergency:
-            self.prowatch.append_write_to_log(
-                97,
-                "emergency, protrainer has been reading the same radon status for too long",
-                "None",
-                "None"
-            )
-            print("E M E R G E N C Y  -  P A U S I N G")
-            #
-            #   P A U S E
-            #self.paused = True
-            self.is_emergency = True
+        #if self.is_emergency:
+        #    self.prowatch.append_write_to_log(
+        #        97,
+        #        "emergency, protrainer has been reading the same radon status for too long",
+        #        "None",
+        #        "None"
+        #    )
+        #    print("E M E R G E N C Y  -  P A U S I N G")
+        #    #
+        #    #   P A U S E
+        #    #self.paused = True
+        #    self.is_emergency = True
 
         #
         #   When the status is delivered, count up any sequential 0s
@@ -226,7 +227,8 @@ class Farmer(threading.Thread):
         # Check what codes that Radon passed, if it's a high-priority code
         # check it first, then look to see if we need to change our moveset
         # to click on the screen
-        if self.radon_status.get("code") == 20 or self.is_emergency:
+        #if self.radon_status.get("code") == 20 or self.is_emergency:
+        if self.radon_status.get("code") == 20:
             # Speak to Nurse Joy Sequence, there is no PP
             # Perform a move sequence
             self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
@@ -236,7 +238,7 @@ class Farmer(threading.Thread):
                 self.poke_center_move_set,
                 "None"
             )
-            self.is_emergency = False
+            #self.is_emergency = False
 
         """ CATCH POKEMON """
         # We need to catch this pokemon by throwing a pokeball
@@ -284,36 +286,39 @@ class Farmer(threading.Thread):
             print("\tR A D O N  D E L I V E R E D  {}  T I L E S".format(
                 len(radon_tiles)
             ))
-            # Map these tiles onto a move sequence
-            if len(radon_tiles) > 9:
-                radon_tiles = radon_tiles[:9]
-            mouse_click_sequences = []
-            protrainer_moves = []
-            for tile in radon_tiles:
-                # Get the mid points of these tiles and then click there
-                # Add this click to the current move sequence at the center of
-                # the tile
-                # mouse_click_sequences.append("mouse_left%{}%{}1".format(
-                #     tile["info"]["x_center"], tile["info"]["y_center"]
-                # ))
-                type_and_coordinates = "mouse_left%{}%{}".format(
-                    tile["info"]["x_center"], tile["info"]["y_center"]
-                )
-                protrainer_moves.append(
-                    PROTrainerMove([type_and_coordinates], 1, 0.5)
-                )
+            if radon_status.get("code") == 12:
+                print("I G N O R E D  I N C O M I N G  R A N D O  M E S S A G E  S T A T U S")
+            else:
+                # Map these tiles onto a move sequence
+                if len(radon_tiles) > 9:
+                    radon_tiles = radon_tiles[:9]
+                mouse_click_sequences = []
+                protrainer_moves = []
+                for tile in radon_tiles:
+                    # Get the mid points of these tiles and then click there
+                    # Add this click to the current move sequence at the center of
+                    # the tile
+                    # mouse_click_sequences.append("mouse_left%{}%{}1".format(
+                    #     tile["info"]["x_center"], tile["info"]["y_center"]
+                    # ))
+                    type_and_coordinates = "mouse_left%{}%{}".format(
+                        tile["info"]["x_center"], tile["info"]["y_center"]
+                    )
+                    protrainer_moves.append(
+                        PROTrainerMove([type_and_coordinates], 1, 0.5)
+                    )
 
-            click_on_tiles_move_sequence = PROTrainerMoveSequence(protrainer_moves)
-            #print(click_on_tiles_move_sequence)
-            # Perform a move sequence
-            # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
-            self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
-            self.prowatch.append_write_to_log(
-                1,
-                "protrainer started using using click on tiles move sequence",
-                click_on_tiles_move_sequence,
-                "None"
-            )
+                click_on_tiles_move_sequence = PROTrainerMoveSequence(protrainer_moves)
+                #print(click_on_tiles_move_sequence)
+                # Perform a move sequence
+                # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
+                self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
+                self.prowatch.append_write_to_log(
+                    1,
+                    "protrainer started using using click on tiles move sequence",
+                    click_on_tiles_move_sequence,
+                    "None"
+                )
 
     """ AFK """
 

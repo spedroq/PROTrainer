@@ -22,6 +22,7 @@ import time
 from random import shuffle
 import random
 import datetime
+import requests
 
 exitFlag = 0
 current_key = "1"
@@ -63,7 +64,7 @@ class Radon(threading.Thread):
     }
     grid_width = 8
     grid_height = 8
-    debug_is_printing_text = True
+    debug_is_printing_text = False
     last_poke_save_time = time.time()
     last_poke_name = ""
     
@@ -73,196 +74,202 @@ class Radon(threading.Thread):
     TOP_LEFT_CORNER = (-1,-1,)
     BOTTOM_RIGHT_CORNER = (-1,-1,)
 
+    pause = False
+
+
+
     with open("radon/splash.txt") as r:
         print(r.read())
 
     def mainline(self, input_screenshot=None):
         while True:
-            self.start_timer()
-            # Read the text from an screenshot taken right now
-            #if screenshot == None:
-            screenshot = self.get_screenshot_pil_image()
-            if input_screenshot != None:
-                screenshot = input_screenshot
-            text = self.read_text_from_pil_image(screenshot)
-            # Ok, cool we have the text, let's check for colours
-            radon_status = self.get_radon_status_from_text(text)
-            #   We need to login            
-            if radon_status.get("code") == 10:
-                matching_tiles = []
+            time.sleep(0.025)
+            if not self.pause:
+                self.start_timer()
+                # Read the text from an screenshot taken right now
+                #if screenshot == None:
+                screenshot = self.get_screenshot_pil_image()
+                if input_screenshot != None:
+                    screenshot = input_screenshot
+                text = self.read_text_from_pil_image(screenshot)
+                # Ok, cool we have the text, let's check for colours
+                radon_status = self.get_radon_status_from_text(text)
+                #   We need to login            
+                if radon_status.get("code") == 10:
+                    matching_tiles = []
 
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_login_yellow"], 0.25
-                )
-                #print("MATCHES: {}".format(len(matching_tiles)))
+                    matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                        screenshot, self.colours["button_login_yellow"], 0.25
+                    )
+                    #print("MATCHES: {}".format(len(matching_tiles)))
+                    #
+                    #   We should only select tiles below the center line
+                    max_tile_y = 0
+                    min_tile_y = 99999
+                    for tile in matching_tiles:
+                        #print(tile)
+                        if int(tile["info"]["y"]) > max_tile_y:
+                            max_tile_y = int(tile["info"]["y"])
+                        if int(tile["info"]["y"]) < min_tile_y:
+                            min_tile_y = int(tile["info"]["y"])
+                    #
+                    #   Select a mid point, if the tiles are above it, omit them
+                    
+                    minimum_valid_y_value = max_tile_y / 2
+                    #print("MIN: {} | MAX: {} | THRESHOLD: {}".format(
+                    #    min_tile_y, max_tile_y, minimum_valid_y_value
+                    #))
+                    valid_tiles = []
+                    for tile in matching_tiles:
+                        if tile["info"]["y"] >= minimum_valid_y_value:
+                            valid_tiles.append(tile)
+
+                    matching_tiles = valid_tiles
+                    #print("FILTERED: {}".format(len(matching_tiles)))
+                    shuffle(matching_tiles)
+                    radon_status["tiles"] = matching_tiles
+
+                #   This pokemon needs to evolve
+                elif radon_status.get("code") == 21:
+                    self.grid_width = 6
+                    self.grid_height = 6
+                    matching_tiles = []
+                    matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                        screenshot, self.colours["button_accept_red"], 0.75
+                    )
+                    shuffle(matching_tiles)
+                    radon_status["tiles"] = matching_tiles
+                    self.grid_width = 8
+                    self.grid_height = 8
+
+                #   This pokemon needs to learn a move
+                elif radon_status.get("code") == 22:
+                    matching_tiles = []
+                    matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                        screenshot, self.colours["button_learn_move_red"], 0.15
+                    )
+                    shuffle(matching_tiles)
+                    radon_status["tiles"] = matching_tiles
+
+                #   We need to close this private message
+                elif radon_status.get("code") == 12:
+                    matching_tiles = []
+                    self.grid_width = 3
+                    self.grid_height = 3
+                    matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                        screenshot, self.colours["button_close_private_message"], 0.05
+                    )
+                    #
+                    #   Fix the x co-ord by 26px
+                    final_tiles = []
+                    for tile in matching_tiles:
+                        if int(tile["info"]["y_center"]) > 150 and int(tile["info"]["y_center"]) < 650:
+                            tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
+                            final_tiles.append(tile)
+                    radon_status["tiles"] = final_tiles
+                    self.grid_width = 8
+                    self.grid_height = 8
+
+                # We need to use a pokeball
+                elif radon_status.get("code") == 13:
+                    matching_tiles = []
+                    self.grid_width = 3
+                    self.grid_height = 3
+                    matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                        screenshot, self.colours["button_pokeball_colour"], 0.05
+                    )
+                    shuffle(matching_tiles)
+                    for tile in matching_tiles:
+                        tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 75
+                    radon_status["tiles"] = matching_tiles
+                    self.grid_width = 8
+                    self.grid_height = 8
+
+
+                # We need to confirm this selection
+                elif radon_status.get("code") == 11:
+                    self.grid_width = 6
+                    self.grid_height = 6
+                    matching_tiles = []
+                    matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                        screenshot, self.colours["button_learn_move_confirm_green"], 0.75
+                    )
+                    #print(matching_tiles)
+                    shuffle(matching_tiles)
+                    radon_status["tiles"] = matching_tiles
+                    self.grid_width = 8
+                    self.grid_height = 8
+
+
                 #
-                #   We should only select tiles below the center line
-                max_tile_y = 0
-                min_tile_y = 99999
-                for tile in matching_tiles:
-                    #print(tile)
-                    if int(tile["info"]["y"]) > max_tile_y:
-                        max_tile_y = int(tile["info"]["y"])
-                    if int(tile["info"]["y"]) < min_tile_y:
-                        min_tile_y = int(tile["info"]["y"])
-                #
-                #   Select a mid point, if the tiles are above it, omit them
+                #   Start PWO
                 
-                minimum_valid_y_value = max_tile_y / 2
-                #print("MIN: {} | MAX: {} | THRESHOLD: {}".format(
-                #    min_tile_y, max_tile_y, minimum_valid_y_value
-                #))
-                valid_tiles = []
-                for tile in matching_tiles:
-                    if tile["info"]["y"] >= minimum_valid_y_value:
-                        valid_tiles.append(tile)
+                if radon_status.get("code") == 110:
+                    #
+                    #   P W O  L O G I N
+                    matching_tiles = []
+                    self.grid_width = 4
+                    self.grid_height = 5
+                    matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
+                        screenshot, self.colours["button_pwo_login_green_light"], 0.03
+                    )
+                    shuffle(matching_tiles)
+                    max_tile_y = 0
+                    min_tile_y = 99999
+                    for tile in matching_tiles:
+                        #print(tile)
+                        if int(tile["info"]["y"]) > max_tile_y:
+                            max_tile_y = int(tile["info"]["y"])
+                        if int(tile["info"]["y"]) < min_tile_y:
+                            min_tile_y = int(tile["info"]["y"])
+                    #
+                    #   Select a mid point, if the tiles are above it, omit them
+                    
+                    minimum_valid_y_value = max_tile_y / 2
+                    #print("MIN: {} | MAX: {} | THRESHOLD: {}".format(
+                    #    min_tile_y, max_tile_y, minimum_valid_y_value
+                    #))
+                    valid_tiles = []
+                    for tile in matching_tiles:
+                        if tile["info"]["y"] >= minimum_valid_y_value:
+                            valid_tiles.append(tile)
 
-                matching_tiles = valid_tiles
-                #print("FILTERED: {}".format(len(matching_tiles)))
-                shuffle(matching_tiles)
-                radon_status["tiles"] = matching_tiles
+                    matching_tiles = valid_tiles
+                    radon_status["tiles"] = matching_tiles
+                    self.grid_width = 8
+                    self.grid_height = 8
+                #   End PWO
+                #   
 
-            #   This pokemon needs to evolve
-            elif radon_status.get("code") == 21:
-                self.grid_width = 6
-                self.grid_height = 6
-                matching_tiles = []
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_accept_red"], 0.75
-                )
-                shuffle(matching_tiles)
-                radon_status["tiles"] = matching_tiles
-                self.grid_width = 8
-                self.grid_height = 8
 
-            #   This pokemon needs to learn a move
-            elif radon_status.get("code") == 22:
-                matching_tiles = []
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_learn_move_red"], 0.15
-                )
-                shuffle(matching_tiles)
-                radon_status["tiles"] = matching_tiles
-
-            #   We need to close this private message
-            elif radon_status.get("code") == 12:
-                matching_tiles = []
-                self.grid_width = 3
-                self.grid_height = 3
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_close_private_message"], 0.05
-                )
                 #
-                #   Fix the x co-ord by 26px
-                final_tiles = []
-                for tile in matching_tiles:
-                    if int(tile["info"]["y_center"]) > 150 and int(tile["info"]["y_center"]) < 650:
-                        tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 26
-                        final_tiles.append(tile)
-                radon_status["tiles"] = final_tiles
-                self.grid_width = 8
-                self.grid_height = 8
+                #   Let's fix the status string to put the time in there
+                radon_status = self.insert_process_time_into_radon_status(radon_status)
 
-            # We need to use a pokeball
-            elif radon_status.get("code") == 13:
-                matching_tiles = []
-                self.grid_width = 3
-                self.grid_height = 3
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_pokeball_colour"], 0.05
-                )
-                shuffle(matching_tiles)
-                for tile in matching_tiles:
-                    tile["info"]["x_center"] = int(tile["info"]["x_center"]) + 75
-                radon_status["tiles"] = matching_tiles
-                self.grid_width = 8
-                self.grid_height = 8
-
-
-            # We need to confirm this selection
-            elif radon_status.get("code") == 11:
-                self.grid_width = 6
-                self.grid_height = 6
-                matching_tiles = []
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_learn_move_confirm_green"], 0.75
-                )
-                #print(matching_tiles)
-                shuffle(matching_tiles)
-                radon_status["tiles"] = matching_tiles
-                self.grid_width = 8
-                self.grid_height = 8
-
-
-            #
-            #   Start PWO
-            
-            if radon_status.get("code") == 110:
                 #
-                #   P W O  L O G I N
-                matching_tiles = []
-                self.grid_width = 4
-                self.grid_height = 5
-                matching_tiles = self.get_tiles_matching_colour_from_pil_image_within_tolerance(
-                    screenshot, self.colours["button_pwo_login_green_light"], 0.03
-                )
-                shuffle(matching_tiles)
-                max_tile_y = 0
-                min_tile_y = 99999
-                for tile in matching_tiles:
-                    #print(tile)
-                    if int(tile["info"]["y"]) > max_tile_y:
-                        max_tile_y = int(tile["info"]["y"])
-                    if int(tile["info"]["y"]) < min_tile_y:
-                        min_tile_y = int(tile["info"]["y"])
-                #
-                #   Select a mid point, if the tiles are above it, omit them
-                
-                minimum_valid_y_value = max_tile_y / 2
-                #print("MIN: {} | MAX: {} | THRESHOLD: {}".format(
-                #    min_tile_y, max_tile_y, minimum_valid_y_value
-                #))
-                valid_tiles = []
-                for tile in matching_tiles:
-                    if tile["info"]["y"] >= minimum_valid_y_value:
-                        valid_tiles.append(tile)
-
-                matching_tiles = valid_tiles
-                radon_status["tiles"] = matching_tiles
-                self.grid_width = 8
-                self.grid_height = 8
-            #   End PWO
-            #   
-
-
-            #
-            #   Let's fix the status string to put the time in there
-            radon_status = self.insert_process_time_into_radon_status(radon_status)
-
-            #
-            #   Development
-            if self.farmer:
-                #print(text)
-                self.farmer.deliver_radon_status(radon_status)
-                    # Metrics
-                self.end_timer()
-                self.cli.input_string_last_radon_time = str(self.get_processing_time_in_seconds())
-                self.cli.input_string_last_radon_status = str(radon_status["code"])
-                self.cli.input_string_last_radon_info = radon_status["status"]
-                self.prowatch.append_write_to_log(
-                    radon_status["code"],
-                    radon_status["status"],
-                    self.get_processing_time_in_seconds(),
-                    "None"
-                )
-                #
-                #   Wipe the memory of the current screenshot
-                screenshot = None
-            else:
-                #
-                #   Test Framework
-                return [radon_status, text]
-                break
+                #   Development
+                if self.farmer:
+                    #print(text)
+                    self.farmer.deliver_radon_status(radon_status)
+                        # Metrics
+                    self.end_timer()
+                    self.cli.input_string_last_radon_time = str(self.get_processing_time_in_seconds())
+                    self.cli.input_string_last_radon_status = str(radon_status["code"])
+                    self.cli.input_string_last_radon_info = radon_status["status"]
+                    self.prowatch.append_write_to_log(
+                        radon_status["code"],
+                        radon_status["status"],
+                        self.get_processing_time_in_seconds(),
+                        "None"
+                    )
+                    #
+                    #   Wipe the memory of the current screenshot
+                    screenshot = None
+                else:
+                    #
+                    #   Test Framework
+                    return [radon_status, text]
+                    break
                 
 
     # Initialise
@@ -275,8 +282,30 @@ class Radon(threading.Thread):
         self.mainline()
         #print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
 
+    """ Pause """
 
-                
+    def toggle_pause(self) -> None:
+        """
+        Method to toggle pause between True and False.
+        """
+        # Toggle pause between True or False
+        self.pause = not self.pause
+        print("RADON PAUSE: {}".format(self.pause))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     #
     #    M E T R I C S
