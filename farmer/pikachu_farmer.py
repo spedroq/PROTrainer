@@ -38,7 +38,7 @@ class PikachuFarmer(Farmer):
         # Through the town and into the pokecenter
         PROTrainerMove(["w"], 11, timeout=0.5),
         PROTrainerMove(["d"], 8, timeout=0.5),
-        PROTrainerMove(["w"], 8, timeout=0.5),
+        PROTrainerMove(["w"], 9, timeout=0.5),
         PROTrainerMove(["nothing"], 1, timeout=2, random_deviation=2),
         # In the pokecenter
         PROTrainerMove(["w"], 7, timeout=0.5),
@@ -63,6 +63,3 @@ class PikachuFarmer(Farmer):
         PROTrainerMove(["nothing"], 1, timeout=2, random_deviation=2),
         # Back to farming spot
     ])
-
-    # Init farm move sequence
-    #farm_move_sequence = default_move_set

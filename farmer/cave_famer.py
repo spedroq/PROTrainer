@@ -13,7 +13,7 @@ class CaveFarmer(Farmer):
                                                PROTrainerMove(["s"], 15, timeout=0.05, random_deviation=0.1),
                                                PROTrainerMove(["w"], 15, timeout=0.05, random_deviation=0.1),
                                                PROTrainerMove(["s"], 15, timeout=0.05, random_deviation=0.1),
-                                               PROTrainerMove(["1"], 1, timeout=0.6, random_deviation=0.5)])
+                                               PROTrainerMove(["1"], 1, timeout=0.1, random_deviation=0.9)])
     poke_center_move_set = PROTrainerMoveSequence([PROTrainerMove(["4", "s"], 45, timeout=0.05, random_deviation=0.1),
                                                    PROTrainerMove(["1", " ", "w"], 25, timeout=0.05, random_deviation=0.1),
                                                    PROTrainerMove(["w"], 25, timeout=0.05, random_deviation=0.1)])
