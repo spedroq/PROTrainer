@@ -96,7 +96,7 @@ class SimulatedKeyboard:
                             # Process key
                             self.perform_move(key, move)
                             # Listen for radon output with PROWatch log
-                            self.farmer.prowatch.append_write_to_log(
+                            self.farmer.prowatch_thread.append_write_to_log(
                                 2,
                                 "protrainer simulated some input",
                                 key,

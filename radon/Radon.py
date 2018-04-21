@@ -67,14 +67,16 @@ class Radon(threading.Thread):
     debug_is_printing_text = False
     last_poke_save_time = time.time()
     last_poke_name = ""
-    
-    prowatch = None
-    farmer = None
 
     TOP_LEFT_CORNER = (-1,-1,)
     BOTTOM_RIGHT_CORNER = (-1,-1,)
 
     pause = False
+
+    # OTHER THREAD MODULES
+    control_thread = None
+    prowatch_thread = None
+    farmer_thread = None
 
 
 
@@ -248,15 +250,15 @@ class Radon(threading.Thread):
 
                 #
                 #   Development
-                if self.farmer:
+                if self.farmer_thread:
                     #print(text)
-                    self.farmer.deliver_radon_status(radon_status)
+                    self.farmer_thread.deliver_radon_status(radon_status)
                         # Metrics
                     self.end_timer()
-                    self.cli.input_string_last_radon_time = str(self.get_processing_time_in_seconds())
-                    self.cli.input_string_last_radon_status = str(radon_status["code"])
-                    self.cli.input_string_last_radon_info = radon_status["status"]
-                    self.prowatch.append_write_to_log(
+                    self.cli_thread.input_string_last_radon_time = str(self.get_processing_time_in_seconds())
+                    self.cli_thread.input_string_last_radon_status = str(radon_status["code"])
+                    self.cli_thread.input_string_last_radon_info = radon_status["status"]
+                    self.prowatch_thread.append_write_to_log(
                         radon_status["code"],
                         radon_status["status"],
                         self.get_processing_time_in_seconds(),
@@ -274,12 +276,14 @@ class Radon(threading.Thread):
 
     # Initialise
     def run(self):
-        #self.prowatch.start_logging()
+        #self.prowatch_thread.start_logging()
         #print("R A D O N  I S  S T A R T I N G  U P . . . ")
-        self.farmer = self._args[0]
-        self.cli = self._args[1]
-        self.prowatch = self._args[2]
+        self.control_thread = self._args[0]
+        self.farmer_thread = self.control_thread.farmer_thread
+        self.cli_thread = self.control_thread.cli_thread
+        self.prowatch_thread = self.control_thread.prowatch_thread
         self.mainline()
+        self.pause = self.control_thread.radon_pause
         #print("Radon completed in [{}s]".format(self.get_processing_time_in_seconds()))
 
     """ Pause """
@@ -624,7 +628,7 @@ class Radon(threading.Thread):
                 if pokemand.lower() in line.lower() and pokemand != "mew" and "we are fighting a" not in line and " go " not in line.lower():
                     print(line)
                     try:
-                        self.farmer.last_poke_name = pokemand
+                        self.farmer_thread.last_poke_name = pokemand
                     except:
                         pass
                     status_string = datetime.datetime.now().strftime("[%y-%m-%d-%H-%M-%S]\t")

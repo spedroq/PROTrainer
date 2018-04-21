@@ -55,7 +55,7 @@ class Farmer(threading.Thread):
     # Init Windows Shell with WScript Shell
     wsh = com_client.Dispatch("WScript.Shell")
     # Init the flag to pause the farming
-    pause = True
+    pause = False
     # Init the flag to quit the farming
     quit = False
     # Init the radon text to blank
@@ -102,11 +102,15 @@ class Farmer(threading.Thread):
 
     is_emergency = False
 
-
+    # OTHER THREAD MODULES
+    control_thread = None
+    prowatch_thread = None
 
     def run(self) -> None:
         # Create a PROWatch
-        self.prowatch = self._args[0]
+        self.control_thread = self._args[0]
+        self.prowatch_thread = self.control_thread.prowatch_thread
+        self.pause = self.control_thread.farmer_pause
         """
         Method to init the Farmer class.
         """
@@ -138,7 +142,7 @@ class Farmer(threading.Thread):
         # Farm Sequence
 
         self.farm_move_sequence = self.default_move_set
-        self.prowatch.append_write_to_log(
+        self.prowatch_thread.append_write_to_log(
             1,
             "protrainer started using the farm move sequence",
             self.farm_move_sequence,
@@ -179,7 +183,7 @@ class Farmer(threading.Thread):
         #    self.is_emergency = True
 
         #if self.is_emergency:
-        #    self.prowatch.append_write_to_log(
+        #    self.prowatch_thread.append_write_to_log(
         #        97,
         #        "emergency, protrainer has been reading the same radon status for too long",
         #        "None",
@@ -232,7 +236,7 @@ class Farmer(threading.Thread):
             # Speak to Nurse Joy Sequence, there is no PP
             # Perform a move sequence
             self.keyboard.use_move_sequence(self.poke_center_move_set, validate=False)
-            self.prowatch.append_write_to_log(
+            self.prowatch_thread.append_write_to_log(
                 1,
                 "protrainer started using pokecenter move sequence",
                 self.poke_center_move_set,
@@ -271,7 +275,7 @@ class Farmer(threading.Thread):
                 click_on_tiles_move_sequence = PROTrainerMoveSequence(protrainer_moves)
                 print(click_on_tiles_move_sequence)
                 self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
-                self.prowatch.append_write_to_log(
+                self.prowatch_thread.append_write_to_log(
                     1,
                     "protrainer started using a catch pokemon move sequence",
                     click_on_tiles_move_sequence,
@@ -313,7 +317,7 @@ class Farmer(threading.Thread):
                 # Perform a move sequence
                 # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
                 self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
-                self.prowatch.append_write_to_log(
+                self.prowatch_thread.append_write_to_log(
                     1,
                     "protrainer started using using click on tiles move sequence",
                     click_on_tiles_move_sequence,
