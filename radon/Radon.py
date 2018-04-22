@@ -304,10 +304,15 @@ class Radon(threading.Thread):
 
     #
     #   A function to read pokemon data from the radon api
-    def get_radon_api_info_for_poke(self, poke_name):
+    def get_radon_api_info_for_poke(self, poke_name) -> dict():
         url = "http://kerbin.xyz/pokes?mode=lookup&poke={}".format(poke_name)
-        poke_data = requests.get(url)
-        return json.loads(poke_data.text)
+        try:
+            poke_data = requests.get(url)
+            return json.loads(poke_data.text)
+        except Exception:
+            print("ConnectionError: Probably failed to connect to Radon Pokemon API.")
+            return dict()
+
 
 
 
