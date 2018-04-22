@@ -149,7 +149,7 @@ class InputListener(threading.Thread):
                     self.cli_thread.show_overview_screen()
                     self.cli_thread.is_loading_screen = False
                 else:
-                #
+                    #
                     self.cli_thread.is_loading_screen = True
                     #self.cli_thread.cli_thread_mode["state"] = "loading"
                     self.cli_thread.show_loading_screen()
@@ -161,8 +161,9 @@ class InputListener(threading.Thread):
                     self.cli_thread.input_string_mode = "paused"
                 if not self.farmer_thread.pause:
                     self.cli_thread.input_string_mode = "running"
-        
-                
 
-
-
+            # Check for p
+            if key.name == 'p':
+                print("P has been pressed")
+                # Toggle Farmer
+                self.control_thread.toggle_farmer()

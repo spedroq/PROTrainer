@@ -29,7 +29,8 @@ class PROTrainerMoveSequence:
     """
     Class PROTrainerMoveSequence defines data structure for a sequence of moves.
     """
-    def __init__(self, move_sequence: list=list()):
+    def __init__(self, name: str="unnamed", move_sequence: list=list()):
+        self.name = name
         self.move_sequence = move_sequence
 
     def __repr__(self):
@@ -42,11 +43,12 @@ class SimulatedKeyboard:
     """
     Class SimulatedKeyboard defines the simulated keyboard output to PRO.
     """
-    def __init__(self, farmer: 'Farmer'):
+    def __init__(self, farmer: 'Farmer', control: 'Control'):
         pythoncom.CoInitialize()
         # Init Windows Shell with WScript Shell
         self.wsh = com_client.Dispatch("WScript.Shell")
         self.farmer = farmer
+        self.control_thread = control
 
     def use_move_sequence(self, protms: PROTrainerMoveSequence, validate: bool=True) -> None:
         """
@@ -60,6 +62,9 @@ class SimulatedKeyboard:
                                Otherwise we get stuck in an infinite loop.
                          DEFAULT: True, as in do use validate().
         """
+        if not self.farmer.pause:
+            print("Playing: {}".format(protms.name))
+            self.control_thread.latest_move_sequence = protms
         # Iterate through moves in the move sequence
         for move in protms.move_sequence:
             # Get the input characters of the move
@@ -75,62 +80,67 @@ class SimulatedKeyboard:
                 while key_index < len(keys):
                     # Set default random_sleep in case the game is paused
                     random_sleep = 0.5
-                    if not self.farmer.pause:
+                    if not self.farmer.reset_mode:
+                        if not self.farmer.pause:
 
-                        """ AFK Check """
+                            """ AFK Check """
 
-                        # AFK Check
-                        if self.farmer.afk_timeout > 0:
+                            # AFK Check
+                            if self.farmer.afk_timeout > 0:
 
-                            """ Not AFK """
+                                """ Not AFK """
 
-                            # TODO: Log AFK status
-                            # print('Not AFK - timeout: {}'.format(self.farmer.afk_timeout))
+                                # TODO: Log AFK status
+                                # print('Not AFK - timeout: {}'.format(self.farmer.afk_timeout))
 
-                            # Check if we should validate the move or not
-                            # So that validation method can run moves
-                            if validate:
-                                self.farmer.validate()
-                            # Get the key
-                            key = keys[key_index]
-                            # Process key
-                            self.perform_move(key, move)
-                            # Listen for radon output with PROWatch log
-                            self.farmer.prowatch_thread.append_write_to_log(
-                                2,
-                                "protrainer simulated some input",
-                                key,
-                                move
-                            )
-                            # Increment index
-                            key_index += 1
-                            # Sleep every turn so we do not burn the pc
-                            # Randomize the sleep so it is more human
-                            random_sleep = random.uniform(move.timeout, move.timeout + move.random_deviation)
-                            # Reduce the afk timeout
-                            self.farmer.reduce_afk_timeout(random_sleep)
-                            # Check if we should validate the move or not
-                            # So that validation method can run moves
-                            if validate:
-                                self.farmer.validate()
-                        else:
+                                # Check if we should validate the move or not
+                                # So that validation method can run moves
+                                if validate:
+                                    self.farmer.validate()
+                                # Get the key
+                                key = keys[key_index]
+                                # Process key
+                                self.perform_move(key, move)
+                                # Listen for radon output with PROWatch log
+                                self.farmer.prowatch_thread.append_write_to_log(
+                                    2,
+                                    "protrainer simulated some input",
+                                    key,
+                                    move
+                                )
+                                # Increment index
+                                key_index += 1
+                                # Sleep every turn so we do not burn the pc
+                                # Randomize the sleep so it is more human
+                                random_sleep = random.uniform(move.timeout, move.timeout + move.random_deviation)
+                                # Reduce the afk timeout
+                                self.farmer.reduce_afk_timeout(random_sleep)
+                                # Check if we should validate the move or not
+                                # So that validation method can run moves
+                                if validate:
+                                    self.farmer.validate()
+                            else:
 
-                            """ AFK """
-                            print('AFK')
-                            # Reset the afk timeout
-                            self.farmer.reset_afk_timeout()
+                                """ AFK """
+                                print('AFK')
+                                # Reset the afk timeout
+                                self.farmer.reset_afk_timeout()
 
-                            # TODO: Log AFK status
-                            # print('AFK - timeout: {} sleep for: {}'.format(self.farmer.afk_timeout,
-                            #                                                self.farmer.get_afk_sleep()))
+                                # TODO: Log AFK status
+                                # print('AFK - timeout: {} sleep for: {}'.format(self.farmer.afk_timeout,
+                                #                                                self.farmer.get_afk_sleep()))
 
-                            # AFK Sleep
-                            time.sleep(self.farmer.get_afk_sleep())
-                            # Check if we should validate the move or not
-                            # So that validation method can run moves
-                            if validate:
-                                # Validate after AFK
-                                self.farmer.validate()
+                                # AFK Sleep
+                                time.sleep(self.farmer.get_afk_sleep())
+                                # Check if we should validate the move or not
+                                # So that validation method can run moves
+                                if validate:
+                                    # Validate after AFK
+                                    self.farmer.validate()
+                    else:
+                        self.farmer.reset_mode = False
+                        # Reset the move sequence
+                        return None
 
                     # TODO: Log Random sleep status
                     #  print(random_sleep)

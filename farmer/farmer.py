@@ -58,6 +58,7 @@ class Farmer(threading.Thread):
     pause = False
     # Init the flag to quit the farming
     quit = False
+    reset_mode = False
     # Init the radon text to blank
     radon_status = {
         "code": -1,
@@ -107,6 +108,7 @@ class Farmer(threading.Thread):
     prowatch_thread = None
 
     def run(self) -> None:
+        print("New Farmer thread started!!!!")
         # Create a PROWatch
         self.control_thread = self._args[0]
         self.prowatch_thread = self.control_thread.prowatch_thread
@@ -115,7 +117,7 @@ class Farmer(threading.Thread):
         Method to init the Farmer class.
         """
         # Init keyboard
-        self.keyboard = SimulatedKeyboard(farmer=self)
+        self.keyboard = SimulatedKeyboard(farmer=self, control=self.control_thread)
         # Start Farming
         self.start_farming()
 
@@ -200,7 +202,7 @@ class Farmer(threading.Thread):
         if status["code"] == 0:
             #
             #   If it's a 0, add up the 0 counter
-            self.unknown_radon_statuses_counter += 1            
+            self.unknown_radon_statuses_counter = 1
         #
         #   If it's not equal to 0, reset the counter as it's a sequential count for unknowns
         if status["code"] != 0:
@@ -212,7 +214,7 @@ class Farmer(threading.Thread):
         #
         #   If this status is the same as the last one, add one to the counter
         if status == self.last_radon_status:
-            self.sequential_radon_status_count += 1
+            self.sequential_radon_status_count = 1
         #
         #   Set our last status
         self.last_radon_status = self.radon_status
@@ -250,7 +252,9 @@ class Farmer(threading.Thread):
             print("V A L I D  P O K E  -  S H O U L D  C A T C H")
             #
             #   Make sure we start pressing Items not Attack
-            throw_pokeball_move_sequence = PROTrainerMoveSequence([PROTrainerMove(["3"], 15, 0.5)])
+            throw_pokeball_move_sequence = PROTrainerMoveSequence("throw_pokeball_move_sequence", [
+                PROTrainerMove(["3"], 15, 0.5)
+            ])
             self.keyboard.use_move_sequence(throw_pokeball_move_sequence, validate=False)
             #
             #   Handle clicking on the pokeball
@@ -272,7 +276,8 @@ class Farmer(threading.Thread):
                         PROTrainerMove([type_and_coordinates], 1, 0.5)
                     )
 
-                click_on_tiles_move_sequence = PROTrainerMoveSequence(protrainer_moves)
+                click_on_tiles_move_sequence = PROTrainerMoveSequence("click_on_tiles_move_sequence",
+                                                                      protrainer_moves)
                 print(click_on_tiles_move_sequence)
                 self.keyboard.use_move_sequence(click_on_tiles_move_sequence, validate=False)
                 self.prowatch_thread.append_write_to_log(
@@ -312,7 +317,8 @@ class Farmer(threading.Thread):
                         PROTrainerMove([type_and_coordinates], 1, 0.5)
                     )
 
-                click_on_tiles_move_sequence = PROTrainerMoveSequence(protrainer_moves)
+                click_on_tiles_move_sequence = PROTrainerMoveSequence("click_on_tiles_move_sequence",
+                                                                      protrainer_moves)
                 #print(click_on_tiles_move_sequence)
                 # Perform a move sequence
                 # TODO:  CAUTION: THIS MAY BREAK CLICKING (was indented into the list)
@@ -358,5 +364,8 @@ class Farmer(threading.Thread):
         Static method to reset AFK timeout.
         """
         self.afk_timeout = get_random_afk_timeout()
+
+    def reset(self):
+        self.reset_mode = True
 
 
