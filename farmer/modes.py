@@ -147,7 +147,7 @@ class FarmerMode:
         # Set the pokecenter sequence
         poke_center_move_set = PROTrainerMoveSequence("FishingRodFarmer:poke_center_move_set", [
             # Out of the route
-            PROTrainerMove(["4"], 15, timeout=0.5),
+            PROTrainerMove(["4", "a"], 15, timeout=0.5),
             PROTrainerMove(["w"], 23, timeout=0.3),
             # Wait to load the new area
             PROTrainerMove(["nothing"], 1, timeout=1.5),
