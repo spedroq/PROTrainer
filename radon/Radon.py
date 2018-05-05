@@ -64,6 +64,9 @@ class Radon(threading.Thread):
         #"button_close_private_message": (71,71,71,), # 
         #"button_close_private_message": (17,17,17,), # 
     }
+
+    offline_mode = False
+
     grid_width = 8
     grid_height = 8
     debug_is_printing_text = False
@@ -419,9 +422,7 @@ class Radon(threading.Thread):
         #   Incoming private message from another player
         #   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =   -   =
         pm_terms = [
-            (" PM", text,),
-            ("MSG", text),
-            (" says ", text,),
+            ("impossible_flag", text,),
         ]
         for term in pm_terms:
             if term[0] in term[1]:
@@ -659,22 +660,24 @@ class Radon(threading.Thread):
                     }
                     #
                     #   Load API Info
-                    a = time.time()
-                    api_info = self.get_radon_api_info_for_poke(pokemand)
-                    print("\nE V  S T A T S  {}s".format(
-                        round(time.time() - a, 3)
-                    ))
-                    print("hp: {} | attack: {} | defence: {} | special_attack: {} | special_defence: {} | speed: {}\n".format(
-                        api_info["ev_data"]["hp"],
-                        api_info["ev_data"]["attack"],
-                        api_info["ev_data"]["defence"],
-                        api_info["ev_data"]["special_attack"],
-                        api_info["ev_data"]["special_defence"],
-                        api_info["ev_data"]["speed"]
-                    ))
-                    radon_status["type_data"] = api_info["pokemon"]
-                    radon_status["type_data"] =  api_info["types"]
-                    radon_status["ev_data"] = api_info["ev_data"]
+                    if self.offline_mode:
+                        a = time.time()
+                        api_info = self.get_radon_api_info_for_poke(pokemand)
+                        print("\nE V  S T A T S  {}s".format(
+                            round(time.time() - a, 3)
+                        ))
+                        print("hp: {} | attack: {} | defence: {} | special_attack: {} | special_defence: {} | speed: {}\n".format(
+                            api_info["ev_data"]["hp"],
+                            api_info["ev_data"]["attack"],
+                            api_info["ev_data"]["defence"],
+                            api_info["ev_data"]["special_attack"],
+                            api_info["ev_data"]["special_defence"],
+                            api_info["ev_data"]["speed"]
+                        ))
+                        radon_status["ev_data"] = api_info["ev_data"]                        
+                        radon_status["type_data"] = api_info["pokemon"]
+                        radon_status["type_data"] =  api_info["types"]
+                    
                     if status_string != "":
                         with open("seenpokemon.txt", "a") as seen_pokefile:
                             if time.time() - self.last_poke_save_time > 15:
