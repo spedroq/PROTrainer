@@ -17,6 +17,10 @@ class FarmerMode:
         self.control_thread = control_thread
         # Define the farmer modes to allow
         self.farmer_modes = [
+            # Johto
+            "GolderRodFarmer",
+            # Kanto
+            "VictoryRoadFarmer",
             "CaveFarmer",
             "FishingRodFarmer",
             "FuchsiaFishFarmer",
@@ -24,7 +28,6 @@ class FarmerMode:
             "CeladonFarmer",
             # "PikachuFarmer",
             # "SurfFarmer",
-            # "VictoryRoadFarmer",
         ]
         # Select the start farmer mode
         self.farmer_mode_index = 0
@@ -77,6 +80,8 @@ class FarmerMode:
             default_move_set, poke_center_move_set = self.get_surf_farmer()
         elif self.farmer_mode == "VictoryRoadFarmer":
             default_move_set, poke_center_move_set = self.get_victory_road_farmer()
+        elif self.farmer_mode == "GolderRodFarmer":
+            default_move_set, poke_center_move_set = self.get_golden_rod_farmer()
         else:
             print("Farmer Mode is Not Known.")
         # Print the farmer mode that has been activated
@@ -125,6 +130,39 @@ class FarmerMode:
             PROTrainerMove(["4", "w"], 66, timeout=0.10),
             PROTrainerMove(["1", " ", "s"], 20, timeout=0.10),
             PROTrainerMove(["s"], 120, timeout=0.10)
+        ])
+
+        return default_move_set, poke_center_move_set
+
+    @staticmethod
+    def get_golden_rod_farmer() -> (PROTrainerMoveSequence, PROTrainerMoveSequence):
+        """
+        Static method to create golden rod farmer move sequences.
+        :return: default_move_set and poke_center_move_set as PROTrainerMoveSequence objects.
+        """
+        # Set the default farm sequence
+        default_move_set = PROTrainerMoveSequence("FishingRodFarmer:default_move_set", [
+            PROTrainerMove(["1"], 1, timeout=3, random_deviation=1)
+        ])
+        # Set the pokecenter sequence
+        poke_center_move_set = PROTrainerMoveSequence("FishingRodFarmer:poke_center_move_set", [
+            # Out of the route
+            PROTrainerMove(["4"], 15, timeout=0.5),
+            PROTrainerMove(["w"], 23, timeout=0.3),
+            # Wait to load the new area
+            PROTrainerMove(["nothing"], 1, timeout=1.5),
+            # Go to pokecenter
+            PROTrainerMove(["w"], 11, timeout=0.3),
+            PROTrainerMove(["a"], 4, timeout=0.3),
+            # Into Nurse Joy
+            PROTrainerMove(["w"], 40, timeout=0.1),
+            PROTrainerMove(["1", " ", "s"], 20, timeout=0.10),
+            # Out of the pokecenter
+            PROTrainerMove(["s"], 30, timeout=0.10),
+            # Onto the route
+            PROTrainerMove(["d"], 4, timeout=0.3),
+            # Back to farming
+            PROTrainerMove(["s"], 100, timeout=0.1),
         ])
 
         return default_move_set, poke_center_move_set
@@ -339,48 +377,40 @@ class FarmerMode:
         :return: default_move_set and poke_center_move_set as PROTrainerMoveSequence objects.
         """
         # Set the default farm sequence
-        default_move_set = PROTrainerMoveSequence("VictoryRoadFarmer:default_move_set", [
+        poke_center_move_set = default_move_set = PROTrainerMoveSequence("VictoryRoadFarmer:default_move_set", [
             PROTrainerMove(["w"], 15, timeout=0.05, random_deviation=0.1),
             PROTrainerMove(["s"], 15, timeout=0.05, random_deviation=0.1),
             PROTrainerMove(["w"], 15, timeout=0.05, random_deviation=0.1),
             PROTrainerMove(["s"], 15, timeout=0.05, random_deviation=0.1),
-            PROTrainerMove(["1"], 1, timeout=4, random_deviation=2)
+            PROTrainerMove(["1"], 1, timeout=0.5, random_deviation=0.5),
         ])
         # Set the pokecenter sequence
-        poke_center_move_set = PROTrainerMoveSequence("VictoryRoadFarmer:poke_center_move_set", [
+        #poke_center_move_set =
+        NONE = PROTrainerMoveSequence("VictoryRoadFarmer:poke_center_move_set", [
             # Get out of the cave
-            PROTrainerMove(["d", "4"], 20, 1),
-            PROTrainerMove(["w", "4"], 20, 1),
+            PROTrainerMove(["w", "4"], 20, 0.1),
             # Walk out
-            PROTrainerMove(["a", "4"], 1, 1),
-            PROTrainerMove(["w", "4"], 1, 1),
-            PROTrainerMove(["a", "4"], 1, 1),
-            PROTrainerMove(["w", "4"], 1, 1),
-            PROTrainerMove(["a", "4"], 1, 1),
-            PROTrainerMove(["w", "4"], 1, 1),
-            # Jank out of the cave
-            PROTrainerMove(["d", "4"], 1, 1),
-            PROTrainerMove(["w", "4"], 1, 1),
-            PROTrainerMove(["d", "4"], 1, 1),
-            PROTrainerMove(["w"], 1, 1),
-            PROTrainerMove(["d"], 6, 1),
+            PROTrainerMove(["a", "4"], 1, 0.1),
+            PROTrainerMove(["w", "4"], 1, 0.1),
             # To Pokecenter
-            PROTrainerMove(["w"], 20, 0.75),
-            PROTrainerMove(["d"], 9, 1.5),
-            PROTrainerMove(["w"], 2, 1.5),
+            PROTrainerMove(["w", "4"], 2, 0.1),
+            PROTrainerMove(["d"], 4, 0.2),
+            PROTrainerMove(["w"], 20, 0.2),
+            PROTrainerMove(["d"], 9, 0.2),
+            PROTrainerMove(["w"], 2, 0.2),
             # In Pokecenter
-            PROTrainerMove(["w"], 4, 1.5),
-            PROTrainerMove(["a"], 6, 1.5),
+            PROTrainerMove(["w"], 4, 0.2),
+            PROTrainerMove(["a"], 6, 0.2),
             # Nurse Joy
-            PROTrainerMove(["w", " "], 10, 0.75),
-            PROTrainerMove(["1", " ", "s"], 10, 1),
+            PROTrainerMove(["w", " "], 10, 0.20),
+            PROTrainerMove(["1", " ", "s"], 10, 0.2),
             # Get out of the Pokecenter
-            PROTrainerMove(["d"], 10, 0.75),
-            PROTrainerMove(["s"], 10, 0.75),
-            PROTrainerMove(["a"], 12, 0.75),
+            PROTrainerMove(["d"], 10, 0.2),
+            PROTrainerMove(["s"], 10, 0.2),
+            PROTrainerMove(["a"], 12, 0.2),
             # Into the cave
             PROTrainerMove(["s", "1"], 20, 1),
-            PROTrainerMove(["s", "1"], 20, 1)
+            PROTrainerMove(["d", "1"], 20, 1)
         ])
 
         return default_move_set, poke_center_move_set
