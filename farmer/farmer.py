@@ -88,7 +88,8 @@ class Farmer(threading.Thread):
         "cubone",
         "staryu",
         "pikachu",
-        "meowth"
+        "meowth",
+        "oddish"
     ]
 
     # AFK timeout

@@ -18,6 +18,7 @@ class FarmerMode:
         # Define the farmer modes to allow
         self.farmer_modes = [
             # Johto
+            "GolderRodOddishFarmer",
             "GolderRodFarmer",
             # Kanto
             "VictoryRoadFarmer",
@@ -82,6 +83,8 @@ class FarmerMode:
             default_move_set, poke_center_move_set = self.get_victory_road_farmer()
         elif self.farmer_mode == "GolderRodFarmer":
             default_move_set, poke_center_move_set = self.get_golden_rod_farmer()
+        elif self.farmer_mode == "GolderRodOddishFarmer":
+            default_move_set, poke_center_move_set = self.get_golden_rod_oddish_farmer()
         else:
             print("Farmer Mode is Not Known.")
         # Print the farmer mode that has been activated
@@ -165,6 +168,20 @@ class FarmerMode:
             PROTrainerMove(["s"], 100, timeout=0.1),
         ])
 
+        return default_move_set, poke_center_move_set
+
+    @staticmethod
+    def get_golden_rod_oddish_farmer() -> (PROTrainerMoveSequence, PROTrainerMoveSequence):
+        """
+        Static method to create golden rod farmer move sequences.
+        :return: default_move_set and poke_center_move_set as PROTrainerMoveSequence objects.
+        """
+        # Set the default farm sequence
+        poke_center_move_set = default_move_set = PROTrainerMoveSequence("CeladonFarmer:default_move_set", [
+            PROTrainerMove(["d"], 15, timeout=0.05, random_deviation=0.1),
+            PROTrainerMove(["a"], 15, timeout=0.05, random_deviation=0.1),
+            PROTrainerMove(["4"], 2, timeout=.75, random_deviation=0.5)
+        ])
         return default_move_set, poke_center_move_set
 
     @staticmethod
