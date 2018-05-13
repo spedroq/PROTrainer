@@ -453,7 +453,7 @@ class FarmerMode:
             # Up to pokecenter
             PROTrainerMove(["s"], 80, timeout=0.10),
             # Left to the pokemon center
-            PROTrainerMove(["a"], 4, timeout=0.4),
+            PROTrainerMove(["a"], 4, timeout=0.5),
             # Move to nurse joy and interact
             PROTrainerMove(["w"], 35, timeout=0.10),
             PROTrainerMove(["1", " ", "s"], 15, timeout=0.10),
@@ -461,7 +461,7 @@ class FarmerMode:
             PROTrainerMove(["nothing"], 1, timeout=1),
             # Bail from the pokemon center
             PROTrainerMove(["s"], 3, timeout=0.25),
-            PROTrainerMove(["d"], 4, timeout=0.4),
+            PROTrainerMove(["d"], 4, timeout=0.5),
             PROTrainerMove(["w"], 100, timeout=0.25)
         ])
 
