@@ -18,6 +18,7 @@ class FarmerMode:
         # Define the farmer modes to allow
         self.farmer_modes = [
             # Johto
+            "EcruteakFishingFarmer",
             "GolderRodOddishFarmer",
             "GolderRodFarmer",
             # Kanto
@@ -85,6 +86,8 @@ class FarmerMode:
             default_move_set, poke_center_move_set = self.get_golden_rod_farmer()
         elif self.farmer_mode == "GolderRodOddishFarmer":
             default_move_set, poke_center_move_set = self.get_golden_rod_oddish_farmer()
+        elif self.farmer_mode == "EcruteakFishingFarmer":
+            default_move_set, poke_center_move_set = self.get_ecruteak_fishing_farmer()
         else:
             print("Farmer Mode is Not Known.")
         # Print the farmer mode that has been activated
@@ -144,11 +147,11 @@ class FarmerMode:
         :return: default_move_set and poke_center_move_set as PROTrainerMoveSequence objects.
         """
         # Set the default farm sequence
-        default_move_set = PROTrainerMoveSequence("FishingRodFarmer:default_move_set", [
+        default_move_set = PROTrainerMoveSequence("GoldenRodFarmer:default_move_set", [
             PROTrainerMove(["1"], 1, timeout=3, random_deviation=1)
         ])
         # Set the pokecenter sequence
-        poke_center_move_set = PROTrainerMoveSequence("FishingRodFarmer:poke_center_move_set", [
+        poke_center_move_set = PROTrainerMoveSequence("GoldenRodFarmer:poke_center_move_set", [
             # Out of the route
             PROTrainerMove(["4", "a"], 15, timeout=0.5),
             PROTrainerMove(["w"], 23, timeout=0.3),
@@ -428,6 +431,38 @@ class FarmerMode:
             # Into the cave
             PROTrainerMove(["s", "1"], 20, 1),
             PROTrainerMove(["d", "1"], 20, 1)
+        ])
+
+        return default_move_set, poke_center_move_set
+
+    @staticmethod
+    def get_ecruteak_fishing_farmer():
+        """
+        Static method to create Ecruteak fishing farmer move sequences.
+        :return: default_move_set and poke_center_move_set as PROTrainerMoveSequence objects.
+        """
+        # Set the default farm sequence
+        default_move_set = PROTrainerMoveSequence("EcrutreakFishingFarmer:default_move_set", [
+            # Farm
+            PROTrainerMove(["1"], 10, timeout=.75, random_deviation=0.5)
+        ])
+        # Set the pokecenter sequence
+        poke_center_move_set = PROTrainerMoveSequence("EcrutreakFishingFarmer:poke_center_move_set", [
+            # No PP, bail
+            PROTrainerMove(["4"], 60, timeout=0.1),
+            # Up to pokecenter
+            PROTrainerMove(["s"], 80, timeout=0.10),
+            # Left to the pokemon center
+            PROTrainerMove(["a"], 4, timeout=0.4),
+            # Move to nurse joy and interact
+            PROTrainerMove(["w"], 35, timeout=0.10),
+            PROTrainerMove(["1", " ", "s"], 15, timeout=0.10),
+            PROTrainerMove(["s"], 3, timeout=0.10),
+            PROTrainerMove(["nothing"], 1, timeout=1),
+            # Bail from the pokemon center
+            PROTrainerMove(["s"], 3, timeout=0.25),
+            PROTrainerMove(["d"], 4, timeout=0.4),
+            PROTrainerMove(["w"], 100, timeout=0.25)
         ])
 
         return default_move_set, poke_center_move_set

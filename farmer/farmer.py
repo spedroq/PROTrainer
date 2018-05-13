@@ -69,7 +69,7 @@ class Farmer(threading.Thread):
     # Init farm move sequence
     farm_move_sequence = PROTrainerMoveSequence()
 
-    # Attributes need to be set by classes derived by Farmer
+    # Attributes need to be set by classes derived byd Farmer
     poke_center_move_set = None
     default_move_set = None
 
