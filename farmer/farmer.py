@@ -89,7 +89,9 @@ class Farmer(threading.Thread):
         "staryu",
         "pikachu",
         "meowth",
-        "oddish"
+        "oddish",
+        "poliwag",
+        "magikarp"
     ]
 
     # AFK timeout
