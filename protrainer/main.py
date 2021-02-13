@@ -1,5 +1,5 @@
 from control.control import Control
-from protrainer_gui import *
+#from protrainer_gui import *
 
 
 def main():
@@ -13,12 +13,12 @@ def main():
     """ GUI """
 
     # S E T U P
-    root = tk.Tk()
+    #root = tk.Tk()
 
     # S T A R T
-    pro_gui = PROTrainerGUI(root=root, control_thread=control_thread)
+    #pro_gui = PROTrainerGUI(root=root, control_thread=control_thread)
     
-    pro_gui.mainloop()
+    #pro_gui.mainloop()
 
 
 # Start the main function

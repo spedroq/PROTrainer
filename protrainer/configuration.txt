@@ -1,0 +1,3 @@
+farmer_pause:False
+radon_pause:False
+catch_pokemon:True

@@ -1,9 +1,10 @@
 import threading
 from abc import abstractmethod
 import time
-import win32com.client as com_client
+import random
+#import win32com.client as com_client
 from move_set.move_set import SimulatedKeyboard, PROTrainerMoveSequence, PROTrainerMove
-from prowatch.PROWatchReplay import *
+#from prowatch.PROWatchReplay import *
 
 
 """ AFK Randomisers """
@@ -53,7 +54,8 @@ class Farmer(threading.Thread):
          implementation.
     """
     # Init Windows Shell with WScript Shell
-    wsh = com_client.Dispatch("WScript.Shell")
+    #   TODO: Fix this to be universal.
+    #wsh = com_client.Dispatch("WScript.Shell")
     # Init the flag to pause the farming
     pause = False
     # Init the flag to quit the farming
@@ -114,7 +116,7 @@ class Farmer(threading.Thread):
         print("New Farmer thread started!!!!")
         # Create a PROWatch
         self.control_thread = self._args[0]
-        self.prowatch_thread = self.control_thread.prowatch_thread
+        #self.prowatch_thread = self.control_thread.prowatch_thread
         self.pause = self.control_thread.farmer_pause
         """
         Method to init the Farmer class.
@@ -147,12 +149,12 @@ class Farmer(threading.Thread):
         # Farm Sequence
 
         self.farm_move_sequence = self.default_move_set
-        self.prowatch_thread.append_write_to_log(
-            1,
-            "protrainer started using the farm move sequence",
-            self.farm_move_sequence,
-            "None"
-        )
+        #self.prowatch_thread.append_write_to_log(
+        #    1,
+        #    "protrainer started using the farm move sequence",
+        #    self.farm_move_sequence,
+        #    "None"
+        #)
 
     """ Pause """
 
@@ -174,6 +176,7 @@ class Farmer(threading.Thread):
     """ Radon Interaction """
 
     def deliver_radon_status(self, status: dict) -> None:
+        return
         #
         #   Deliver the Radon Status
         self.radon_status = status
@@ -232,6 +235,7 @@ class Farmer(threading.Thread):
         Validate if there is any radon output.
         :return: bool value of weather the move should be played or not.
         """
+        return
         #
         # Check what codes that Radon passed, if it's a high-priority code
         # check it first, then look to see if we need to change our moveset
@@ -250,6 +254,7 @@ class Farmer(threading.Thread):
             #self.is_emergency = False
 
         """ CATCH POKEMON """
+
         # We need to catch this pokemon by throwing a pokeball
         if self.last_poke_name.lower() in self.pokes_to_catch:
             print("V A L I D  P O K E  -  S H O U L D  C A T C H")
@@ -332,6 +337,7 @@ class Farmer(threading.Thread):
                     click_on_tiles_move_sequence,
                     "None"
                 )
+
 
     """ AFK """
 

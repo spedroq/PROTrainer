@@ -1,9 +1,13 @@
 import random
 import time
-import pythoncom
-import win32api
-import win32com.client as com_client
-import win32con
+#import pythoncom
+#import win32api
+#import win32com.client as com_client
+#import win32con
+
+#
+#   2021
+import keyboard
 
 
 class PROTrainerMove:
@@ -44,9 +48,9 @@ class SimulatedKeyboard:
     Class SimulatedKeyboard defines the simulated keyboard output to PRO.
     """
     def __init__(self, farmer: 'Farmer', control: 'Control'):
-        pythoncom.CoInitialize()
+        #pythoncom.CoInitialize()
         # Init Windows Shell with WScript Shell
-        self.wsh = com_client.Dispatch("WScript.Shell")
+        #self.wsh = com_client.Dispatch("WScript.Shell")
         self.farmer = farmer
         self.control_thread = control
 
@@ -102,12 +106,12 @@ class SimulatedKeyboard:
                                 # Process key
                                 self.perform_move(key, move)
                                 # Listen for radon output with PROWatch log
-                                self.farmer.prowatch_thread.append_write_to_log(
-                                    2,
-                                    "protrainer simulated some input",
-                                    key,
-                                    move
-                                )
+                                #self.farmer.prowatch_thread.append_write_to_log(
+                                #    2,
+                                #    "protrainer simulated some input",
+                                #    key,
+                                #    move
+                                #)
                                 # Increment index
                                 key_index += 1
                                 # Sleep every turn so we do not burn the pc
@@ -192,9 +196,12 @@ class SimulatedKeyboard:
         :param key: Key to be pressed.
         """
         # Set output to Pokemon Revolution Online
-        self.wsh.AppActivate("Pokemon Revolution")
+        #self.wsh.AppActivate("Pokemon Revolution")
         # Send the keys press
-        self.wsh.SendKeys(key)
+        #self.wsh.SendKeys(key)
+        keyboard.write(key)
+        print(key)
+        return
 
     def press_mouse(self, key: str, x: int, y: int) -> None:
         """
@@ -211,6 +218,7 @@ class SimulatedKeyboard:
         :param x: x coordinate.
         :param y: y coordinate.
         """
-        win32api.SetCursorPos((x, y))
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+        #win32api.SetCursorPos((x, y))
+        #win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
+        #win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+        return

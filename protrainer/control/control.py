@@ -1,10 +1,10 @@
 import threading
 from farmer.farmer import Farmer
 from farmer.modes import FarmerMode
-from input_listener.input_listener import InputListener
-from radon.Radon import *
-from cli.cli import *
-from prowatch.PROWatch import *
+#from input_listener.input_listener import InputListener
+#from radon.Radon import *
+#from cli.cli import *
+#from prowatch.PROWatch import *
 
 
 class Control(threading.Thread):
@@ -43,20 +43,19 @@ class Control(threading.Thread):
         """ PROWATCH """
 
         # Create the PROWatch logger
-        self.prowatch_thread = PROWatch()
+        #self.prowatch_thread = PROWatch()
         # Start the thread
-        self.prowatch_thread.start()
+        #self.prowatch_thread.start()
 
         """ CLI  """
 
         # Create the CLI
-        self.cli_thread = PROTrainerCLI(name="CLIThread")
-        self.cli_thread.start()
+        #self.cli_thread = PROTrainerCLI(name="CLIThread")
+        #self.cli_thread.start()
 
         """ FARMER """
         # Create the farmer thread
-        self.farmer_thread = Farmer(name="FarmerThread",
-                                    args=(self,))
+        self.farmer_thread = Farmer(name="FarmerThread", args=(self,))
         # Set the mode
         self.farmer_mode = FarmerMode(self)
         # Start the thread
@@ -65,18 +64,18 @@ class Control(threading.Thread):
         """ RADON """
 
         # Create Radon thread for managing screenshots / OCR
-        self.radon_thread = Radon(name="TesseractInteractionThread",
-                                  args=(self,))
+        #self.radon_thread = Radon(name="TesseractInteractionThread",
+        #                          args=(self,))
         # Start the thread
-        self.radon_thread.start()
+        #self.radon_thread.start()
 
         """ INPUT """
 
         # Input listener thread
-        self.listener_thread = InputListener(name="InputListenerThread",
-                                             args=(self,))
+        #self.listener_thread = InputListener(name="InputListenerThread",
+        #                                     args=(self,))
         # Listen for input
-        self.listener_thread.start()
+        #self.listener_thread.start()
 
     def load_configuration(self):
         """

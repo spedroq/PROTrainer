@@ -1,6 +1,6 @@
 import threading
-import keyboard
-import mouse
+#import keyboard
+#import mouse
 
 
 class InputListener(threading.Thread):
@@ -21,17 +21,16 @@ class InputListener(threading.Thread):
         Method to init the Input Listener class thread.
         """
         self.control_thread = self._args[0]
-        self.farmer_thread = self.control_thread.farmer_thread
-        self.cli_thread = self.control_thread.cli_thread
-        self.prowatch_thread = self.control_thread.prowatch_thread
-        self.radon_thread = self.control_thread.radon_thread
-        if self.farmer_thread.pause:
-            self.cli_thread.input_string_mode = "paused"
-        else:
-            self.cli_thread.input_string_mode = "running"
-        keyboard.hook(self.analyse_key_press)
-        mouse.hook(self.analyse_mouse_interaction)
-
+        #self.farmer_thread = self.control_thread.farmer_thread
+        #self.cli_thread = self.control_thread.cli_thread
+        #self.prowatch_thread = self.control_thread.prowatch_thread
+        #self.radon_thread = self.control_thread.radon_thread
+        #if self.farmer_thread.pause:
+        #    self.cli_thread.input_string_mode = "paused"
+        #else:
+        #    self.cli_thread.input_string_mode = "running"
+        #keyboard.hook(self.analyse_key_press)
+        #mouse.hook(self.analyse_mouse_interaction)
 
     def analyse_mouse_interaction(self, mouse_interaction):
         if type(mouse_interaction) == mouse.ButtonEvent:
