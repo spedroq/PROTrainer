@@ -7,7 +7,7 @@ import time
 
 #
 #   2021
-import keyboard
+#import keyboard
 
 
 class PROTrainerMove:
